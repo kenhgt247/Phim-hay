@@ -90,3 +90,15 @@
 
 ## nen_van_phong_trong | mẫu: nen_van_phong | loại: nền
 Giữ nguyên hoàn toàn bức tranh trong ảnh mẫu: cùng bố cục, góc nhìn, màu sắc, nét vẽ, mọi đồ vật và chữ trên tường. Chỉ xóa chiếc ghế xoay màu đen phía sau bàn làm việc, vẽ lại phần tủ và tường phía sau chỗ đó cho tự nhiên. Không thêm người.
+
+## lan_tao_mo | mẫu: lan_tao | loại: đơn
+Giữ nguyên hoàn toàn nhân vật trong ảnh mẫu: cùng tư thế, khuôn mặt, quần áo, màu sắc, nét vẽ, kích thước và vị trí trong khung, nền trắng trơn. Chỉ thay đổi duy nhất cái miệng: miệng hé mở như đang nói chuyện. Không thay đổi gì khác.
+
+## danem_tao_mo | mẫu: danem_tao | loại: đơn
+Giữ nguyên hoàn toàn nhân vật trong ảnh mẫu: cùng tư thế, khuôn mặt, quần áo, màu sắc, nét vẽ, kích thước và vị trí trong khung, nền trắng trơn. Chỉ thay đổi duy nhất cái miệng: miệng hé mở như đang nói chuyện. Không thay đổi gì khác.
+
+## tung_bang_6_mo | mẫu: tung_bang_6 | loại: đơn
+Giữ nguyên hoàn toàn nhân vật trong ảnh mẫu: cùng tư thế, khuôn mặt, quần áo, màu sắc, nét vẽ, kích thước và vị trí trong khung, nền trắng trơn. Chỉ thay đổi duy nhất cái miệng: miệng hé mở như đang nói chuyện. Không thay đổi gì khác.
+
+## hien_bang_ngoi_3_mo | mẫu: hien_bang_ngoi_3 | loại: đơn
+Giữ nguyên hoàn toàn nhân vật trong ảnh mẫu: cùng tư thế, khuôn mặt, quần áo, màu sắc, nét vẽ, kích thước và vị trí trong khung, nền trắng trơn. Chỉ thay đổi duy nhất cái miệng: miệng hé mở như đang nói chuyện. Không thay đổi gì khác.
