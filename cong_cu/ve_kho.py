@@ -17,10 +17,10 @@ KHOA = os.environ.get("GEMINI_API_KEY", "").strip()
 PHONG_CACH = "phong cách hoạt hình 2D kiểu truyện tranh động Trung Quốc, nét viền đậm, màu phẳng, đẹp, chất lượng cao"
 MACRO = {
     "{BANG}": ("Vẽ đúng nhân vật trong ảnh mẫu (giữ nguyên khuôn mặt, tóc, quần áo, màu sắc, nét vẽ), " + PHONG_CACH +
-               ". Vẽ thành BẢNG TƯ THẾ: 6 tư thế toàn thân của CÙNG MỘT nhân vật, xếp 2 hàng x 3 cột, các tư thế cách xa nhau, "
-               "không chạm nhau, cùng kích cỡ, nền trắng trơn hoàn toàn, không ghi chữ, không đánh số, không bóng đổ. Tất cả miệng ngậm. Các tư thế:"),
+               ". Vẽ thành BẢNG TƯ THẾ: 6 tư thế toàn thân của CÙNG MỘT nhân vật, xếp đều 2 hàng x 3 cột, mỗi tư thế nằm gọn giữa ô của mình, TOÀN THÂN TỪ ĐẦU ĐẾN CHÂN, "
+               "chừa khoảng trắng quanh mỗi nhân vật, không bị cắt mép, không chạm nhau, cùng kích cỡ, nền trắng trơn hoàn toàn, không ghi chữ, không đánh số, không bóng đổ. Tất cả miệng ngậm. Các tư thế:"),
     "{MAT}": ("Vẽ đúng nhân vật trong ảnh mẫu (giữ nguyên khuôn mặt, tóc, nét vẽ), " + PHONG_CACH +
-              ". Vẽ thành BẢNG KHUÔN MẶT: 6 khuôn mặt cận cảnh từ vai trở lên, xếp 2 hàng x 3 cột, cách xa nhau, nền trắng trơn, "
+              ". Vẽ thành BẢNG KHUÔN MẶT: 6 khuôn mặt cận cảnh từ vai trở lên, xếp đều 2 hàng x 3 cột, mỗi khuôn mặt nằm gọn giữa ô, chừa khoảng trắng xung quanh, nền trắng trơn, "
               "không ghi chữ, không đánh số. Tất cả miệng ngậm:"),
     "{TAO}": ("Vẽ một nhân vật " + PHONG_CACH + ". Toàn thân, đứng chính diện, miệng ngậm, nền trắng trơn hoàn toàn, không chữ. Nhân vật:"),
     "{NEN}": ("Vẽ bối cảnh " + PHONG_CACH + ", khung 16:9, không có người, chữ trên biển hiệu viết đúng chính tả tiếng Việt. Cảnh:"),
@@ -86,13 +86,14 @@ def goi_api(lenh, mau_path, khung):
     r = requests.post("https://generativelanguage.googleapis.com/v1beta/interactions", headers=tieu_de, json=body, timeout=300)
     if r.ok:
         d = tim_anh(r.json())
-        if d: return base64.b64decode(d)
+        if d: print("  (dùng cách mới)"); return base64.b64decode(d)
     loi1 = f"{r.status_code} {r.text[:400]}"
+    print(f"  (cách mới không được: {loi1[:300]}) -> thử cách cũ")
     # Cách cũ: generateContent (dự phòng)
     parts = [{"text": lenh}]
     if mau_path: parts.append({"inline_data": {"mime_type": "image/jpeg", "data": anh_b64(mau_path)}})
     body2 = {"contents": [{"parts": parts}],
-             "generationConfig": {"responseModalities": ["IMAGE"], "imageConfig": {"aspectRatio": khung}}}
+             "generationConfig": {"responseModalities": ["IMAGE"], "imageConfig": {"aspectRatio": khung, "imageSize": "2K"}}}
     r2 = requests.post(f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent", headers=tieu_de, json=body2, timeout=300)
     if r2.ok:
         d = tim_anh(r2.json())

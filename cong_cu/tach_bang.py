@@ -25,29 +25,21 @@ def xoa_nen(im):
     out = Image.fromarray(np.dstack([a.astype(np.uint8), (alpha * 255).clip(0, 255).astype(np.uint8)]), "RGBA")
     return out
 
-def tach(im):
-    a = np.asarray(im.convert("RGB")).astype(np.int16)
-    vat = ~mat_na_nen(a)
-    gop = ndimage.binary_dilation(vat, iterations=max(6, im.width // 150))   # nối các phần của cùng một người
-    nhan, n = ndimage.label(gop)
-    hop = ndimage.find_objects(nhan)
-    dt = ndimage.sum(vat, nhan, range(1, n + 1))
-    lon = max(dt) if len(dt) else 0
-    cac = [(hop[i], i + 1) for i in range(n) if dt[i] > lon * 0.15]
-    # xếp theo hàng rồi theo cột
-    cac.sort(key=lambda c: (c[0][0].start + c[0][0].stop) / 2)
-    hang, cur, cao_tb = [], [], np.mean([c[0][0].stop - c[0][0].start for c in cac]) if cac else 1
-    for c in cac:
-        if cur and (c[0][0].start + c[0][0].stop) / 2 - (cur[0][0][0].start + cur[0][0][0].stop) / 2 > cao_tb * 0.5:
-            hang.append(cur); cur = []
-        cur.append(c)
-    if cur: hang.append(cur)
-    rgba = xoa_nen(im); ket = []
-    for h in hang:
-        for (sl, k) in sorted(h, key=lambda c: c[0][1].start):
-            m = (nhan[sl] == k)
-            phan = np.asarray(rgba)[sl].copy(); phan[..., 3] = (phan[..., 3] * m).astype(np.uint8)
-            ket.append(Image.fromarray(phan, "RGBA"))
+def tach(im, hang=2, cot=3):
+    """Chia bảng thành lưới 2 hàng x 3 cột, mỗi ô lấy phần nhân vật lớn nhất, xóa nền."""
+    rgba = xoa_nen(im); a = np.asarray(rgba); ket = []
+    H, W = a.shape[:2]
+    for r in range(hang):
+        for c in range(cot):
+            o = a[r * H // hang:(r + 1) * H // hang, c * W // cot:(c + 1) * W // cot].copy()
+            vat = o[..., 3] > 40
+            if vat.sum() < o.shape[0] * o.shape[1] * 0.01: continue
+            nhan, n = ndimage.label(ndimage.binary_dilation(vat, iterations=4))
+            if n > 1:
+                dt = ndimage.sum(vat, nhan, range(1, n + 1)); giu = np.isin(nhan, [i + 1 for i in range(n) if dt[i] > dt.max() * 0.08])
+                o[..., 3] = (o[..., 3] * giu).astype(np.uint8)
+            h = Image.fromarray(o, "RGBA"); bb = h.getbbox()
+            if bb: ket.append(h.crop(bb))
     return ket
 
 def main():
@@ -68,7 +60,7 @@ def main():
         else:
             r = xoa_nen(im); r.crop(r.getbbox()).save(dau); print(f"- {ten}: đã xóa nền")
     # ảnh xem trước cả kho
-    hinh = sorted(os.listdir(TACH))
+    hinh = sorted(f for f in os.listdir(TACH) if f.endswith(".png"))
     if hinh:
         o = 220; cot = 8; W = Image.new("RGB", (cot * o, ((len(hinh) + cot - 1) // cot) * (o + 24)), (235, 235, 235)); d = ImageDraw.Draw(W)
         for i, f in enumerate(hinh):
