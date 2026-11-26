@@ -20,7 +20,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: ve-kho-hinh
+  group: ghi-vao-kho
 
 jobs:
   ve:
@@ -49,4 +49,4 @@ jobs:
           git config user.name "kho-hinh-bot"
           git config user.email "kho-hinh-bot@users.noreply.github.com"
           git add kho
-          git diff --cached --quiet || (git commit -m "Vẽ thêm hình vào kho" && git push)
+          git diff --cached --quiet || (git commit -m "Vẽ thêm hình vào kho" && git pull --rebase -q && git push)

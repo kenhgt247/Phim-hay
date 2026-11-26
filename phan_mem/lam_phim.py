@@ -98,7 +98,7 @@ def tao_giong(ds, tam):
             i += 1
             if im_lang(l["noi"]): continue
             text, ra, g = l["noi"].replace("…", "..."), os.path.join(tam, f"cau_{i:03d}.wav"), GIONG.get(l["ai"])
-            audio = tts.infer(text=text, voice=g) if g else tts.infer(text=text)
+            audio = tts.infer(text, voice=g) if g else tts.infer(text)
             tts.save(audio, ra); l["wav"] = ra; print(f"   giọng {i}: {l['ai']}")
     return True
 
