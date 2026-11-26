@@ -5,7 +5,11 @@
 * Hiền: ngồi lạnh
 * Nhạc: căng thẳng
 Dẫn chuyện: Căn phòng im lặng đến mức nghe rõ tiếng đồng hồ trên tường.
-Kẻ lạ: Sao thế? Không nhận ra tôi à?
+Kẻ lạ: Văn phòng đẹp nhỉ. Biển hiệu to, bản đồ thế giới treo đầy tường.
+Kẻ lạ: Sao thế? Không nhận ra tôi à? Mười năm rồi, cậu béo ra một chút.
+* Hiền: lạnh
+Hiền: Anh nhầm người rồi. Ở đây chỉ tư vấn du học.
+* Hiền: ngồi lạnh
 * Kẻ lạ: kela_bang_6
 Kẻ lạ (cận): Nagoya, năm 2016. Xưởng điện tử số bốn. Cậu thanh niên ngày nào cũng làm thêm đến nửa đêm… là cậu đấy.
 * Máy quay: xa
@@ -18,9 +22,11 @@ Dẫn chuyện: Hiền không trả lời. Nhưng bàn tay dưới gầm bàn đ
 * Hiền: hien_bang_dung_1
 * Kẻ lạ: thường
 Dẫn chuyện: Mười năm trước, Hiền sang Nhật với khoản nợ mấy trăm triệu của cả nhà.
+Dẫn chuyện: Ngày làm mười hai tiếng, tối về ngủ chung phòng với năm người. Mỗi đồng lương đều gửi về quê trả nợ.
 Dẫn chuyện: Người đứng ra lo giấy tờ, thu tiền phí cho cả xưởng, là một gã môi giới tên Hắc.
 Kẻ lạ: Làm nhanh lên! Chậm một giây là trừ lương!
 * Hiền: hien_bang_mat_4
+Dẫn chuyện: Hắn hứa sẽ lo cho cả nhóm được gia hạn hợp đồng, chỉ cần mỗi người đóng thêm một khoản phí.
 Dẫn chuyện: Rồi một buổi sáng, Hắc biến mất. Mang theo toàn bộ tiền đóng phí của ba mươi người.
 Dẫn chuyện: Hiền mất hết. Món nợ ở quê tăng gấp đôi. Đó là lần đầu tiên anh hiểu, người hiền thì bị bắt nạt.
 
@@ -47,7 +53,12 @@ Dẫn chuyện: Hắn quay lưng bước ra. Cánh cửa kính khép lại sau l
 Dẫn chuyện: Tối hôm đó, Hiền về nhà muộn hơn mọi ngày.
 * Hiền: hiền
 Lan: Anh về rồi à? Cơm canh nguội hết rồi, để em hâm lại.
-Hiền: Không cần đâu em. Anh ăn luôn cũng được.
+Hiền: Không cần đâu em. Anh ăn luôn cũng được. Con ngủ rồi à?
+* Lan: lan_tao
+Lan: Ngủ rồi. Con cứ đòi đợi bố về để khoe bài kiểm tra được mười điểm.
+* Hiền: hien_bang_mat_1
+Dẫn chuyện: Hiền mỉm cười. Đó là nụ cười thật nhất của anh trong cả ngày hôm nay.
+* Hiền: hiền
 * Lan: lan_bang_2
 Lan: Chiều nay chị bán nước đầu ngõ kể… có người lạ đến trung tâm, mặt mũi dữ lắm.
 Hiền: Khách hỏi du học thôi em. Người ta ở xa đến, trông hơi khó tính.
@@ -67,7 +78,12 @@ Hiền: Tao biết hắn.
 Hiền (cận): Không. Lần này không đánh nhau.
 Hiền (cận): Tao muốn biết thằng Hắc đang nợ ai. Kẻ trốn nợ mười năm, không thể chỉ trốn mỗi mình tao.
 * Máy quay: xa
-Đàn em: Em hiểu rồi, đại ca.
+Đàn em: Em hiểu rồi, đại ca. Nhưng mà… nếu nó làm lộ chuyện thật thì sao? Chị nhà với hai bác ở quê…
+* Hiền: hien_bang_lanh_6
+Dẫn chuyện: Hiền châm một điếu thuốc. Lần đầu tiên sau nhiều năm, tay anh run.
+* Hiền: lạnh
+Hiền (cận): Thì tao sẽ làm cho nó không bao giờ có cơ hội mở miệng.
+* Máy quay: xa
 
 [Cảnh: bo_ke | Tùng 50]
 * Hiệu ứng: mưa

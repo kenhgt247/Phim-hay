@@ -51,8 +51,10 @@ def phim_dan(f, dai, am=0.4):      # tiếng gảy kiểu piano nhẹ
     return (y * am * np.minimum(1, t / 0.005)).astype(np.float32)
 
 def bao(dai, vao=2.0, ra=2.0):
-    n = int(dai * SR); e = np.ones(n, np.float32); a, b = int(vao * SR), int(ra * SR)
-    e[:a] = np.linspace(0, 1, a); e[-b:] = np.minimum(e[-b:], np.linspace(1, 0, b)); return e
+    n = int(dai * SR); e = np.ones(n, np.float32); a, b = min(int(vao * SR), n // 2), min(int(ra * SR), n // 2)
+    if a > 0: e[:a] = np.linspace(0, 1, a)
+    if b > 0: e[-b:] = np.minimum(e[-b:], np.linspace(1, 0, b))
+    return e
 
 def nhac(kieu, dai):
     """Nhạc nền tự tạo. kieu: căng thẳng / bí ẩn / ấm áp / buồn"""
