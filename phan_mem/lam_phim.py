@@ -64,6 +64,35 @@ GIAY_MOI_TIENG, NGHI = 0.27, 0.45
 TOC_DO_DI = 0.62      # chiều cao nhân vật / giây
 NHIP_BUOC = 0.27      # giây mỗi hình bước
 
+# Nhân vật khác trong kho: tên trong kịch bản -> tiền tố tên ảnh
+MA_NV = {"Lan": "lan", "Bố": "bo", "Mẹ": "me", "Đàn em": "danem", "Tùng": "tung"}
+CANH_DEM = {"bo_ke": (0.80, 0.78, 0.82), "quan_nhau": (0.92, 0.82, 0.70), "phong_kin": (0.85, 0.75, 0.62)}
+
+def lay_nv(ten):
+    if ten in NHAN_VAT: return NHAN_VAT[ten]
+    p = MA_NV.get(ten)
+    if not p: raise KeyError(f"Chưa có nhân vật '{ten}'. Có: {', '.join(list(NHAN_VAT) + list(MA_NV))}")
+    NHAN_VAT[ten] = {"mac_dinh": "thường", "huong_di": "phải", "thường": (f"{p}_tao.png", None),
+                     "đi": [f"{p}_bang_3.png", f"{p}_bang_4.png"]}
+    return NHAN_VAT[ten]
+
+def tu_the_cua(cf, ten_tt):
+    """Tư thế theo tên đặt sẵn, hoặc theo tên ảnh trong kho (vd. hien_bang_lanh_3)."""
+    if ten_tt in cf: return cf[ten_tt]
+    ten_anh = ten_tt.replace(".png", "")
+    tim_file(ten_anh + ".png")
+    if "_mat_" in ten_anh: return {"mat": ten_anh + ".png"}
+    ngoi = "ngoi" in ten_anh or ten_anh in ("hien_bang_lanh_5", "kela_bang_5") or (ten_anh.endswith("_bang_5") and not ten_anh.startswith(("hien", "kela")))
+    return (ten_anh + ".png", None, 0.80 if ngoi else 1.0)
+
+def lay_canh(ten):
+    if ten in BOI_CANH: return BOI_CANH[ten]
+    ten_anh = ten if ten.startswith(("nen_", "bg_")) else "nen_" + ten
+    tim_file(ten_anh + ".png"); k = ten_anh.replace("nen_", "")
+    BOI_CANH[ten] = {"anh": ten_anh + ".png", "chan": 0.93, "cao_nv": 0.55, "khung": 1.0,
+                     "mau": CANH_DEM.get(k, (1.0, 0.98, 0.95)), "am_nen": "pho_dem" if k in ("bo_ke", "quan_nhau") else None}
+    return BOI_CANH[ten]
+
 def theo_vi_tri(chan, x):
     """Trả về (độ cao chân, hệ số cỡ) tại vị trí x."""
     if not isinstance(chan, list): return chan, 1.0
@@ -173,7 +202,7 @@ def lam_phim(kb):
 
     t = 0.0; nhac_sk, hu_sk = [], []
     for c in ds:
-        bc = BOI_CANH[c["nen"]]
+        bc = lay_canh(c["nen"])
         nen = Image.open(tim_file(bc["anh"])).convert("RGB")
         W = int(nen.width * H / nen.height)
         c["W"], c["bc"] = W, bc
@@ -190,7 +219,7 @@ def lam_phim(kb):
         # trạng thái nhân vật theo thời gian
         nvs = {}
         for ten, x in c["nv"]:
-            cf = NHAN_VAT[ten]
+            cf = lay_nv(ten)
             nvs[ten] = {"x": x, "tu_the": [(-1, cf["mac_dinh"])], "di": [], "rung": []}
         c["nvs"] = nvs; c["t0"] = t; c["can"] = []
         can = None
@@ -219,7 +248,7 @@ def lam_phim(kb):
             else: dai = len(chu_phu_de(l["noi"]).split()) * GIAY_MOI_TIENG + 0.3
             l["t1"] = t + dai
             if "cận" in l["the"]: can = l["ai"]; c["can"].append((t, can))
-            elif l["ai"] in NHAN_VAT and can is not None: can = None; c["can"].append((t, None))
+            elif l["ai"] in nvs and can is not None: can = None; c["can"].append((t, None))
             t += dai + NGHI
         het_di = max([d_[1] for n in nvs.values() for d_ in n["di"]] + [0])
         t = max(t, het_di + 0.3)
@@ -294,7 +323,7 @@ def lam_phim(kb):
         the_gioi = c["nen_img"].copy()
         vi_tri = {}; mat_shot = None
         for ten, n in c["nvs"].items():
-            cf = NHAN_VAT[ten]
+            cf = lay_nv(ten)
             x, dang_di, huong = n["x"], None, None
             for (a, b, x0, x1) in n["di"]:
                 if tt >= b: x = x1
@@ -303,14 +332,15 @@ def lam_phim(kb):
                     huong = "phải" if x1 > x0 else "trái"
             tu_the = [tt_ for (a, tt_) in n["tu_the"] if a <= tt][-1]
             co_tt = 1.0
-            if dang_di is None and isinstance(cf[tu_the], dict):
-                mat_shot = cf[tu_the]["mat"]; continue
+            tte = tu_the_cua(cf, tu_the)
+            if dang_di is None and isinstance(tte, dict):
+                mat_shot = tte["mat"]; continue
             if dang_di is not None:
                 f_ = cf["đi"][int(dang_di / NHIP_BUOC) % 2]; lat = huong != cf["huong_di"]; co_tt = 0.97
                 nhun = -abs(math.sin(dang_di * math.pi / NHIP_BUOC)) * cao_nv * 0.012
             else:
-                ngam, mo = cf[tu_the][0], cf[tu_the][1]; f_ = ngam; lat = False; nhun = 0
-                if len(cf[tu_the]) > 2: co_tt = cf[tu_the][2]
+                ngam, mo = tte[0], tte[1]; f_ = ngam; lat = False; nhun = 0
+                if len(tte) > 2: co_tt = tte[2]
                 if loi and loi["ai"] == ten and tt < loi["t1"] and mo:
                     k = tt - loi["t0"]
                     if "mieng" in loi: m = loi["mieng"]; f_ = mo if m[min(int(k * FPS), len(m) - 1)] else ngam

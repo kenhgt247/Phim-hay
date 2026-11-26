@@ -1,0 +1,100 @@
+{
+ "tu_the": {
+  "bo": [
+   "bo_bang_1",
+   "bo_bang_2",
+   "bo_bang_3",
+   "bo_bang_4",
+   "bo_bang_5",
+   "bo_bang_6",
+   "bo_tao"
+  ],
+  "danem": [
+   "danem_bang_1",
+   "danem_bang_2",
+   "danem_bang_3",
+   "danem_bang_4",
+   "danem_bang_5",
+   "danem_bang_6",
+   "danem_tao"
+  ],
+  "hien": [
+   "hien_bang_dung_1",
+   "hien_bang_dung_2",
+   "hien_bang_dung_3",
+   "hien_bang_dung_4",
+   "hien_bang_dung_5",
+   "hien_bang_dung_6",
+   "hien_bang_lanh_1",
+   "hien_bang_lanh_2",
+   "hien_bang_lanh_3",
+   "hien_bang_lanh_4",
+   "hien_bang_lanh_5",
+   "hien_bang_lanh_6",
+   "hien_bang_mat_1",
+   "hien_bang_mat_2",
+   "hien_bang_mat_3",
+   "hien_bang_mat_4",
+   "hien_bang_mat_5",
+   "hien_bang_mat_6",
+   "hien_bang_ngoi_1",
+   "hien_bang_ngoi_2",
+   "hien_bang_ngoi_3",
+   "hien_bang_ngoi_4",
+   "hien_bang_ngoi_5",
+   "hien_bang_ngoi_6"
+  ],
+  "kela": [
+   "kela_bang_1",
+   "kela_bang_2",
+   "kela_bang_3",
+   "kela_bang_4",
+   "kela_bang_5",
+   "kela_bang_6",
+   "kela_bang_mat_1",
+   "kela_bang_mat_2",
+   "kela_bang_mat_3",
+   "kela_bang_mat_4",
+   "kela_bang_mat_5",
+   "kela_bang_mat_6"
+  ],
+  "lan": [
+   "lan_bang_1",
+   "lan_bang_2",
+   "lan_bang_3",
+   "lan_bang_4",
+   "lan_bang_5",
+   "lan_bang_6",
+   "lan_tao"
+  ],
+  "me": [
+   "me_bang_1",
+   "me_bang_2",
+   "me_bang_3",
+   "me_bang_4",
+   "me_bang_5",
+   "me_bang_6",
+   "me_tao"
+  ],
+  "tung": [
+   "tung_bang_1",
+   "tung_bang_2",
+   "tung_bang_3",
+   "tung_bang_4",
+   "tung_bang_5",
+   "tung_bang_6",
+   "tung_tao"
+  ]
+ },
+ "nen": [
+  "nen_bo_ke",
+  "nen_lang_que",
+  "nen_phong_khach",
+  "nen_phong_kin",
+  "nen_quan_nhau",
+  "nen_van_phong",
+  "nen_van_phong_trong",
+  "nen_xuong_nhat",
+  "pho_dem"
+ ]
+}

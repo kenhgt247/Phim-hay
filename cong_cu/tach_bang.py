@@ -67,5 +67,14 @@ def main():
             W.paste(t, (x + (o - t.width) // 2, y + (o - t.height) // 2), t); d.text((x + 6, y + o + 4), f[:-4], fill=(0, 0, 0))
         W.save(os.path.join(GOC, "kho", "xem_truoc.png"))
 
+def danh_muc():
+    """Ghi kho/danh_muc.json cho trang web: danh sách tư thế theo nhân vật và bối cảnh."""
+    import json
+    tach = sorted(f[:-4] for f in os.listdir(TACH) if f.endswith(".png"))
+    nen = sorted(f[:-4] for f in os.listdir(KHO_GOC) if f.startswith("nen_") and f.endswith(".png"))
+    nv = {}
+    for f in tach: nv.setdefault(f.split("_")[0], []).append(f)
+    json.dump({"tu_the": nv, "nen": nen + ["pho_dem"]}, open(os.path.join(GOC, "kho", "danh_muc.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+
 if __name__ == "__main__":
-    main()
+    main(); danh_muc()

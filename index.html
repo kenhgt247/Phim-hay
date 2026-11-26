@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Xưởng Phim Hay</title>
+<style>
+  :root { --nen:#14161c; --the:#1e222b; --vien:#2d333f; --chu:#e8e9ec; --mo:#9aa1ad; --nhan:#f5b942; --xanh:#3fb27f; --do:#e5534b; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background:var(--nen); color:var(--chu); }
+  header { display:flex; align-items:center; gap:12px; padding:12px 16px; border-bottom:1px solid var(--vien); position:sticky; top:0; background:var(--nen); z-index:5; }
+  header h1 { font-size:18px; margin:0; color:var(--nhan); white-space:nowrap; }
+  nav { display:flex; gap:4px; overflow-x:auto; }
+  nav button { background:none; border:0; color:var(--mo); padding:8px 12px; border-radius:8px; font-size:15px; cursor:pointer; white-space:nowrap; }
+  nav button.on { background:var(--the); color:var(--chu); }
+  main { max-width:1100px; margin:0 auto; padding:16px; }
+  .tab { display:none; } .tab.on { display:block; }
+  .the { background:var(--the); border:1px solid var(--vien); border-radius:12px; padding:14px; margin-bottom:14px; }
+  label { font-size:13px; color:var(--mo); display:block; margin:8px 0 4px; }
+  input, select, textarea { width:100%; background:var(--nen); color:var(--chu); border:1px solid var(--vien); border-radius:8px; padding:9px 10px; font-size:15px; font-family:inherit; }
+  textarea { min-height:52vh; font-family: ui-monospace, Menlo, Consolas, monospace; font-size:14px; line-height:1.55; }
+  .hang { display:flex; gap:8px; flex-wrap:wrap; align-items:end; }
+  .hang > * { flex:1 1 140px; }
+  button.nut { background:var(--vien); color:var(--chu); border:0; border-radius:8px; padding:10px 14px; font-size:15px; cursor:pointer; flex:0 0 auto; }
+  button.chinh { background:var(--nhan); color:#1a1300; font-weight:600; }
+  button.xanh { background:var(--xanh); color:#06160e; font-weight:600; }
+  button:disabled { opacity:.5; }
+  .bo-cuc { display:grid; grid-template-columns: 1fr 320px; gap:14px; }
+  @media (max-width: 860px) { .bo-cuc { grid-template-columns: 1fr; } textarea { min-height:40vh; } }
+  .trang-thai { font-size:14px; padding:10px 12px; border-radius:8px; background:var(--nen); border:1px solid var(--vien); margin-top:10px; white-space:pre-wrap; }
+  .luoi { display:grid; grid-template-columns: repeat(auto-fill, minmax(110px,1fr)); gap:8px; }
+  .o { background:#f1efe9; border-radius:8px; padding:4px; cursor:pointer; text-align:center; }
+  .o img { width:100%; height:130px; object-fit:contain; display:block; }
+  .o span { font-size:11px; color:#333; display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .o.nen img { height:80px; object-fit:cover; border-radius:6px; }
+  .luoi.nen { grid-template-columns: repeat(auto-fill, minmax(170px,1fr)); }
+  h2 { font-size:16px; margin:4px 0 10px; } h3 { font-size:14px; color:var(--nhan); margin:14px 0 8px; }
+  video { width:100%; border-radius:10px; background:#000; margin-top:10px; }
+  .ds-phim div { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--vien); gap:8px; }
+  .nho { font-size:13px; color:var(--mo); }
+  .toast { position:fixed; bottom:18px; left:50%; transform:translateX(-50%); background:var(--nhan); color:#1a1300; padding:10px 16px; border-radius:10px; font-weight:600; display:none; z-index:9; }
+  ol li { margin-bottom:6px; }
+  a { color:var(--nhan); }
+</style>
+</head>
+<body>
+<header>
+  <h1>🎬 Xưởng Phim Hay</h1>
+  <nav>
+    <button data-tab="kichban" class="on">Kịch bản</button>
+    <button data-tab="kho">Kho hình</button>
+    <button data-tab="phim">Phim</button>
+    <button data-tab="ve">Vẽ hình mới</button>
+    <button data-tab="caidat">Cài đặt</button>
+  </nav>
+</header>
+<main>
+
+<!-- ================= KỊCH BẢN ================= -->
+<section id="kichban" class="tab on">
+  <div class="bo-cuc">
+    <div>
+      <div class="the">
+        <div class="hang">
+          <div><label>Tập phim</label><select id="dsKichBan"></select></div>
+          <button class="nut" id="nutMoi">+ Tập mới</button>
+          <button class="nut" id="nutLuu">Lưu</button>
+          <button class="nut xanh" id="nutDung">▶ Dựng phim</button>
+        </div>
+        <label>Kịch bản</label>
+        <textarea id="soan" spellcheck="false" placeholder="Chọn một tập hoặc bấm + Tập mới"></textarea>
+        <div id="ttDung" class="trang-thai" style="display:none"></div>
+        <video id="xemPhim" controls playsinline style="display:none"></video>
+      </div>
+    </div>
+    <div>
+      <div class="the">
+        <h2>Chèn nhanh</h2>
+        <h3>Cảnh mới</h3>
+        <label>Bối cảnh</label><select id="cNen"></select>
+        <label>Nhân vật trong cảnh (vị trí 0 → 100)</label>
+        <div class="hang"><select id="cNv1"></select><input id="cVt1" type="number" value="30"></div>
+        <div class="hang" style="margin-top:6px"><select id="cNv2"></select><input id="cVt2" type="number" value="70"></div>
+        <button class="nut" style="margin-top:8px" onclick="chenCanh()">Chèn cảnh</button>
+
+        <h3>Lời thoại</h3>
+        <div class="hang"><select id="lAi"></select><select id="lCan"><option value="">bình thường</option><option value="cận">máy quay cận</option></select></div>
+        <button class="nut" style="margin-top:8px" onclick="chenLoi()">Chèn lời</button>
+
+        <h3>Động tác</h3>
+        <div class="hang"><select id="dAi"></select></div>
+        <div class="hang" style="margin-top:6px">
+          <select id="dLoai">
+            <option value="tu_the">đổi tư thế…</option><option value="di">đi tới vị trí…</option><option value="rung">rung (điện thoại)</option>
+          </select>
+          <input id="dVt" type="number" value="50" style="display:none">
+          <select id="dTuThe"></select>
+        </div>
+        <button class="nut" style="margin-top:8px" onclick="chenDongTac()">Chèn động tác</button>
+        <p class="nho">Mẹo: sang tab <b>Kho hình</b>, bấm vào hình nào là chèn tư thế đó.</p>
+
+        <h3>Nhạc & hiệu ứng</h3>
+        <div class="hang">
+          <select id="nNhac"><option>bí ẩn</option><option>căng thẳng</option><option>ấm áp</option><option>buồn</option><option>tắt</option></select>
+          <button class="nut" onclick="chen('* Nhạc: ' + v('nNhac'))">Chèn nhạc</button>
+        </div>
+        <div class="hang" style="margin-top:6px">
+          <select id="nHu"><option>rung</option><option>chớp</option><option>mưa</option><option>tắt mưa</option></select>
+          <button class="nut" onclick="chen('* Hiệu ứng: ' + v('nHu'))">Chèn hiệu ứng</button>
+        </div>
+        <button class="nut" style="margin-top:6px" onclick="chen('* Máy quay: xa')">Máy quay kéo ra xa</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= KHO HÌNH ================= -->
+<section id="kho" class="tab">
+  <div class="the"><p class="nho">Bấm vào một tư thế để chèn vào kịch bản đang mở (ở dòng con trỏ đang đứng). Hình có chữ <b>mat</b> là cảnh cận khuôn mặt.</p><div id="khoHinh">Đang tải…</div></div>
+</section>
+
+<!-- ================= PHIM ================= -->
+<section id="phim" class="tab">
+  <div class="the"><h2>Các tập đã dựng</h2><div id="dsPhim" class="ds-phim">Đang tải…</div><video id="xemPhim2" controls playsinline style="display:none"></video></div>
+</section>
+
+<!-- ================= VẼ HÌNH MỚI ================= -->
+<section id="ve" class="tab">
+  <div class="the">
+    <h2>Nhờ Gemini vẽ thêm hình vào kho</h2>
+    <label>Loại hình</label>
+    <select id="vLoai"><option value="tư thế">Tư thế mới của nhân vật có sẵn</option><option value="nền">Bối cảnh mới</option><option value="đơn">Nhân vật mới (hình tạo)</option></select>
+    <div id="vMauO"><label>Nhân vật</label><select id="vMau"></select></div>
+    <label>Tên hình (chữ không dấu, vd: hien_om_con, nen_cho_que)</label><input id="vTen" placeholder="hien_om_con">
+    <label>Mô tả hình cần vẽ</label><textarea id="vMoTa" style="min-height:110px" placeholder="Đứng bế đứa con nhỏ trên tay, mặt hiền, cười"></textarea>
+    <button class="nut chinh" style="margin-top:10px" id="nutVe">Vẽ hình này</button>
+    <div id="ttVe" class="trang-thai" style="display:none"></div>
+    <p class="nho">Mỗi hình tốn khoảng vài trăm đồng từ tín dụng Gemini. Vẽ xong (1–3 phút) hình sẽ có trong tab Kho hình.</p>
+  </div>
+</section>
+
+<!-- ================= CÀI ĐẶT ================= -->
+<section id="caidat" class="tab">
+  <div class="the">
+    <h2>Kết nối GitHub (làm một lần)</h2>
+    <ol>
+      <li>Mở <a href="https://github.com/settings/personal-access-tokens/new" target="_blank">trang tạo mã truy cập</a> của GitHub.</li>
+      <li><b>Token name</b>: Xuong Phim Hay. <b>Expiration</b>: chọn 1 năm (hoặc No expiration).</li>
+      <li><b>Repository access</b>: chọn <i>Only select repositories</i> → chọn <b>Phim-hay</b>.</li>
+      <li><b>Permissions</b> → Repository permissions: <b>Actions</b> = Read and write, <b>Contents</b> = Read and write.</li>
+      <li>Bấm <b>Generate token</b>, sao chép mã (bắt đầu bằng <code>github_pat_</code>) và dán vào ô dưới.</li>
+    </ol>
+    <label>Mã truy cập GitHub</label><input id="token" type="password" placeholder="github_pat_...">
+    <div class="hang" style="margin-top:10px"><button class="nut chinh" id="nutLuuToken">Lưu & kiểm tra</button><button class="nut" id="nutXoaToken">Xóa mã</button></div>
+    <div id="ttToken" class="trang-thai" style="display:none"></div>
+    <p class="nho">Mã chỉ lưu trong trình duyệt của máy này, không gửi đi đâu ngoài GitHub. Dùng máy khác thì dán lại.</p>
+  </div>
+</section>
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+const REPO = "kenhgt247/Phim-hay", API = "https://api.github.com/repos/" + REPO, RAW = "https://raw.githubusercontent.com/" + REPO + "/main/";
+const TEN_NV = { hien: "Hiền", kela: "Kẻ lạ", lan: "Lan", bo: "Bố", me: "Mẹ", danem: "Đàn em", tung: "Tùng" };
+const TU_THE_SAN = { "Hiền": ["hiền", "lạnh", "nghe", "nghe lạnh", "túi", "ngồi", "ngồi lạnh", "mặt lạnh", "mặt giận", "mặt hiền"], "Kẻ lạ": ["đứng", "thường", "mặt cười"] };
+let danhMuc = { tu_the: {}, nen: [] }, tepHienTai = null, shaHienTai = null;
+const $ = id => document.getElementById(id), v = id => $(id).value.trim();
+const token = () => { try { return localStorage.getItem("gh_token") || ""; } catch (e) { return ""; } };
+function bao(msg) { const t = $("toast"); t.textContent = msg; t.style.display = "block"; clearTimeout(t._h); t._h = setTimeout(() => t.style.display = "none", 2600); }
+const b64ma = s => btoa(unescape(encodeURIComponent(s))), b64giai = s => decodeURIComponent(escape(atob(s.replace(/\n/g, ""))));
+
+async function gh(duong, opt = {}) {
+  const h = { "Accept": "application/vnd.github+json", ...(opt.headers || {}) };
+  if (token()) h["Authorization"] = "Bearer " + token();
+  const r = await fetch(duong.startsWith("http") ? duong : API + duong, { ...opt, headers: h });
+  if (!r.ok && r.status !== 204) { let m = r.status + ""; try { m += " " + (await r.json()).message; } catch (e) {} throw new Error(m); }
+  return r;
+}
+function canToken() { if (!token()) { bao("Vào tab Cài đặt để kết nối GitHub trước"); moTab("caidat"); return false; } return true; }
+
+// ---------- tab ----------
+function moTab(t) { document.querySelectorAll("nav button").forEach(b => b.classList.toggle("on", b.dataset.tab === t)); document.querySelectorAll(".tab").forEach(s => s.classList.toggle("on", s.id === t)); if (t === "phim") taiDsPhim(); }
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => moTab(b.dataset.tab));
+
+// ---------- danh mục kho ----------
+const tatCaNV = () => Object.values(TEN_NV);
+function dienChon(id, ds, them = []) { $(id).innerHTML = [...them, ...ds].map(x => `<option>${x}</option>`).join(""); }
+async function taiDanhMuc() {
+  try { danhMuc = await (await fetch(RAW + "kho/danh_muc.json?t=" + Date.now())).json(); } catch (e) {}
+  dienChon("cNen", danhMuc.nen.map(n => n.replace(/^nen_/, "")));
+  dienChon("cNv1", tatCaNV(), ["(không)"]); dienChon("cNv2", tatCaNV(), ["(không)"]); $("cNv1").value = "Hiền";
+  dienChon("lAi", tatCaNV(), ["Dẫn chuyện"]); dienChon("dAi", tatCaNV()); dienChon("vMau", Object.keys(TEN_NV).map(k => TEN_NV[k]));
+  capNhatTuThe(); veKho();
+}
+function maNV(ten) { return Object.keys(TEN_NV).find(k => TEN_NV[k] === ten); }
+function capNhatTuThe() {
+  const ai = v("dAi"), ds = [...(TU_THE_SAN[ai] || []), ...((danhMuc.tu_the[maNV(ai)] || []))];
+  dienChon("dTuThe", ds);
+  $("dVt").style.display = v("dLoai") === "di" ? "" : "none"; $("dTuThe").style.display = v("dLoai") === "tu_the" ? "" : "none";
+}
+$("dAi").onchange = capNhatTuThe; $("dLoai").onchange = capNhatTuThe;
+function veKho() {
+  let html = "";
+  for (const [ma, ds] of Object.entries(danhMuc.tu_the)) {
+    html += `<h3>${TEN_NV[ma] || ma}</h3><div class="luoi">` + ds.map(f => `<div class="o" onclick="chenTuThe('${ma}','${f}')"><img loading="lazy" src="${RAW}kho/tach/${f}.png"><span>${f}</span></div>`).join("") + "</div>";
+  }
+  html += `<h3>Bối cảnh</h3><div class="luoi nen">` + danhMuc.nen.map(n => `<div class="o nen" onclick="chenNen('${n}')"><img loading="lazy" src="${RAW}${n === "pho_dem" ? "mau/bg_pho_dem" : "kho/goc/" + n}.png"><span>${n.replace(/^nen_/, "")}</span></div>`).join("") + "</div>";
+  $("khoHinh").innerHTML = html;
+}
+
+// ---------- chèn vào kịch bản ----------
+function chen(dong) {
+  const t = $("soan"), p = t.selectionStart ?? t.value.length, dau = t.value.lastIndexOf("\n", p - 1) + 1;
+  const cuoiDong = t.value.indexOf("\n", p); const viTri = cuoiDong === -1 ? t.value.length : cuoiDong;
+  const truoc = t.value.slice(0, viTri), sau = t.value.slice(viTri);
+  const moi = (truoc && !truoc.endsWith("\n") ? "\n" : "") + dong;
+  t.value = truoc + moi + sau; const c = (truoc + moi).length; t.focus(); t.setSelectionRange(c, c); bao("Đã chèn: " + dong);
+}
+function chenCanh() {
+  const nv = [["cNv1", "cVt1"], ["cNv2", "cVt2"]].filter(([a]) => v(a) !== "(không)").map(([a, b]) => v(a) + " " + (v(b) || 50));
+  chen(`\n[Cảnh: ${v("cNen")} | ${nv.join(", ")}]`);
+}
+function chenLoi() { chen(`${v("lAi")}${v("lCan") ? " (cận)" : ""}: `); }
+function chenDongTac() {
+  const ai = v("dAi"), l = v("dLoai");
+  chen(`* ${ai}: ` + (l === "di" ? "đi tới " + (v("dVt") || 50) : l === "rung" ? "rung" : v("dTuThe")));
+}
+function chenTuThe(ma, f) { moTab("kichban"); chen(`* ${TEN_NV[ma] || ma}: ${f}`); }
+function chenNen(n) { $("cNen").value = n.replace(/^nen_/, ""); moTab("kichban"); bao("Đã chọn bối cảnh — bấm 'Chèn cảnh'"); }
+
+// ---------- kịch bản: tải / lưu ----------
+async function taiDsKichBan(chon) {
+  try {
+    const ds = (await (await gh("/contents/phan_mem?ref=main&t=" + Date.now())).json()).filter(f => /^kich_ban.*\.txt$/.test(f.name)).map(f => f.name);
+    $("dsKichBan").innerHTML = ds.map(n => `<option value="${n}">${n.replace(/^kich_ban_?/, "").replace(".txt", "") || n}</option>`).join("");
+    if (chon) $("dsKichBan").value = chon;
+    if (ds.length) await moKichBan($("dsKichBan").value);
+  } catch (e) { $("soan").value = ""; $("soan").placeholder = "Không tải được danh sách tập: " + e.message; }
+}
+async function moKichBan(ten) {
+  const j = await (await gh(`/contents/phan_mem/${encodeURIComponent(ten)}?ref=main&t=${Date.now()}`)).json();
+  $("soan").value = b64giai(j.content); tepHienTai = ten; shaHienTai = j.sha;
+}
+$("dsKichBan").onchange = () => moKichBan(v("dsKichBan"));
+async function luu() {
+  if (!canToken() || !tepHienTai) return false;
+  const body = { message: "Sửa kịch bản " + tepHienTai, content: b64ma($("soan").value), branch: "main" };
+  if (shaHienTai) body.sha = shaHienTai;
+  const j = await (await gh(`/contents/phan_mem/${encodeURIComponent(tepHienTai)}`, { method: "PUT", body: JSON.stringify(body) })).json();
+  shaHienTai = j.content.sha; bao("Đã lưu"); return true;
+}
+$("nutLuu").onclick = () => luu().catch(e => bao("Lỗi lưu: " + e.message));
+$("nutMoi").onclick = async () => {
+  if (!canToken()) return;
+  let ten = prompt("Tên tập mới (vd: tap2)"); if (!ten) return;
+  ten = "kich_ban_" + ten.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").replace(/[^A-Za-z0-9]+/g, "_").toLowerCase() + ".txt";
+  tepHienTai = ten; shaHienTai = null;
+  $("soan").value = "# " + ten + "\n\n[Cảnh: pho_dem | Hiền 30]\n* Nhạc: bí ẩn\nDẫn chuyện: \n";
+  try { await luu(); await taiDsKichBan(ten); } catch (e) { bao("Lỗi: " + e.message); }
+};
+
+// ---------- dựng phim ----------
+async function choChay(workflow, sau, o) {
+  o.style.display = "block"; let lan = 0;
+  while (lan++ < 200) {
+    await new Promise(r => setTimeout(r, lan === 1 ? 6000 : 10000));
+    const runs = (await (await gh(`/actions/workflows/${workflow}/runs?per_page=5&t=${Date.now()}`)).json()).workflow_runs.filter(r => new Date(r.created_at) >= sau);
+    if (!runs.length) { o.textContent = "⏳ Đang chờ GitHub nhận lệnh…"; continue; }
+    const r = runs[runs.length - 1];
+    if (r.status !== "completed") {
+      let buoc = "";
+      try { const jb = (await (await gh(`/actions/runs/${r.id}/jobs`)).json()).jobs[0]; const s = (jb.steps || []).find(s => s.status === "in_progress"); if (s) buoc = "\nĐang: " + s.name; } catch (e) {}
+      o.textContent = `⏳ Đang chạy (${Math.round((Date.now() - new Date(r.created_at)) / 1000)} giây)…${buoc}`; continue;
+    }
+    if (r.conclusion === "success") return true;
+    o.innerHTML = `❌ Bị lỗi. <a href="${r.html_url}" target="_blank">Xem chi tiết trên GitHub</a>`; return false;
+  }
+}
+async function phatPhim(ten, vid) {
+  const r = await gh(`/contents/phim/${encodeURIComponent(ten)}?ref=main&t=${Date.now()}`, { headers: { Accept: "application/vnd.github.raw" } });
+  const url = URL.createObjectURL(new Blob([await r.arrayBuffer()], { type: "video/mp4" }));
+  vid.src = url; vid.style.display = "block"; vid.dataset.ten = ten; return url;
+}
+$("nutDung").onclick = async () => {
+  if (!canToken() || !tepHienTai) return;
+  const nut = $("nutDung"), o = $("ttDung"); nut.disabled = true; o.style.display = "block";
+  try {
+    o.textContent = "Đang lưu kịch bản…"; await luu();
+    const sau = new Date(Date.now() - 5000);
+    await gh("/actions/workflows/dung-phim.yml/dispatches", { method: "POST", body: JSON.stringify({ ref: "main", inputs: { kich_ban: tepHienTai } }) });
+    o.textContent = "Đã gửi lệnh dựng phim. Thường mất 3–6 phút, cứ để trang này mở…";
+    if (await choChay("dung-phim.yml", sau, o)) {
+      o.textContent = "✅ Xong! Đang tải phim…"; const ten = tepHienTai.replace(".txt", ".mp4");
+      await new Promise(r => setTimeout(r, 3000)); await phatPhim(ten, $("xemPhim")); o.textContent = "✅ Xong! Phim ở dưới, hoặc trong tab Phim.";
+    }
+  } catch (e) { o.textContent = "Lỗi: " + e.message; }
+  nut.disabled = false;
+};
+
+// ---------- danh sách phim ----------
+async function taiDsPhim() {
+  const o = $("dsPhim");
+  try {
+    const ds = (await (await gh("/contents/phim?ref=main&t=" + Date.now())).json()).filter(f => f.name.endsWith(".mp4"));
+    o.innerHTML = ds.length ? ds.map(f => `<div><span>${f.name.replace(/^kich_ban_?/, "").replace(".mp4", "")} <span class="nho">(${(f.size / 1048576).toFixed(1)} MB)</span></span><span><button class="nut" onclick="xem('${f.name}')">Xem</button> <button class="nut" onclick="taiVe('${f.name}')">Tải về</button></span></div>`).join("") : "Chưa có phim nào.";
+  } catch (e) { o.textContent = "Không tải được: " + e.message; }
+}
+async function xem(ten) { bao("Đang tải phim…"); try { await phatPhim(ten, $("xemPhim2")); } catch (e) { bao("Lỗi: " + e.message); } }
+async function taiVe(ten) {
+  bao("Đang tải về…");
+  try { const url = await phatPhim(ten, $("xemPhim2")); const a = document.createElement("a"); a.href = url; a.download = ten; document.body.appendChild(a); a.click(); a.remove(); }
+  catch (e) { bao("Lỗi: " + e.message); }
+}
+
+// ---------- vẽ hình mới ----------
+$("vLoai").onchange = () => $("vMauO").style.display = v("vLoai") === "tư thế" ? "" : "none";
+$("nutVe").onclick = async () => {
+  if (!canToken()) return;
+  const loai = v("vLoai"), ten = v("vTen").toLowerCase().replace(/[^a-z0-9_]/g, "_"), mota = v("vMoTa");
+  if (!ten || !mota) return bao("Nhập tên và mô tả");
+  const o = $("ttVe"), nut = $("nutVe"); nut.disabled = true; o.style.display = "block";
+  try {
+    const ma = maNV(v("vMau")), mau = { hien: "hien_hien_ngam", kela: "kela_ngam" }[ma] || (ma + "_tao");
+    const muc = loai === "tư thế"
+      ? `\n## ${ten} | mẫu: ${mau} | loại: đơn\nVẽ đúng nhân vật trong ảnh mẫu (giữ nguyên khuôn mặt, kiểu tóc, quần áo, màu sắc và nét vẽ), phong cách hoạt hình 2D kiểu truyện tranh động Trung Quốc, nét viền đậm, màu phẳng. Chỉ vẽ MỘT nhân vật, toàn thân từ đầu đến chân, giữa khung, nền trắng trơn hoàn toàn, không chữ, miệng ngậm. Tư thế: ${mota}\n`
+      : loai === "nền" ? `\n## ${ten.startsWith("nen_") ? ten : "nen_" + ten} | mẫu: | loại: nền\n{NEN} ${mota}\n` : `\n## ${ten} | mẫu: | loại: đơn\n{TAO} ${mota}\n`;
+    const tenThat = loai === "nền" && !ten.startsWith("nen_") ? "nen_" + ten : ten;
+    o.textContent = "Đang thêm vào danh sách…";
+    const j = await (await gh("/contents/danh_sach_hinh.txt?ref=main&t=" + Date.now())).json();
+    await gh("/contents/danh_sach_hinh.txt", { method: "PUT", body: JSON.stringify({ message: "Thêm hình " + tenThat, content: b64ma(b64giai(j.content) + muc), sha: j.sha, branch: "main" }) });
+    const sau = new Date(Date.now() - 5000);
+    await gh("/actions/workflows/ve-kho-hinh.yml/dispatches", { method: "POST", body: JSON.stringify({ ref: "main", inputs: { gioi_han: "1", chi_ve: tenThat } }) });
+    o.textContent = "Đã gửi cho Gemini vẽ…";
+    if (await choChay("ve-kho-hinh.yml", sau, o)) { o.textContent = "✅ Vẽ xong: " + tenThat; await taiDanhMuc(); }
+  } catch (e) { o.textContent = "Lỗi: " + e.message; }
+  nut.disabled = false;
+};
+
+// ---------- cài đặt ----------
+$("nutLuuToken").onclick = async () => {
+  try { localStorage.setItem("gh_token", v("token")); } catch (e) {}
+  const o = $("ttToken"); o.style.display = "block"; o.textContent = "Đang kiểm tra…";
+  try { const j = await (await gh("")).json(); o.textContent = j.permissions && j.permissions.push ? "✅ Kết nối thành công với " + j.full_name : "⚠️ Mã chưa có quyền ghi (Contents: Read and write)"; taiDsKichBan(); }
+  catch (e) { o.textContent = "❌ Mã không đúng hoặc thiếu quyền: " + e.message; }
+};
+$("nutXoaToken").onclick = () => { try { localStorage.removeItem("gh_token"); } catch (e) {} $("token").value = ""; bao("Đã xóa mã"); };
+
+// ---------- khởi động ----------
+$("token").value = token();
+taiDanhMuc();
+if (token()) taiDsKichBan(); else { $("soan").placeholder = "Vào tab Cài đặt để kết nối GitHub (làm một lần), sau đó các tập phim sẽ hiện ở đây."; }
+</script>
+</body>
+</html>
