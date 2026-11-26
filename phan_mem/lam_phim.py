@@ -17,7 +17,8 @@ ANH = os.path.join(os.path.dirname(THU_MUC), "mau")
 # ====== CÀI ĐẶT ==============================================================
 RONG, CAO, FPS = 1280, 720, 25
 
-# tư thế -> (ảnh ngậm miệng, ảnh mở miệng hoặc None).  "đi" -> [bước A, bước B]
+# tư thế -> (ảnh ngậm miệng, ảnh mở miệng hoặc None, [cỡ so với dáng đứng]).  "đi" -> [bước A, bước B]
+# tư thế dạng {"mat": ảnh} = cảnh cận khuôn mặt (cắt sang cận mặt, nền mờ)
 NHAN_VAT = {
     "Hiền": {
         "mac_dinh": "hiền", "huong_di": "phải",
@@ -26,22 +27,35 @@ NHAN_VAT = {
         "nghe": ("hien_nghe_ngam.png", "hien_nghe_mo.png"),
         "nghe lạnh": ("hien_nghelanh_ngam.png", "hien_nghelanh_mo.png"),
         "túi": ("hien_tui.png", None),
+        "ngồi": ("hien_bang_ngoi_1.png", None, 0.80),
+        "ngồi lạnh": ("hien_bang_lanh_5.png", None, 0.80),
+        "mặt lạnh": {"mat": "hien_bang_mat_2.png"},
+        "mặt giận": {"mat": "hien_bang_mat_3.png"},
+        "mặt hiền": {"mat": "hien_bang_mat_1.png"},
         "đi": ["hien_di_a.png", "hien_di_b.png"],
     },
     "Kẻ lạ": {
-        "mac_dinh": "thường", "huong_di": "trái",
+        "mac_dinh": "đứng", "huong_di": "trái",
+        "đứng": ("kela_bang_1.png", "kela_dung_mo.png"),
         "thường": ("kela_ngam.png", "kela_mo.png"),
+        "mặt cười": {"mat": "kela_bang_mat_1.png"},
         "đi": ["kela_di_a.png", "kela_di_b.png"],
     },
 }
-# Bối cảnh: ảnh, độ cao chân (0-1), chiều cao nhân vật (0-1 so với ảnh), khung máy quay (0-1), màu ánh sáng
+# Bối cảnh: ảnh, chân (độ cao chân 0-1, hoặc danh sách (vị trí, độ cao chân, cỡ)), chiều cao người, khung máy quay, màu ánh sáng,
+#           tien_canh = vùng đồ vật đứng TRƯỚC nhân vật (vd. cái bàn), toạ độ 0-1
 BOI_CANH = {
     "pho_dem":    {"anh": "bg_pho_dem.png",
-                   # phố có phối cảnh: càng sang phải vỉa hè càng cao và người càng nhỏ  (vị trí, độ cao chân, cỡ)
                    "chan": [(0, 0.80, 1.0), (0.3, 0.778, 1.0), (0.5, 0.748, 0.9), (0.7, 0.715, 0.75), (0.9, 0.685, 0.6), (1.0, 0.67, 0.55)], "cao_nv": 0.30, "khung": 0.56, "mau": (0.80, 0.74, 0.66)},
-    "phong_sang": {"anh": "bg_phong_sang.png", "chan": 0.97,  "cao_nv": 0.66, "khung": 1.00, "mau": (1.00, 0.98, 0.94)},
+    "van_phong":  {"anh": "nen_van_phong.png",
+                   "chan": [(0, 0.865, 1.0), (0.33, 0.865, 1.0), (0.6, 0.90, 1.0), (1.0, 0.95, 1.04)], "cao_nv": 0.50, "khung": 1.00, "mau": (1.00, 0.98, 0.95),
+                   "tien_canh": [(0.115, 0.775), (0.20, 0.725), (0.40, 0.705), (0.625, 0.69), (0.625, 1.0), (0.115, 1.0)]},
 }
-GIONG = {"Dẫn chuyện": None, "Hiền": None, "Đàn em": None, "Kẻ lạ": None}  # tên giọng VieNeu hoặc file .wav mẫu
+# Giọng VieNeu cho từng vai (tên giọng có sẵn)
+GIONG = {"Dẫn chuyện": "Thiện Minh", "Hiền": "Hải Đăng", "Kẻ lạ": "Adam bựa", "Đàn em": "Quốc Tuấn",
+         "Tùng": "Phạm Tuyên", "Lan": "Ngọc Huyền", "Bố": "Xuân Vĩnh", "Mẹ": "Đoan Trang"}
+THU_MUC_ANH = [ANH, os.path.join(os.path.dirname(THU_MUC), "kho", "tach"), os.path.join(THU_MUC, "anh_them"),
+               os.path.join(os.path.dirname(THU_MUC), "kho", "goc")]
 # =============================================================================
 
 GIAY_MOI_TIENG, NGHI = 0.27, 0.45
@@ -110,10 +124,19 @@ def doc_wav(p):
     return d / (np.abs(d).max() + 1e-9), sr
 
 # ---------------- ảnh ----------------
+def tim_file(f):
+    for d in THU_MUC_ANH:
+        p = os.path.join(d, f)
+        if os.path.exists(p): return p
+    raise FileNotFoundError(f"Không tìm thấy ảnh {f}")
+
 _cache = {}
 def tach_nen(f):
     if f in _cache: return _cache[f]
-    im = Image.open(os.path.join(ANH, f)).convert("RGB"); a = np.asarray(im).astype(np.int16)
+    path = tim_file(f); goc = Image.open(path)
+    if goc.mode == "RGBA" and np.asarray(goc)[..., 3].min() < 10:
+        _cache[f] = goc.crop(goc.getbbox()); return _cache[f]
+    im = goc.convert("RGB"); a = np.asarray(im).astype(np.int16)
     trang = (a.min(2) > 232) & ((a.max(2) - a.min(2)) < 18)
     nhan, _ = ndimage.label(trang)
     mep = set(np.unique(np.concatenate([nhan[0], nhan[-1], nhan[:, 0], nhan[:, -1]]))) - {0}
@@ -122,10 +145,11 @@ def tach_nen(f):
     _cache[f] = rgba.crop(rgba.getbbox()); return _cache[f]
 
 _cache2 = {}
-def hinh_nv(f, ti_le, mau, lat):
-    k = (f, round(ti_le, 4), mau, lat)
+def hinh_nv(f, cao_px, mau, lat):
+    k = (f, int(cao_px), mau, lat)
     if k in _cache2: return _cache2[k]
-    h = tach_nen(f); h = h.resize((max(1, int(h.width * ti_le)), max(1, int(h.height * ti_le))), Image.LANCZOS)
+    h = tach_nen(f); ti_le = cao_px / h.height
+    h = h.resize((max(1, int(h.width * ti_le)), max(1, int(h.height * ti_le))), Image.LANCZOS)
     a = np.asarray(h).astype(np.float32); a[..., :3] *= np.array(mau, np.float32)
     h = Image.fromarray(a.clip(0, 255).astype(np.uint8), "RGBA")
     if lat: h = h.transpose(Image.FLIP_LEFT_RIGHT)
@@ -148,18 +172,24 @@ def lam_phim(kb):
     t = 0.0
     for c in ds:
         bc = BOI_CANH[c["nen"]]
-        nen = Image.open(os.path.join(ANH, bc["anh"])).convert("RGB")
+        nen = Image.open(tim_file(bc["anh"])).convert("RGB")
         W = int(nen.width * H / nen.height)
         c["W"], c["bc"] = W, bc
         c["nen_img"] = nen.resize((W, H), Image.LANCZOS).filter(ImageFilter.GaussianBlur(1.1))
+        c["nen_mo"] = nen.resize((RONG, CAO), Image.LANCZOS).filter(ImageFilter.GaussianBlur(9))
+        c["nen_mo"] = Image.blend(Image.new("RGB", (RONG, CAO)), c["nen_mo"], 0.55)
+        c["tien_canh"] = None
+        if bc.get("tien_canh"):
+            mk = Image.new("L", (W, H), 0)
+            ImageDraw.Draw(mk).polygon([(x * W, y * H) for x, y in bc["tien_canh"]], fill=255)
+            tc_ = c["nen_img"].convert("RGBA"); tc_.putalpha(mk.filter(ImageFilter.GaussianBlur(1.5))); c["tien_canh"] = tc_
         cao_nv = bc["cao_nv"] * H
         c["cao_nv"] = cao_nv
         # trạng thái nhân vật theo thời gian
         nvs = {}
         for ten, x in c["nv"]:
             cf = NHAN_VAT[ten]
-            ref = tach_nen(cf[cf["mac_dinh"]][0])
-            nvs[ten] = {"x": x, "tu_the": [(-1, cf["mac_dinh"])], "di": [], "rung": [], "ti_le": cao_nv / ref.height}
+            nvs[ten] = {"x": x, "tu_the": [(-1, cf["mac_dinh"])], "di": [], "rung": []}
         c["nvs"] = nvs; c["t0"] = t; c["can"] = []
         can = None
         for l in c["loi"]:
@@ -201,6 +231,13 @@ def lam_phim(kb):
                     d, s0 = doc_wav(l["wav"])
                     if s0 != sr: d = np.interp(np.linspace(0, len(d), int(len(d) * sr / s0), endpoint=False), np.arange(len(d)), d)
                     k = int(l["t0"] * sr); buf[k:k + len(d)] += d * 0.9
+        for c in ds:
+            for n in c["nvs"].values():
+                for r in n["rung"]:
+                    for k in range(3):   # tiếng điện thoại rung: 3 hồi
+                        t0 = r + k * 0.5; tt_ = np.arange(int(0.32 * sr)) / sr
+                        rung = np.sign(np.sin(2 * np.pi * 160 * tt_)) * 0.18 * np.sin(np.pi * tt_ / 0.32)
+                        i0 = int(t0 * sr); buf[i0:i0 + len(rung)] += rung
         with wave.open(wav_ra, "w") as w:
             w.setnchannels(1); w.setsampwidth(2); w.setframerate(sr); w.writeframes((buf.clip(-1, 1) * 32767).astype(np.int16).tobytes())
 
@@ -220,7 +257,7 @@ def lam_phim(kb):
         tc, dai_canh = tt - c["t0"], c["t1"] - c["t0"]
         loi = next((l for l in c["loi"] if l["t0"] <= tt < l["t1"] + NGHI), None)
         the_gioi = c["nen_img"].copy()
-        vi_tri = {}
+        vi_tri = {}; mat_shot = None
         for ten, n in c["nvs"].items():
             cf = NHAN_VAT[ten]
             x, dang_di, huong = n["x"], None, None
@@ -230,17 +267,21 @@ def lam_phim(kb):
                     p = (tt - a) / (b - a); x = x0 + (x1 - x0) * p; dang_di = tt - a
                     huong = "phải" if x1 > x0 else "trái"
             tu_the = [tt_ for (a, tt_) in n["tu_the"] if a <= tt][-1]
+            co_tt = 1.0
+            if dang_di is None and isinstance(cf[tu_the], dict):
+                mat_shot = cf[tu_the]["mat"]; continue
             if dang_di is not None:
-                f_ = cf["đi"][int(dang_di / NHIP_BUOC) % 2]; lat = huong != cf["huong_di"]
+                f_ = cf["đi"][int(dang_di / NHIP_BUOC) % 2]; lat = huong != cf["huong_di"]; co_tt = 0.97
                 nhun = -abs(math.sin(dang_di * math.pi / NHIP_BUOC)) * cao_nv * 0.012
             else:
-                ngam, mo = cf[tu_the]; f_ = ngam; lat = False; nhun = 0
+                ngam, mo = cf[tu_the][0], cf[tu_the][1]; f_ = ngam; lat = False; nhun = 0
+                if len(cf[tu_the]) > 2: co_tt = cf[tu_the][2]
                 if loi and loi["ai"] == ten and tt < loi["t1"] and mo:
                     k = tt - loi["t0"]
                     if "mieng" in loi: m = loi["mieng"]; f_ = mo if m[min(int(k * FPS), len(m) - 1)] else ngam
                     elif not im_lang(loi["noi"]) and (k / GIAY_MOI_TIENG) % 1 < 0.55 and k < loi["t1"] - loi["t0"] - 0.3: f_ = mo
             cy_f, co = theo_vi_tri(bc["chan"], x); chan_y = cy_f * H; co = round(co * 50) / 50
-            h = hinh_nv(f_, n["ti_le"] * co, bc["mau"], lat); cnv = cao_nv * co
+            cnv = cao_nv * co; h = hinh_nv(f_, cnv * co_tt, bc["mau"], lat)
             cx = x * W
             for r in n["rung"]:
                 if 0 <= tt - r < 1.4: cx += math.sin((tt - r) * 70) * cao_nv * 0.006
@@ -249,6 +290,7 @@ def lam_phim(kb):
             the_gioi.paste(s, (int(cx - s.width / 2), int(chan_y - s.height / 2)), s)
             the_gioi.paste(h, (int(cx - h.width / 2), int(chan_y - h.height + nhun + tho)), h)
             vi_tri[ten] = (cx, chan_y, cnv)
+        if c["tien_canh"] is not None: the_gioi.paste(c["tien_canh"], (0, 0), c["tien_canh"])
 
         # máy quay
         can = None
@@ -268,6 +310,9 @@ def lam_phim(kb):
         if cw_ > W: cw_ = W; ch_ = cw_ * CAO / RONG
         cx_ = min(max(cam[0], cw_ / 2), W - cw_ / 2); cy_ = min(max(cam[1], ch_ / 2), H - ch_ / 2)
         khung = the_gioi.crop((int(cx_ - cw_ / 2), int(cy_ - ch_ / 2), int(cx_ + cw_ / 2), int(cy_ + ch_ / 2))).resize((RONG, CAO), Image.BILINEAR)
+        if mat_shot:   # cắt sang cận khuôn mặt
+            khung = c["nen_mo"].copy(); fm = hinh_nv(mat_shot, CAO * 0.96, bc["mau"], False)
+            khung.paste(fm, ((RONG - fm.width) // 2, CAO - fm.height), fm)
 
         if loi and not im_lang(loi["noi"]):
             d = ImageDraw.Draw(khung); dong, hang = [], ""

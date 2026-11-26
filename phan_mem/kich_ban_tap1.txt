@@ -2,11 +2,12 @@
 # ---------------------------------------------------------------
 # Cách viết:
 #   [Cảnh: tên bối cảnh | Nhân vật vị trí, ...]   vị trí từ 0 (mép trái) đến 100 (mép phải); >100 là đứng ngoài khung
-#   Tên: lời thoại                 (thêm "(cận)" để máy quay đẩy sát mặt người nói)
+#   Tên: lời thoại                 (thêm "(cận)" để máy quay đẩy sát người nói)
 #   * Tên: động tác                động tác bắt đầu cùng câu thoại ngay sau nó
-#        động tác có: đi tới <vị trí> / rung / tên tư thế (hiền, lạnh, nghe, nghe lạnh, túi, thường)
+#        động tác: đi tới <vị trí> / rung / tên tư thế (hiền, lạnh, nghe, nghe lạnh, túi, ngồi, ngồi lạnh, đứng ...)
+#        tư thế "mặt ..." (mặt lạnh, mặt giận, mặt hiền, mặt cười) = cắt sang cận khuôn mặt
 #   * Máy quay: xa                 kéo máy quay ra lại
-# Dòng bắt đầu bằng # là ghi chú.
+# Bối cảnh có sẵn: pho_dem, van_phong
 # ---------------------------------------------------------------
 
 [Cảnh: pho_dem | Hiền 28]
@@ -21,21 +22,23 @@ Dẫn chuyện: Anh cúp máy.
 Dẫn chuyện: Nhưng trong túi quần, chiếc điện thoại thứ hai bắt đầu rung.
 * Hiền: nghe
 Đàn em (điện thoại): Đại ca… thằng Tùng bên kia sông nó không chịu trả tiền. Nó còn bảo… đại ca chỉ là thằng dạy chữ.
-* Hiền: nghe lạnh
-Hiền (cận): …
+* Hiền: mặt lạnh
 Dẫn chuyện: Ánh mắt hiền lành ấy, trong một giây, biến mất hoàn toàn.
+* Hiền: nghe lạnh
 Hiền (cận): Mai tao tự qua.
 * Máy quay: xa
 * Hiền: đi tới 66, lạnh
 Dẫn chuyện: Không ai biết, người đàn ông hiền lành nhất phường ấy lại là kẻ đứng sau hàng trăm anh em giang hồ.
 Dẫn chuyện: Kể cả vợ anh. Kể cả bố mẹ anh.
 
-[Cảnh: phong_sang | Hiền 30, Kẻ lạ 120]
-* Kẻ lạ: đi tới 70
-Dẫn chuyện: Sáng hôm sau, một người đàn ông lạ bước vào trung tâm.
+[Cảnh: van_phong | Hiền 23, Kẻ lạ 112]
+* Hiền: ngồi
+* Kẻ lạ: đi tới 74
+Dẫn chuyện: Sáng hôm sau, một người đàn ông lạ đẩy cửa bước vào trung tâm.
 Kẻ lạ: Tôi không đến hỏi du học.
-Kẻ lạ (cận): [cười] Tôi đến tìm… đại ca Hiền.
-* Hiền: lạnh
-Hiền (cận): …
+Kẻ lạ (cận): Tôi đến tìm… đại ca Hiền.
 * Máy quay: xa
+* Hiền: mặt lạnh
+Hiền: …
+* Hiền: ngồi lạnh
 Dẫn chuyện: Lần đầu tiên sau năm năm, có người gọi đúng tên thật của anh, ngay giữa ban ngày.
