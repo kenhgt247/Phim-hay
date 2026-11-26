@@ -1,0 +1,89 @@
+# DANH SÁCH HÌNH CẦN VẼ
+# ------------------------------------------------------------------
+# Mỗi hình bắt đầu bằng dòng:   ## tên_hình | mẫu: tên_ảnh_mẫu | loại: bảng / nền / đơn
+#   - tên_hình: chỉ dùng chữ không dấu, số, gạch dưới (vd: hien_bang_dung)
+#   - mẫu: ảnh nhân vật gửi kèm để AI giữ đúng mặt (lấy trong thư mục mau/ hoặc kho/goc/). Bỏ trống nếu không cần.
+#   - loại: bảng = bảng nhiều tư thế (sẽ tự tách thành từng hình, xóa nền)
+#           nền  = bối cảnh (giữ nguyên)
+#           đơn  = một nhân vật (tự xóa nền)
+# Các dòng bên dưới là câu lệnh gửi cho AI. Dòng bắt đầu bằng # là ghi chú.
+# Hình nào đã vẽ rồi (có trong kho/goc/) sẽ được bỏ qua. Muốn vẽ lại: gõ tên vào ô "vẽ lại" khi bấm chạy.
+# ------------------------------------------------------------------
+
+# ======================= HIỀN =======================
+
+## hien_bang_dung | mẫu: hien_hien_ngam | loại: bảng
+{BANG} 1. Đứng nghiêng 3/4 sang phải, mặt hiền  2. Đứng nghiêng 3/4 sang trái, mặt hiền  3. Đi bộ nhìn nghiêng sang phải, chân PHẢI bước lên trước  4. Đứng khoanh tay, mặt hiền  5. Đứng một tay chỉ về phía trước  6. Đứng quay lưng lại
+
+## hien_bang_ngoi | mẫu: hien_hien_ngam | loại: bảng
+{BANG} 1. Ngồi ghế làm việc nghiêng 3/4 sang phải, hai tay đặt hờ phía trước  2. Ngồi ghế nghiêng 3/4 sang trái  3. Ngồi chính diện, hai tay đan vào nhau  4. Ngồi tay chống cằm suy nghĩ  5. Ngồi cầm chén trà  6. Ngồi xổm trên vỉa hè
+
+## hien_bang_lanh | mẫu: hien_lanh_ngam | loại: bảng
+{BANG} 1. Đứng nghiêng 3/4 sang phải, mặt lạnh, ánh mắt sắc  2. Đứng nghiêng 3/4 sang trái, mặt lạnh  3. Khoanh tay, mặt lạnh  4. Tay nắm chặt, mặt giận  5. Ngồi ghế nghiêng 3/4 sang phải, mặt lạnh  6. Đứng châm thuốc, mặt lạnh
+
+## hien_bang_mat | mẫu: hien_hien_ngam | loại: bảng
+{MAT} 1. Cười hiền  2. Lạnh lùng, ánh mắt sắc  3. Giận dữ  4. Buồn, mắt rưng rưng  5. Ngạc nhiên  6. Nhắm mắt
+
+# ======================= KẺ LẠ =======================
+
+## kela_bang | mẫu: kela_ngam | loại: bảng
+{BANG} 1. Đứng nghiêng 3/4 sang trái, tay đút túi, cười nhếch mép  2. Đứng nghiêng 3/4 sang phải  3. Đi bộ nhìn nghiêng sang trái, chân PHẢI bước trước  4. Chỉ tay đe dọa  5. Ngồi ghế nghiêng 3/4 sang trái, vắt chân  6. Khoanh tay cười khẩy
+
+## kela_bang_mat | mẫu: kela_ngam | loại: bảng
+{MAT} 1. Cười nhếch mép  2. Cười lớn  3. Giận dữ  4. Đe dọa, mắt nheo  5. Ngạc nhiên  6. Nhắm mắt
+
+# ======================= NHÂN VẬT MỚI =======================
+# Mỗi người: vẽ hình "tao" trước, rồi bảng tư thế dùng chính hình đó làm mẫu.
+
+## lan_tao | mẫu: | loại: đơn
+{TAO} người phụ nữ Việt Nam khoảng 32 tuổi, hiền hậu, tóc dài buộc thấp, áo sơ mi màu kem, quần tây.
+
+## lan_bang | mẫu: lan_tao | loại: bảng
+{BANG} {BANG_CHUNG}
+
+## bo_tao | mẫu: | loại: đơn
+{TAO} người đàn ông nông thôn Việt Nam khoảng 62 tuổi, da rám nắng, tóc hoa râm, áo sơ mi bạc màu, quần kaki.
+
+## bo_bang | mẫu: bo_tao | loại: bảng
+{BANG} {BANG_CHUNG}
+
+## me_tao | mẫu: | loại: đơn
+{TAO} người phụ nữ nông thôn Việt Nam khoảng 58 tuổi, tóc búi, áo bà ba nâu, gương mặt phúc hậu.
+
+## me_bang | mẫu: me_tao | loại: bảng
+{BANG} {BANG_CHUNG}
+
+## danem_tao | mẫu: | loại: đơn
+{TAO} thanh niên Việt Nam khoảng 28 tuổi, tóc húi cua, áo phông đen, hình xăm ở cánh tay, dáng vạm vỡ, vẻ trung thành.
+
+## danem_bang | mẫu: danem_tao | loại: bảng
+{BANG} {BANG_CHUNG}
+
+## tung_tao | mẫu: | loại: đơn
+{TAO} đàn ông Việt Nam khoảng 40 tuổi, hơi béo, đầu đinh, dây chuyền vàng to, áo sơ mi đen mở cúc, vẻ hống hách.
+
+## tung_bang | mẫu: tung_tao | loại: bảng
+{BANG} {BANG_CHUNG}
+
+# ======================= BỐI CẢNH =======================
+
+## nen_van_phong | mẫu: | loại: nền
+{NEN} Văn phòng trung tâm du học nhỏ buổi sáng, nhìn từ một bên. Bàn làm việc đặt ngang ở nửa trái, ghế xoay trống sau bàn, cửa kính ra vào bên phải, trên tường biển chữ "Du Học Bình Minh".
+
+## nen_phong_khach | mẫu: | loại: nền
+{NEN} Phòng khách nhà phố Việt Nam buổi tối, mâm cơm trên chiếu, đèn vàng ấm, ti vi, bàn thờ trên tường.
+
+## nen_quan_nhau | mẫu: | loại: nền
+{NEN} Quán nhậu vỉa hè Việt Nam ban đêm, bàn nhựa đỏ, ghế nhựa thấp, đèn dây, xe máy dựng bên đường.
+
+## nen_bo_ke | mẫu: | loại: nền
+{NEN} Bờ kè sông ban đêm, cây cầu xa xa, ánh đèn phản chiếu mặt nước, không khí căng thẳng.
+
+## nen_phong_kin | mẫu: | loại: nền
+{NEN} Căn phòng kín đáo tầng trên một quán cà phê, ánh đèn mờ, bàn tròn, khói thuốc, cảm giác bí mật.
+
+## nen_lang_que | mẫu: | loại: nền
+{NEN} Làng quê Bắc Bộ ngày xưa, lũy tre, mái ngói, đường đất, cánh đồng lúa, buổi chiều nắng vàng.
+
+## nen_xuong_nhat | mẫu: | loại: nền
+{NEN} Xưởng nhà máy ở Nhật Bản, dây chuyền sản xuất, ánh đèn trắng, không khí mệt mỏi.

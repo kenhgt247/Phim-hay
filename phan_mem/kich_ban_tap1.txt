@@ -1,0 +1,41 @@
+# TẬP 1 – HAI CHIẾC ĐIỆN THOẠI
+# ---------------------------------------------------------------
+# Cách viết:
+#   [Cảnh: tên bối cảnh | Nhân vật vị trí, ...]   vị trí từ 0 (mép trái) đến 100 (mép phải); >100 là đứng ngoài khung
+#   Tên: lời thoại                 (thêm "(cận)" để máy quay đẩy sát mặt người nói)
+#   * Tên: động tác                động tác bắt đầu cùng câu thoại ngay sau nó
+#        động tác có: đi tới <vị trí> / rung / tên tư thế (hiền, lạnh, nghe, nghe lạnh, túi, thường)
+#   * Máy quay: xa                 kéo máy quay ra lại
+# Dòng bắt đầu bằng # là ghi chú.
+# ---------------------------------------------------------------
+
+[Cảnh: pho_dem | Hiền 28]
+Dẫn chuyện: Ở cái phường nhỏ này, ai cũng biết anh Hiền.
+* Hiền: đi tới 45
+Dẫn chuyện: Chủ trung tâm du học, hiền lành, chăm chỉ, chưa từng to tiếng với ai.
+* Hiền: nghe
+Hiền: Ừ, anh khóa cửa rồi. Em cứ cho con ăn trước, anh về ngay.
+* Hiền: hiền
+Dẫn chuyện: Anh cúp máy.
+* Hiền: túi, rung
+Dẫn chuyện: Nhưng trong túi quần, chiếc điện thoại thứ hai bắt đầu rung.
+* Hiền: nghe
+Đàn em (điện thoại): Đại ca… thằng Tùng bên kia sông nó không chịu trả tiền. Nó còn bảo… đại ca chỉ là thằng dạy chữ.
+* Hiền: nghe lạnh
+Hiền (cận): …
+Dẫn chuyện: Ánh mắt hiền lành ấy, trong một giây, biến mất hoàn toàn.
+Hiền (cận): Mai tao tự qua.
+* Máy quay: xa
+* Hiền: đi tới 66, lạnh
+Dẫn chuyện: Không ai biết, người đàn ông hiền lành nhất phường ấy lại là kẻ đứng sau hàng trăm anh em giang hồ.
+Dẫn chuyện: Kể cả vợ anh. Kể cả bố mẹ anh.
+
+[Cảnh: phong_sang | Hiền 30, Kẻ lạ 120]
+* Kẻ lạ: đi tới 70
+Dẫn chuyện: Sáng hôm sau, một người đàn ông lạ bước vào trung tâm.
+Kẻ lạ: Tôi không đến hỏi du học.
+Kẻ lạ (cận): [cười] Tôi đến tìm… đại ca Hiền.
+* Hiền: lạnh
+Hiền (cận): …
+* Máy quay: xa
+Dẫn chuyện: Lần đầu tiên sau năm năm, có người gọi đúng tên thật của anh, ngay giữa ban ngày.

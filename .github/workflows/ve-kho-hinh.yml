@@ -1,0 +1,52 @@
+name: Vẽ kho hình
+
+on:
+  workflow_dispatch:
+    inputs:
+      gioi_han:
+        description: "Vẽ tối đa bao nhiêu hình lần này (lần đầu nên để 2 để thử)"
+        default: "2"
+      chi_ve:
+        description: "Chỉ vẽ những hình này (tên, cách nhau dấu phẩy). Để trống = vẽ tất cả hình còn thiếu"
+        default: ""
+      ve_lai:
+        description: "Vẽ lại những hình này dù đã có (tên, cách nhau dấu phẩy)"
+        default: ""
+      model:
+        description: "Model vẽ của Gemini"
+        default: "gemini-nano-banana-2.1"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ve-kho-hinh
+
+jobs:
+  ve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install requests pillow numpy scipy
+      - name: Vẽ hình bằng Gemini
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GIOI_HAN: ${{ inputs.gioi_han }}
+          CHI_VE: ${{ inputs.chi_ve }}
+          VE_LAI: ${{ inputs.ve_lai }}
+          MODEL: ${{ inputs.model }}
+        run: python cong_cu/ve_kho.py
+      - name: Tách bảng tư thế, xóa nền
+        if: always()
+        run: python cong_cu/tach_bang.py
+      - name: Lưu vào kho
+        if: always()
+        run: |
+          git config user.name "kho-hinh-bot"
+          git config user.email "kho-hinh-bot@users.noreply.github.com"
+          git add kho
+          git diff --cached --quiet || (git commit -m "Vẽ thêm hình vào kho" && git push)
