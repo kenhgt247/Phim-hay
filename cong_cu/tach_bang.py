@@ -70,7 +70,7 @@ def main():
 def danh_muc():
     """Ghi kho/danh_muc.json cho trang web: danh sách tư thế theo nhân vật và bối cảnh."""
     import json
-    tach = sorted(f[:-4] for f in os.listdir(TACH) if f.endswith(".png"))
+    tach = sorted(f[:-4] for f in os.listdir(TACH) if f.endswith(".png") and not f.endswith("_mo.png"))
     nen = sorted(f[:-4] for f in os.listdir(KHO_GOC) if f.startswith("nen_") and f.endswith(".png"))
     nv = {}
     for f in tach: nv.setdefault(f.split("_")[0], []).append(f)

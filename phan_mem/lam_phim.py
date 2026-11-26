@@ -85,6 +85,14 @@ def tu_the_cua(cf, ten_tt):
     ngoi = "ngoi" in ten_anh or ten_anh in ("hien_bang_lanh_5", "kela_bang_5") or (ten_anh.endswith("_bang_5") and not ten_anh.startswith(("hien", "kela")))
     return (ten_anh + ".png", None, 0.80 if ngoi else 1.0)
 
+_mo = {}
+def mo_cua(ngam):
+    """Tự tìm ảnh mở miệng: <tên>_mo.png trong kho (nếu có)."""
+    if ngam not in _mo:
+        try: tim_file(ngam[:-4] + "_mo.png"); _mo[ngam] = ngam[:-4] + "_mo.png"
+        except FileNotFoundError: _mo[ngam] = None
+    return _mo[ngam]
+
 def lay_canh(ten):
     if ten in BOI_CANH: return BOI_CANH[ten]
     ten_anh = ten if ten.startswith(("nen_", "bg_")) else "nen_" + ten
@@ -340,6 +348,7 @@ def lam_phim(kb):
                 nhun = -abs(math.sin(dang_di * math.pi / NHIP_BUOC)) * cao_nv * 0.012
             else:
                 ngam, mo = tte[0], tte[1]; f_ = ngam; lat = False; nhun = 0
+                if mo is None: mo = mo_cua(ngam)
                 if len(tte) > 2: co_tt = tte[2]
                 if loi and loi["ai"] == ten and tt < loi["t1"] and mo:
                     k = tt - loi["t0"]
