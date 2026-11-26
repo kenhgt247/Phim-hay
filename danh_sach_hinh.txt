@@ -3,7 +3,7 @@
 # Mỗi hình bắt đầu bằng dòng:   ## tên_hình | mẫu: tên_ảnh_mẫu | loại: bảng / nền / đơn
 #   - tên_hình: chỉ dùng chữ không dấu, số, gạch dưới (vd: hien_bang_dung)
 #   - mẫu: ảnh nhân vật gửi kèm để AI giữ đúng mặt (lấy trong thư mục mau/ hoặc kho/goc/). Bỏ trống nếu không cần.
-#   - loại: bảng = bảng nhiều tư thế (sẽ tự tách thành từng hình, xóa nền)
+#   - loại: bảng = danh sách nhiều tư thế, mỗi tư thế vẽ thành 1 hình riêng (tên_1, tên_2...), tự xóa nền
 #           nền  = bối cảnh (giữ nguyên)
 #           đơn  = một nhân vật (tự xóa nền)
 # Các dòng bên dưới là câu lệnh gửi cho AI. Dòng bắt đầu bằng # là ghi chú.

@@ -15,21 +15,21 @@ MODEL = os.environ.get("MODEL") or "gemini-nano-banana-2.1"
 KHOA = os.environ.get("GEMINI_API_KEY", "").strip()
 
 PHONG_CACH = "phong cách hoạt hình 2D kiểu truyện tranh động Trung Quốc, nét viền đậm, màu phẳng, đẹp, chất lượng cao"
+GIU_MAT = "Vẽ đúng nhân vật trong ảnh mẫu (giữ nguyên khuôn mặt, kiểu tóc, quần áo, màu sắc và nét vẽ), " + PHONG_CACH + ". "
+LENH_TU_THE = GIU_MAT + ("Chỉ vẽ MỘT nhân vật duy nhất, toàn thân từ đầu đến chân, đứng giữa khung hình, chừa khoảng trắng xung quanh, "
+                         "không bị cắt mép, nền trắng trơn hoàn toàn, không chữ, không bóng đổ, miệng ngậm. Tư thế: ")
+LENH_MAT = GIU_MAT + ("Chỉ vẽ khuôn mặt cận cảnh từ vai trở lên, ở giữa khung hình, nền trắng trơn hoàn toàn, không chữ, miệng ngậm. Biểu cảm: ")
 MACRO = {
-    "{BANG}": ("Vẽ đúng nhân vật trong ảnh mẫu (giữ nguyên khuôn mặt, tóc, quần áo, màu sắc, nét vẽ), " + PHONG_CACH +
-               ". Vẽ thành BẢNG TƯ THẾ: 6 tư thế toàn thân của CÙNG MỘT nhân vật, xếp đều 2 hàng x 3 cột, mỗi tư thế nằm gọn giữa ô của mình, TOÀN THÂN TỪ ĐẦU ĐẾN CHÂN, "
-               "chừa khoảng trắng quanh mỗi nhân vật, không bị cắt mép, không chạm nhau, cùng kích cỡ, nền trắng trơn hoàn toàn, không ghi chữ, không đánh số, không bóng đổ. Tất cả miệng ngậm. Các tư thế:"),
-    "{MAT}": ("Vẽ đúng nhân vật trong ảnh mẫu (giữ nguyên khuôn mặt, tóc, nét vẽ), " + PHONG_CACH +
-              ". Vẽ thành BẢNG KHUÔN MẶT: 6 khuôn mặt cận cảnh từ vai trở lên, xếp đều 2 hàng x 3 cột, mỗi khuôn mặt nằm gọn giữa ô, chừa khoảng trắng xung quanh, nền trắng trơn, "
-              "không ghi chữ, không đánh số. Tất cả miệng ngậm:"),
-    "{TAO}": ("Vẽ một nhân vật " + PHONG_CACH + ". Toàn thân, đứng chính diện, miệng ngậm, nền trắng trơn hoàn toàn, không chữ. Nhân vật:"),
+    "{TAO}": ("Vẽ một nhân vật " + PHONG_CACH + ". Chỉ một người, toàn thân từ đầu đến chân, đứng chính diện, miệng ngậm, "
+              "nền trắng trơn hoàn toàn, không chữ, không bị cắt mép. Nhân vật:"),
     "{NEN}": ("Vẽ bối cảnh " + PHONG_CACH + ", khung 16:9, không có người, chữ trên biển hiệu viết đúng chính tả tiếng Việt. Cảnh:"),
     "{BANG_CHUNG}": ("1. Đứng nghiêng 3/4 sang phải  2. Đứng nghiêng 3/4 sang trái  3. Đi bộ nhìn nghiêng sang phải, chân trái bước trước  "
                      "4. Đi bộ nhìn nghiêng sang phải, hai chân gần khép  5. Ngồi ghế nghiêng 3/4 sang phải  6. Đứng nói chuyện điện thoại"),
 }
 
 def doc_danh_sach():
-    ds, cur = [], None
+    """Trả về danh sách VIỆC VẼ. Mỗi mục 'bảng' được tách thành từng tư thế: ten_1, ten_2, ..."""
+    muc, cur = [], None
     for dong in open(os.path.join(GOC, "danh_sach_hinh.txt"), encoding="utf-8"):
         s = dong.strip()
         if s.startswith("## "):
@@ -37,17 +37,26 @@ def doc_danh_sach():
             cur = {"ten": phan[0], "mau": "", "loai": "đơn", "lenh": ""}
             for p in phan[1:]:
                 if ":" in p:
-                    k, v = [x.strip() for x in p.split(":", 1)]
-                    if k == "mẫu": cur["mau"] = v
-                    if k == "loại": cur["loai"] = v
-            ds.append(cur); continue
+                    k, val = [x.strip() for x in p.split(":", 1)]
+                    if k == "mẫu": cur["mau"] = val
+                    if k == "loại": cur["loai"] = val
+            muc.append(cur); continue
         if not s or s.startswith("#") or cur is None: continue
         cur["lenh"] += " " + s
-    for h in ds:
+    viec = []
+    for h in muc:
         l = h["lenh"]
-        for k, v in MACRO.items(): l = l.replace(k, v)
-        h["lenh"] = l.strip()
-    return ds
+        for k, val in MACRO.items(): l = l.replace(k, val)
+        if h["loai"] == "bảng":
+            mat = "{MAT}" in l
+            l = l.replace("{BANG}", "").replace("{MAT}", "")
+            cac = [x.strip() for x in re.split(r"(?:^|\s)\d+\.\s", " " + l) if x.strip()]
+            for i, tt in enumerate(cac, 1):
+                viec.append({"ten": f"{h['ten']}_{i}", "nhom": h["ten"], "mau": h["mau"], "loai": "mặt" if mat else "tư thế",
+                             "lenh": (LENH_MAT if mat else LENH_TU_THE) + tt})
+        else:
+            viec.append({"ten": h["ten"], "nhom": h["ten"], "mau": h["mau"], "loai": h["loai"], "lenh": l.strip()})
+    return viec
 
 def tim_mau(ten):
     for thu_muc in (MAU, KHO_GOC):
@@ -76,13 +85,13 @@ def tim_anh(obj):
             if r: return r
     return None
 
-def goi_api(lenh, mau_path, khung):
+def goi_api(lenh, mau_path, khung, co):
     tieu_de = {"x-goog-api-key": KHOA, "Content-Type": "application/json"}
     # Cách mới: Interactions API
     vao = [{"type": "text", "text": lenh}]
     if mau_path: vao.append({"type": "image", "mime_type": "image/jpeg", "data": anh_b64(mau_path)})
     body = {"model": MODEL, "input": vao,
-            "response_format": {"type": "image", "mime_type": "image/png", "aspect_ratio": khung, "image_size": "2K"}}
+            "response_format": {"type": "image", "mime_type": "image/jpeg", "aspect_ratio": khung, "image_size": co}}
     r = requests.post("https://generativelanguage.googleapis.com/v1beta/interactions", headers=tieu_de, json=body, timeout=300)
     if r.ok:
         d = tim_anh(r.json())
@@ -93,7 +102,7 @@ def goi_api(lenh, mau_path, khung):
     parts = [{"text": lenh}]
     if mau_path: parts.append({"inline_data": {"mime_type": "image/jpeg", "data": anh_b64(mau_path)}})
     body2 = {"contents": [{"parts": parts}],
-             "generationConfig": {"responseModalities": ["IMAGE"], "imageConfig": {"aspectRatio": khung, "imageSize": "2K"}}}
+             "generationConfig": {"responseModalities": ["IMAGE"], "imageConfig": {"aspectRatio": khung, "imageSize": co}}}
     r2 = requests.post(f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent", headers=tieu_de, json=body2, timeout=300)
     if r2.ok:
         d = tim_anh(r2.json())
@@ -109,18 +118,18 @@ def main():
     ds = doc_danh_sach(); da_ve, loi = 0, []
     for h in ds:
         ten = h["ten"]; ra = os.path.join(KHO_GOC, ten + ".png")
-        if chi_ve and ten not in chi_ve: continue
-        if os.path.exists(ra) and ten not in ve_lai: continue
+        if chi_ve and ten not in chi_ve and h["nhom"] not in chi_ve: continue
+        if os.path.exists(ra) and ten not in ve_lai and h["nhom"] not in ve_lai: continue
         if da_ve >= gioi_han: break
         mau = None
         if h["mau"]:
             mau = tim_mau(h["mau"])
             if not mau: print(f"- Bỏ qua {ten}: chưa có ảnh mẫu '{h['mau']}' (vẽ hình đó trước)."); continue
-        khung = "16:9" if h["loai"] in ("bảng", "nền") else "3:4"
+        khung, co = {"nền": ("16:9", "2K"), "mặt": ("1:1", "1K")}.get(h["loai"], ("3:4", "1K"))
         print(f"- Đang vẽ {ten} ...", flush=True)
         for lan in range(3):
             try:
-                du_lieu = goi_api(h["lenh"], mau, khung)
+                du_lieu = goi_api(h["lenh"], mau, khung, co)
                 Image.open(io.BytesIO(du_lieu)).convert("RGB").save(ra)
                 print(f"  xong: kho/goc/{ten}.png"); da_ve += 1; break
             except Exception as e:

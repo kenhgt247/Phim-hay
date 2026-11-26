@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       gioi_han:
-        description: "Vẽ tối đa bao nhiêu hình lần này (lần đầu nên để 2 để thử)"
+        description: "Vẽ tối đa bao nhiêu hình lần này (cả kho khoảng 78 hình)"
         default: "2"
       chi_ve:
         description: "Chỉ vẽ những hình này (tên, cách nhau dấu phẩy). Để trống = vẽ tất cả hình còn thiếu"

@@ -48,17 +48,15 @@ def main():
         if not f.endswith(".png"): continue
         ten = f[:-4]; loai = ds.get(ten, {}).get("loai", "đơn"); src = os.path.join(KHO_GOC, f)
         if loai == "nền": continue
-        dau = os.path.join(TACH, ten + ("_1.png" if loai == "bảng" else ".png"))
+        dau = os.path.join(TACH, ten + ".png")
         if os.path.exists(dau) and os.path.getmtime(dau) >= os.path.getmtime(src): continue
-        for cu in os.listdir(TACH):
-            if cu == ten + ".png" or (cu.startswith(ten + "_") and cu[len(ten) + 1:-4].isdigit()): os.remove(os.path.join(TACH, cu))
-        im = Image.open(src)
-        if loai == "bảng":
-            ket = tach(im)
-            for i, h in enumerate(ket, 1): h.save(os.path.join(TACH, f"{ten}_{i}.png"))
-            print(f"- {ten}: tách được {len(ket)} hình" + ("  (KHÁC 6 - nên kiểm tra)" if len(ket) != 6 else ""))
-        else:
-            r = xoa_nen(im); r.crop(r.getbbox()).save(dau); print(f"- {ten}: đã xóa nền")
+        r = xoa_nen(Image.open(src)); a = np.asarray(r).copy()
+        vat = a[..., 3] > 40
+        nhan, n = ndimage.label(ndimage.binary_dilation(vat, iterations=4))
+        if n > 1:
+            dt = ndimage.sum(vat, nhan, range(1, n + 1))
+            a[..., 3] = (a[..., 3] * np.isin(nhan, [i + 1 for i in range(n) if dt[i] > dt.max() * 0.08])).astype(np.uint8)
+        r = Image.fromarray(a, "RGBA"); r.crop(r.getbbox()).save(dau); print(f"- {ten}: đã xóa nền")
     # ảnh xem trước cả kho
     hinh = sorted(f for f in os.listdir(TACH) if f.endswith(".png"))
     if hinh:
