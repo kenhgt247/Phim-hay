@@ -7,10 +7,13 @@
 #        động tác: đi tới <vị trí> / rung / tên tư thế (hiền, lạnh, nghe, nghe lạnh, túi, ngồi, ngồi lạnh, đứng ...)
 #        tư thế "mặt ..." (mặt lạnh, mặt giận, mặt hiền, mặt cười) = cắt sang cận khuôn mặt
 #   * Máy quay: xa                 kéo máy quay ra lại
+#   * Nhạc: bí ẩn / căng thẳng / ấm áp / buồn / tắt     (đổi nhạc nền từ câu kế tiếp)
+#   * Hiệu ứng: rung / chớp / mưa / tắt mưa
 # Bối cảnh có sẵn: pho_dem, van_phong
 # ---------------------------------------------------------------
 
 [Cảnh: pho_dem | Hiền 28]
+* Nhạc: bí ẩn
 Dẫn chuyện: Ở cái phường nhỏ này, ai cũng biết anh Hiền.
 * Hiền: đi tới 45
 Dẫn chuyện: Chủ trung tâm du học, hiền lành, chăm chỉ, chưa từng to tiếng với ai.
@@ -19,6 +22,7 @@ Hiền: Ừ, anh khóa cửa rồi. Em cứ cho con ăn trước, anh về ngay.
 * Hiền: hiền
 Dẫn chuyện: Anh cúp máy.
 * Hiền: túi, rung
+* Nhạc: căng thẳng
 Dẫn chuyện: Nhưng trong túi quần, chiếc điện thoại thứ hai bắt đầu rung.
 * Hiền: nghe
 Đàn em (điện thoại): Đại ca… thằng Tùng bên kia sông nó không chịu trả tiền. Nó còn bảo… đại ca chỉ là thằng dạy chữ.
@@ -33,9 +37,12 @@ Dẫn chuyện: Kể cả vợ anh. Kể cả bố mẹ anh.
 
 [Cảnh: van_phong | Hiền 23, Kẻ lạ 112]
 * Hiền: ngồi
+* Nhạc: ấm áp
 * Kẻ lạ: đi tới 74
 Dẫn chuyện: Sáng hôm sau, một người đàn ông lạ đẩy cửa bước vào trung tâm.
 Kẻ lạ: Tôi không đến hỏi du học.
+* Hiệu ứng: rung
+* Nhạc: căng thẳng
 Kẻ lạ (cận): Tôi đến tìm… đại ca Hiền.
 * Máy quay: xa
 * Hiền: mặt lạnh

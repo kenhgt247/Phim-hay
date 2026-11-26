@@ -10,6 +10,8 @@ import os, re, sys, math, subprocess, wave
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 from scipy import ndimage
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import am_thanh
 
 THU_MUC = os.path.dirname(os.path.abspath(__file__))
 ANH = os.path.join(os.path.dirname(THU_MUC), "mau")
@@ -46,9 +48,9 @@ NHAN_VAT = {
 #           tien_canh = vùng đồ vật đứng TRƯỚC nhân vật (vd. cái bàn), toạ độ 0-1
 BOI_CANH = {
     "pho_dem":    {"anh": "bg_pho_dem.png",
-                   "chan": [(0, 0.80, 1.0), (0.3, 0.778, 1.0), (0.5, 0.748, 0.9), (0.7, 0.715, 0.75), (0.9, 0.685, 0.6), (1.0, 0.67, 0.55)], "cao_nv": 0.30, "khung": 0.56, "mau": (0.80, 0.74, 0.66)},
-    "van_phong":  {"anh": "nen_van_phong.png",
-                   "chan": [(0, 0.865, 1.0), (0.33, 0.865, 1.0), (0.6, 0.90, 1.0), (1.0, 0.95, 1.04)], "cao_nv": 0.50, "khung": 1.00, "mau": (1.00, 0.98, 0.95),
+                   "chan": [(0, 0.80, 1.0), (0.3, 0.778, 1.0), (0.5, 0.748, 0.9), (0.7, 0.715, 0.75), (0.9, 0.685, 0.6), (1.0, 0.67, 0.55)], "cao_nv": 0.30, "khung": 0.56, "mau": (0.80, 0.74, 0.66), "am_nen": "pho_dem"},
+    "van_phong":  {"anh": "nen_van_phong_trong.png",
+                   "chan": [(0, 0.865, 1.0), (0.33, 0.865, 1.0), (0.6, 0.90, 1.0), (1.0, 0.95, 1.04)], "cao_nv": 0.50, "khung": 1.00, "mau": (1.00, 0.98, 0.95), "am_nen": "van_phong",
                    "tien_canh": [(0.115, 0.775), (0.20, 0.725), (0.40, 0.705), (0.625, 0.69), (0.625, 1.0), (0.115, 1.0)]},
 }
 # Giọng VieNeu cho từng vai (tên giọng có sẵn)
@@ -169,7 +171,7 @@ def lam_phim(kb):
     co_tieng = tao_giong(ds, tam)
     H = int(CAO * 1.25)
 
-    t = 0.0
+    t = 0.0; nhac_sk, hu_sk = [], []
     for c in ds:
         bc = BOI_CANH[c["nen"]]
         nen = Image.open(tim_file(bc["anh"])).convert("RGB")
@@ -195,6 +197,8 @@ def lam_phim(kb):
         for l in c["loi"]:
             l["t0"] = t
             for ai, dt in l["dong_tac"]:
+                if ai == "Nhạc": nhac_sk.append((t, dt)); continue
+                if ai == "Hiệu ứng": hu_sk.append((t, dt)); continue
                 if ai == "Máy quay":
                     if dt == "xa": can = None; c["can"].append((t, None))
                     continue
@@ -222,33 +226,64 @@ def lam_phim(kb):
         c["t1"] = t + 0.5; t += 0.5
     tong = t
 
-    wav_ra = os.path.join(tam, "tieng.wav")
-    if co_tieng:
-        sr = 48000; buf = np.zeros(int(tong * sr) + sr, np.float32)
-        for c in ds:
-            for l in c["loi"]:
-                if "wav" in l:
-                    d, s0 = doc_wav(l["wav"])
-                    if s0 != sr: d = np.interp(np.linspace(0, len(d), int(len(d) * sr / s0), endpoint=False), np.arange(len(d)), d)
-                    k = int(l["t0"] * sr); buf[k:k + len(d)] += d * 0.9
-        for c in ds:
-            for n in c["nvs"].values():
-                for r in n["rung"]:
-                    for k in range(3):   # tiếng điện thoại rung: 3 hồi
-                        t0 = r + k * 0.5; tt_ = np.arange(int(0.32 * sr)) / sr
-                        rung = np.sign(np.sin(2 * np.pi * 160 * tt_)) * 0.18 * np.sin(np.pi * tt_ / 0.32)
-                        i0 = int(t0 * sr); buf[i0:i0 + len(rung)] += rung
-        with wave.open(wav_ra, "w") as w:
-            w.setnchannels(1); w.setsampwidth(2); w.setframerate(sr); w.writeframes((buf.clip(-1, 1) * 32767).astype(np.int16).tobytes())
+    # ---------------- âm thanh: giọng + nhạc nền + tiếng môi trường + tiếng động ----------------
+    wav_ra = os.path.join(tam, "tieng.wav"); sr = am_thanh.SR; N = int(tong * sr) + sr
+    giong = np.zeros(N, np.float32); dong = np.zeros(N, np.float32); moi_truong = np.zeros(N, np.float32); nhac_bg = np.zeros(N, np.float32)
+    def them(buf, x, t0, am=1.0):
+        i = int(t0 * sr)
+        if i >= N or i + len(x) <= 0: return
+        x = x[max(0, -i):]; i = max(i, 0); m = min(len(x), N - i); buf[i:i + m] += x[:m] * am
+    for c in ds:
+        for l in c["loi"]:
+            if "wav" in l:
+                d, s0 = doc_wav(l["wav"])
+                if s0 != sr: d = np.interp(np.linspace(0, len(d), int(len(d) * sr / s0), endpoint=False), np.arange(len(d)), d).astype(np.float32)
+                them(giong, d, l["t0"], 0.9)
+        if c["bc"].get("am_nen"):
+            x = am_thanh.nen_moi_truong(c["bc"]["am_nen"], c["t1"] - c["t0"]) * am_thanh.bao(c["t1"] - c["t0"], 0.4, 0.4)
+            them(moi_truong, x, c["t0"])
+        for n in c["nvs"].values():
+            for r in n["rung"]: them(dong, am_thanh.rung_dien_thoai(), r)
+            for (a, b, x0, x1) in n["di"]:
+                k = a
+                while k < b: them(dong, am_thanh.buoc_chan(), k, 0.7); k += NHIP_BUOC
+    # nhạc: mỗi lệnh "* Nhạc: ..." chạy đến lệnh nhạc kế tiếp
+    for i, (t0, kieu) in enumerate(nhac_sk):
+        t1 = nhac_sk[i + 1][0] if i + 1 < len(nhac_sk) else tong
+        if kieu.strip() == "tắt" or t1 - t0 < 1: continue
+        them(nhac_bg, am_thanh.nhac(kieu.strip(), t1 - t0 + 1.5), t0)
+    # mưa
+    mua_tu = None
+    for t0, kieu in hu_sk + [(tong, "tắt mưa")]:
+        if kieu == "mưa" and mua_tu is None: mua_tu = t0
+        elif kieu == "tắt mưa" and mua_tu is not None:
+            them(moi_truong, am_thanh.nen_moi_truong("mua", t0 - mua_tu) * am_thanh.bao(t0 - mua_tu, 1, 1), mua_tu); mua_tu = None
+    # nhạc nhỏ đi khi có người nói
+    co_noi = np.abs(giong) > 0.02
+    w = int(0.25 * sr); co_noi = np.convolve(co_noi.astype(np.float32), np.ones(w) / w, "same")
+    tron = giong + dong * 0.9 + moi_truong * 0.35 + nhac_bg * (0.22 - 0.12 * np.clip(co_noi * 3, 0, 1))
+    tron = np.tanh(tron * 1.1) * 0.9
+    with wave.open(wav_ra, "w") as w_:
+        w_.setnchannels(1); w_.setsampwidth(2); w_.setframerate(sr); w_.writeframes((tron * 32767).astype(np.int16).tobytes())
 
     ra = os.path.splitext(kb)[0] + ("" if co_tieng else "_xem_truoc") + ".mp4"
     lenh = ["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{RONG}x{CAO}", "-r", str(FPS), "-i", "-"]
-    if co_tieng: lenh += ["-i", wav_ra, "-c:a", "aac", "-b:a", "160k", "-shortest"]
+    lenh += ["-i", wav_ra, "-c:a", "aac", "-b:a", "160k", "-shortest"]
     lenh += ["-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-pix_fmt", "yuv420p", ra]
     ff = subprocess.Popen(lenh, stdin=subprocess.PIPE)
     font = tim_font(46)
     so_khung = int(tong * FPS); print(f">> Dựng {so_khung} khung hình ({tong:.0f} giây)...")
     cam = None; canh_truoc = None
+    # hiệu ứng hình: tối viền, mưa, rung khung, chớp sáng
+    yy, xx = np.mgrid[0:CAO, 0:RONG]; r_ = np.sqrt(((xx - RONG / 2) / (RONG / 2)) ** 2 + ((yy - CAO / 2) / (CAO / 2)) ** 2)
+    toi_vien = Image.fromarray((np.clip((r_ - 0.75) / 0.7, 0, 1) * 150).astype(np.uint8), "L")
+    den = Image.new("RGB", (RONG, CAO))
+    rnd = np.random.default_rng(3); giot = [(rnd.uniform(0, RONG), rnd.uniform(0, CAO), rnd.uniform(0.6, 1.0)) for _ in range(160)]
+    def dang_mua(tt):
+        on = False
+        for t0, k in hu_sk:
+            if t0 <= tt: on = (k == "mưa") if k in ("mưa", "tắt mưa") else on
+        return on
 
     for f in range(so_khung):
         tt = f / FPS
@@ -314,6 +349,18 @@ def lam_phim(kb):
             khung = c["nen_mo"].copy(); fm = hinh_nv(mat_shot, CAO * 0.96, bc["mau"], False)
             khung.paste(fm, ((RONG - fm.width) // 2, CAO - fm.height), fm)
 
+        for t0, k in hu_sk:
+            if k == "rung" and 0 <= tt - t0 < 0.6:
+                bien = int(14 * (1 - (tt - t0) / 0.6)); dx_, dy_ = rnd.integers(-bien, bien + 1, 2)
+                khung = khung.transform(khung.size, Image.AFFINE, (1, 0, dx_, 0, 1, dy_), resample=Image.BILINEAR)
+        if dang_mua(tt):
+            khung = Image.blend(khung, den, 0.12); dm = ImageDraw.Draw(khung, "RGBA")
+            for (gx, gy, v) in giot:
+                y_ = (gy + tt * 1400 * v) % CAO; x_ = (gx - tt * 200 * v) % RONG
+                dm.line([(x_, y_), (x_ - 6 * v, y_ + 30 * v)], fill=(200, 210, 230, int(110 * v)), width=2)
+        khung.paste(den, (0, 0), toi_vien)
+        for t0, k in hu_sk:
+            if k == "chớp" and 0 <= tt - t0 < 0.4: khung = Image.blend(khung, Image.new("RGB", khung.size, (255, 255, 255)), 0.85 * (1 - (tt - t0) / 0.4))
         if loi and not im_lang(loi["noi"]):
             d = ImageDraw.Draw(khung); dong, hang = [], ""
             for tu in chu_phu_de(loi["noi"]).split():
