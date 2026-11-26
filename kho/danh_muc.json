@@ -16,8 +16,7 @@
    "danem_bang_4",
    "danem_bang_5",
    "danem_bang_6",
-   "danem_tao",
-   "danem_tao_mo"
+   "danem_tao"
   ],
   "hien": [
    "hien_bang_dung_1",
@@ -41,7 +40,6 @@
    "hien_bang_ngoi_1",
    "hien_bang_ngoi_2",
    "hien_bang_ngoi_3",
-   "hien_bang_ngoi_3_mo",
    "hien_bang_ngoi_4",
    "hien_bang_ngoi_5",
    "hien_bang_ngoi_6"
@@ -67,8 +65,7 @@
    "lan_bang_4",
    "lan_bang_5",
    "lan_bang_6",
-   "lan_tao",
-   "lan_tao_mo"
+   "lan_tao"
   ],
   "me": [
    "me_bang_1",
@@ -86,7 +83,6 @@
    "tung_bang_4",
    "tung_bang_5",
    "tung_bang_6",
-   "tung_bang_6_mo",
    "tung_tao"
   ]
  },
