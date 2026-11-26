@@ -87,3 +87,6 @@
 
 ## nen_xuong_nhat | mẫu: | loại: nền
 {NEN} Xưởng nhà máy ở Nhật Bản, dây chuyền sản xuất, ánh đèn trắng, không khí mệt mỏi.
+
+## nen_van_phong_trong | mẫu: nen_van_phong | loại: nền
+Giữ nguyên hoàn toàn bức tranh trong ảnh mẫu: cùng bố cục, góc nhìn, màu sắc, nét vẽ, mọi đồ vật và chữ trên tường. Chỉ xóa chiếc ghế xoay màu đen phía sau bàn làm việc, vẽ lại phần tủ và tường phía sau chỗ đó cho tự nhiên. Không thêm người.
