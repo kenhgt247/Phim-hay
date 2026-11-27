@@ -1,3 +1,6 @@
 phan_mem/*.mp4
 phan_mem/_tam/
 __pycache__/
+phan_mem/_cache_giong/
+ket_qua/
+*.part.mp4
