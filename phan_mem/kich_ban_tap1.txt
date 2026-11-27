@@ -1,45 +1,105 @@
 # TẬP 1 – HAI CHIẾC ĐIỆN THOẠI
-# ---------------------------------------------------------------
-# Cách viết:
-#   [Cảnh: tên bối cảnh | Nhân vật vị trí, ...]   vị trí từ 0 (mép trái) đến 100 (mép phải); >100 là đứng ngoài khung
-#   Tên: lời thoại                 (thêm "(cận)" để máy quay đẩy sát người nói)
-#   * Tên: động tác                động tác bắt đầu cùng câu thoại ngay sau nó
-#        động tác: đi tới <vị trí> / rung / tên tư thế (hiền, lạnh, nghe, nghe lạnh, túi, ngồi, ngồi lạnh, đứng ...)
-#        tư thế "mặt ..." (mặt lạnh, mặt giận, mặt hiền, mặt cười) = cắt sang cận khuôn mặt
-#   * Máy quay: xa                 kéo máy quay ra lại
-#   * Nhạc: bí ẩn / căng thẳng / ấm áp / buồn / tắt     (đổi nhạc nền từ câu kế tiếp)
-#   * Hiệu ứng: rung / chớp / mưa / tắt mưa
-# Bối cảnh có sẵn: pho_dem, van_phong
-# ---------------------------------------------------------------
+# Phim "Hai Mặt" – tập 1/10, khoảng 6 phút.
 
 [Cảnh: pho_dem | Hiền 28]
 * Nhạc: bí ẩn
-Dẫn chuyện: Ở cái phường nhỏ này, ai cũng biết anh Hiền.
+Dẫn chuyện: Truyện dưới đây là hư cấu. Mọi sự trùng hợp chỉ là ngẫu nhiên.
+Dẫn chuyện: Ở cái phường nhỏ ven sông này, ai cũng biết anh Hiền.
 * Hiền: đi tới 45
-Dẫn chuyện: Chủ trung tâm du học, hiền lành, chăm chỉ, chưa từng to tiếng với ai.
+Dẫn chuyện: Chủ trung tâm du học Bình Minh. Hiền lành, chăm chỉ, nói năng nhỏ nhẹ, chưa từng to tiếng với ai.
+Dẫn chuyện: Người trong phường hay bảo nhau: muốn cho con đi du học, cứ tìm thầy Hiền. Thầy tận tâm, lại chẳng bao giờ lấy tiền quá tay.
 * Hiền: nghe
-Hiền: Ừ, anh khóa cửa rồi. Em cứ cho con ăn trước, anh về ngay.
+Hiền: Ừ, anh khóa cửa rồi. Em cứ cho con ăn trước đi, anh về ngay.
+Hiền: Bống ngủ chưa em? Bảo con đợi bố, bố mua bánh cho.
 * Hiền: hiền
-Dẫn chuyện: Anh cúp máy.
+Dẫn chuyện: Anh cúp máy. Một ngày làm việc nữa lại trôi qua, bình yên như mọi ngày.
 * Hiền: túi, rung
 * Nhạc: căng thẳng
 Dẫn chuyện: Nhưng trong túi quần, chiếc điện thoại thứ hai bắt đầu rung.
+Dẫn chuyện: Chiếc điện thoại mà vợ anh chưa từng nhìn thấy.
 * Hiền: nghe
-Đàn em (điện thoại): Đại ca… thằng Tùng bên kia sông nó không chịu trả tiền. Nó còn bảo… đại ca chỉ là thằng dạy chữ.
+Đàn em (điện thoại): Đại ca… thằng Tùng bên kia sông lại khất nợ. Ba tháng rồi đấy anh.
+Đàn em (điện thoại): Nó còn nói với anh em bên đấy… đại ca chỉ là thằng dạy chữ, chẳng làm gì được nó.
 * Hiền: mặt lạnh
 Dẫn chuyện: Ánh mắt hiền lành ấy, trong một giây, biến mất hoàn toàn.
 * Hiền: nghe lạnh
-Hiền (cận): Mai tao tự qua.
+Hiền (cận): Mười một giờ. Chỗ cũ.
 * Máy quay: xa
 * Hiền: đi tới 66, lạnh
 Dẫn chuyện: Không ai biết, người đàn ông hiền lành nhất phường ấy lại là kẻ đứng sau hàng trăm anh em giang hồ.
 Dẫn chuyện: Kể cả vợ anh. Kể cả bố mẹ anh.
 
-[Cảnh: van_phong | Hiền 23, Kẻ lạ 112]
-* Hiền: ngồi
+[Cảnh: phong_khach | Lan 30, Hiền 112]
 * Nhạc: ấm áp
+* Hiền: đi tới 68
+Dẫn chuyện: Hai mươi phút sau, anh đã ngồi ở nhà, trước mâm cơm vợ để phần.
+* Hiền: hiền
+Lan: Anh về rồi à? Con đợi bố mãi, vừa mới ngủ xong.
+Hiền: Ừ, hôm nay đông khách quá. Anh xin lỗi.
+* Lan: lan_bang_2
+Lan: Bống được mười điểm toán đấy. Nó bắt em để bài kiểm tra trên bàn cho bố xem.
+* Hiền: hien_bang_mat_1
+Dẫn chuyện: Hiền cầm tờ giấy lên. Nét chữ xiêu vẹo của con gái, điểm mười đỏ chót ở góc.
+Dẫn chuyện: Đó là nụ cười thật nhất của anh trong cả ngày hôm nay.
+* Hiền: hiền
+* Lan: lan_tao
+Lan: Ăn đi anh. Mà tối nay anh lại có việc à? Em thấy anh cứ nhìn đồng hồ.
+Hiền: Ừ, anh qua chỗ thằng Tuấn một lát. Nó nhờ xem giúp cái hồ sơ.
+Lan: Thằng Tuấn hay nhờ anh thế nhỉ. Anh hiền quá, ai nhờ gì cũng làm.
+* Nhạc: buồn
+* Hiền: hien_bang_mat_1
+Dẫn chuyện: Hiền cười. Câu nói dối ấy anh đã nói hàng trăm lần. Lần nào cũng trơn tru. Lần nào cũng nhói một chút.
+
+[Cảnh: phong_kin | Hiền 30, Tuấn 70]
+* Nhạc: căng thẳng
+* Hiền: hien_bang_lanh_3
+Dẫn chuyện: Mười một giờ đêm. Căn phòng kín trên tầng hai một quán cà phê đã đóng cửa.
+Dẫn chuyện: Ở đây, không ai gọi anh là thầy Hiền.
+Tuấn: Đại ca. Thằng Tùng nợ mình hai tỷ, ba tháng không trả một đồng lãi.
+Tuấn: Anh em bên này sốt ruột lắm rồi. Anh cứ gật đầu, tối nay em cho nó biết tay.
+* Hiền: lạnh
+Hiền: Không.
+Tuấn: Nhưng mà đại ca…
+Hiền (cận): Luật của tao, mày nhớ không? Không ma túy. Không đụng vào người nhà ai.
+* Máy quay: xa
+Hiền: Tùng nợ thì tao đòi Tùng. Vợ con nó không nợ tao đồng nào.
+Tuấn: Em nhớ rồi, đại ca.
+* Hiền: hien_bang_lanh_6
+Dẫn chuyện: Hiền châm một điếu thuốc. Ba năm nay, anh giữ cái luật ấy như giữ một sợi dây cuối cùng nối anh với con người cũ.
+* Hiền: lạnh
+Tuấn: Còn một chuyện nữa anh ạ. Dạo này bên Tùng hay có một người lạ ra vào. Nói giọng lơ lớ, đeo đồng hồ vàng to lắm.
+Hiền: Tìm hiểu xem hắn là ai.
+
+[Cảnh: van_phong | Hiền 23, Ngọc 112]
+* Hiền: hien_bang_ngoi_3
+* Ngọc: đi tới 72
+* Nhạc: ấm áp
+Dẫn chuyện: Sáng hôm sau, trung tâm du học Bình Minh mở cửa như mọi ngày.
+Dẫn chuyện: Vị khách đầu tiên là một cô gái ôm chặt tập hồ sơ, rụt rè đứng ở cửa.
+* Ngọc: ngoc_tao
+Ngọc: Dạ… em chào thầy. Em tên Ngọc. Em muốn hỏi về du học Nhật Bản ạ.
+Hiền: Em ngồi đi. Đừng ngại. Em định học ngành gì?
+Ngọc: Dạ em thích điều dưỡng. Nhưng nhà em… nhà em không có nhiều tiền đâu thầy.
+Ngọc: Bố em chạy xe ôm, mẹ em bán rau. Em là con cả, em muốn sang đó vừa học vừa làm, gửi tiền về cho các em đi học.
+* Hiền: hien_bang_mat_1
+Dẫn chuyện: Hiền nhìn cô gái. Anh thấy lại chính mình của mười năm trước, cũng ôm một giấc mơ, cũng mang theo cả món nợ của gia đình.
+* Hiền: hien_bang_ngoi_3
+Hiền: Thầy sẽ giảm một nửa phí dịch vụ cho em. Em chỉ cần lo học tiếng cho tốt.
+Hiền: Và nhớ lời thầy: ai đòi em đóng tiền mà không có hợp đồng, không có hóa đơn, thì đừng bao giờ tin.
+Ngọc: Dạ! Em cảm ơn thầy nhiều lắm ạ!
+* Ngọc: đi tới 115
+Dẫn chuyện: Ngọc cúi chào rồi đi ra, bước chân nhẹ như vừa được tiếp thêm cánh.
+
+[Cảnh: van_phong | Hiền 23, Kẻ lạ 115]
+* Hiền: ngồi
 * Kẻ lạ: đi tới 74
-Dẫn chuyện: Sáng hôm sau, một người đàn ông lạ đẩy cửa bước vào trung tâm.
+* Nhạc: bí ẩn
+Dẫn chuyện: Cánh cửa kính vừa khép lại, đã có người đẩy ra.
+Dẫn chuyện: Một gã đàn ông mặc áo hoa, đồng hồ vàng to bản, bước vào mà không cần ai mời.
+* Kẻ lạ: đứng
+Kẻ lạ: Văn phòng đẹp đấy. Bản đồ thế giới treo đầy tường. Làm ăn được nhỉ.
+* Hiền: hien_bang_ngoi_3
+Hiền: Anh cần tư vấn du học cho ai ạ?
 Kẻ lạ: Tôi không đến hỏi du học.
 * Hiệu ứng: rung
 * Nhạc: căng thẳng
@@ -48,4 +108,8 @@ Kẻ lạ (cận): Tôi đến tìm… đại ca Hiền.
 * Hiền: mặt lạnh
 Hiền: …
 * Hiền: ngồi lạnh
-Dẫn chuyện: Lần đầu tiên sau năm năm, có người gọi đúng tên thật của anh, ngay giữa ban ngày.
+Dẫn chuyện: Lần đầu tiên sau năm năm, có người gọi đúng cái tên thật của anh, ngay giữa ban ngày.
+* Kẻ lạ: mặt cười
+Dẫn chuyện: Và gã đàn ông ấy đang cười. Nụ cười mà Hiền đã thề sẽ không bao giờ quên.
+* Hiệu ứng: chớp
+Dẫn chuyện: Tập sau: Người từ Nagoya.
