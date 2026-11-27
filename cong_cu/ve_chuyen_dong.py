@@ -29,53 +29,36 @@ IDLE = """Vẽ sprite sheet CHÍNH XÁC 2 cột x 2 hàng, 4 ô bằng nhau; m�
 dưới phải: mắt mở miệng mở lớn khi nói, không đổi biểu cảm. Nền trắng #FFFFFF, không chữ, số, bóng hay đường phân ô,
 chừa ít nhất 7% biên từng ô, người cao khoảng 82% ô."""
 
-def find_cuts(projection, count):
-    """Find low-ink gutters close to the intended grid, never move a cut far enough to swap cells."""
-    n = len(projection)
-    cuts = [0]
-    for i in range(1, count):
-        target = round(i*n/count)
-        radius = max(2, round(.22*n/count))
-        lo, hi = max(cuts[-1]+3, target-radius), min(n-3, target+radius)
-        score = ndimage.uniform_filter1d(np.asarray(projection, dtype=float), size=5, mode="nearest")
-        cut = min(range(lo,hi+1), key=lambda x: (score[x]+.002*abs(x-target)/max(radius,1),abs(x-target)))
-        cuts.append(cut)
-    return cuts+[n]
-
 def split_sheet(im, rows, cols):
-    """Fail on clipped/empty cells and major size discrepancy; align feet on common canvas."""
-    im = im.convert("RGB")
-    w,h = im.size
-    a = np.asarray(im).astype(np.int16)
-    ink = (a.min(2) < 222) | ((a.max(2)-a.min(2)) > 24)
-    xs_cut = find_cuts(ink.mean(axis=0), cols)
-    ys_cut = find_cuts(ink.mean(axis=1), rows)
-    cells = []
+    """Extract disconnected silhouettes, independent of the position of a drawn grid."""
+    im=im.convert("RGB"); a=np.asarray(im).astype(np.int16)
+    ink=(a.min(2)<222)|((a.max(2)-a.min(2))>24)
+    labels,n=ndimage.label(ndimage.binary_dilation(ink,iterations=1))
+    if n==0: raise ValueError("Bảng ảnh trống")
+    areas=ndimage.sum(ink,labels,range(1,n+1))
+    ids=[i+1 for i,v in enumerate(areas) if v>=max(areas)*.12 and v>=ink.size*.003]
+    if len(ids)!=rows*cols:
+        raise ValueError(f"Cần {rows*cols} hình độc lập, nhận được {len(ids)}; hình có thể dính nhau hoặc thiếu")
+    objects=ndimage.find_objects(labels)
+    parts=[]
+    for i in ids:
+        y,x=objects[i-1]
+        if min(y.start,x.start,a.shape[0]-y.stop,a.shape[1]-x.stop)<2:
+            raise ValueError("Hình chạm mép ảnh gốc")
+        mask=ndimage.binary_fill_holes((labels[y,x]==i)&ink[y,x])
+        mask=ndimage.binary_fill_holes(ndimage.binary_closing(mask,iterations=1,border_value=0)) | mask
+        alpha=(ndimage.gaussian_filter(mask.astype(float),.5)*255).astype(np.uint8)
+        rgba=Image.fromarray(np.dstack((a[y,x].astype(np.uint8),alpha)),"RGBA")
+        rgba=rgba.crop(rgba.getbbox())
+        parts.append(((y.start+y.stop)/2,(x.start+x.stop)/2,rgba))
+    parts.sort(key=lambda p:p[0]); cells=[]
     for r in range(rows):
-        for c in range(cols):
-            cell = im.crop((xs_cut[c], ys_cut[r], xs_cut[c+1], ys_cut[r+1]))
-            a = np.asarray(cell).astype(np.int16)
-            white = (a.min(2) > 222) & (a.max(2)-a.min(2) < 24)
-            labels,_ = ndimage.label(white)
-            edge = np.unique(np.concatenate((labels[0],labels[-1],labels[:,0],labels[:,-1])))
-            bg = np.isin(labels, edge[edge != 0])
-            fg = ~bg
-            # Remove tiny isolated specks, retain main silhouette.
-            comp,n = ndimage.label(ndimage.binary_dilation(fg, iterations=2))
-            areas = ndimage.sum(fg, comp, range(1,n+1))
-            if n == 0 or max(areas) < .035 * fg.size: raise ValueError("Ô trống/nhân vật quá nhỏ")
-            fg &= np.isin(comp, [i+1 for i,x in enumerate(areas) if x >= max(areas)*.07])
-            ys,xs = np.where(fg)
-            if xs.min()<3 or ys.min()<3 or xs.max()>=cell.width-3 or ys.max()>=cell.height-3:
-                raise ValueError("Nhân vật chạm mép ô; cần vẽ lại")
-            alpha = (ndimage.gaussian_filter(fg.astype(float),.5)*255).astype(np.uint8)
-            rgba = Image.fromarray(np.dstack((a.astype(np.uint8),alpha)), "RGBA")
-            cells.append(rgba.crop((xs.min(),ys.min(),xs.max()+1,ys.max()+1)))
-    hs = [x.height for x in cells]
+        row=sorted(parts[r*cols:(r+1)*cols],key=lambda p:p[1]); cells.extend(p[2] for p in row)
+    hs=[x.height for x in cells]
     if max(hs)/min(hs)>1.30: raise ValueError("Tỷ lệ chiều cao giữa các frame lệch quá lớn")
-    scale = 480/max(hs)
-    res = [x.resize((max(1,round(x.width*scale)),max(1,round(x.height*scale))),Image.Resampling.LANCZOS) for x in cells]
-    width = max(x.width for x in res)+12
+    scale=480/max(hs)
+    res=[x.resize((max(1,round(x.width*scale)),max(1,round(x.height*scale))),Image.Resampling.LANCZOS) for x in cells]
+    width=max(x.width for x in res)+12
     out=[]
     for x in res:
         frame=Image.new("RGBA",(width,480),(0,0,0,0))
@@ -101,7 +84,18 @@ def make(ma, force=False):
             if not sample: raise FileNotFoundError(ref)
             diagnostics=ROOT/"ket_qua"/"motion_diagnostics"
             diagnostics.mkdir(parents=True, exist_ok=True)
-            for attempt in range(2):
+            frames=None
+            reuse=os.environ.get("MOTION_REUSE_DIR")
+            if reuse and not force:
+                for candidate in sorted(Path(reuse).glob(f"{ma}_{kind}_attempt*.jpg"),reverse=True):
+                    try:
+                        sheet=Image.open(candidate).convert("RGB")
+                        frames=split_sheet(sheet,rows,cols)
+                        print("Dùng lại ảnh đã tạo:",candidate.name,flush=True)
+                        break
+                    except (OSError,ValueError) as exc:
+                        print("Ảnh lưu chưa đạt:",exc,flush=True)
+            for attempt in range(2 if frames is None else 0):
                 print("Vẽ sheet",ma,kind,"lần",attempt+1,flush=True)
                 extra = "" if attempt == 0 else (
                     " IMPORTANT: strictly regular grid, huge white gutters between poses, "
