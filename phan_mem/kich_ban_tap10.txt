@@ -73,7 +73,7 @@ Thiếu tá Minh: Anh em của anh thì sao?
 Hiền: Giải tán rồi. Tuấn mở một tiệm sửa xe. Mấy đứa khác theo anh Tâm học nghề điện.
 Thiếu tá Minh: Anh biết không, hai mươi năm làm nghề, tôi ít khi nói câu này. Chúc anh may mắn.
 
-[Cảnh: pho_dem | Lan 65, Hiền 30]
+[Cảnh: pho_dem | Lan 52, Hiền 36]
 * Nhạc: ấm áp
 * Lan: lan_tao
 * Hiền: hien_them_4

@@ -418,6 +418,12 @@ def lam_phim(kb):
             kh = bc["khung"] * H * (1 - 0.05 * tc / dai_canh)
             trong = [v for v in vi_tri.values() if 0 <= v[0] <= W] or [(W / 2, bc["chan"] * H if not isinstance(bc["chan"], list) else H * 0.75, cao_nv)]
             mx = sum(v[0] for v in trong) / len(trong); my = sum(v[1] - v[2] * 0.5 for v in trong) / len(trong) + kh * 0.06
+            if len(trong) > 1:  # lùi máy cho đủ mọi nhân vật trong khung
+                rong_can = max(v[0] for v in trong) - min(v[0] for v in trong) + max(v[2] for v in trong) * 0.9
+                kh = max(kh, rong_can * CAO / RONG)
+                cao_can = max(v[1] for v in trong) - min(v[1] - v[2] for v in trong)
+                kh = max(kh, cao_can * 1.25)
+                my = (max(v[1] for v in trong) + min(v[1] - v[2] for v in trong)) / 2 + kh * 0.06
         if cam is None or canh_truoc is not c: cam = [mx, my, kh]
         else:
             k_ = 0.07; cam = [cam[0] + (mx - cam[0]) * k_, cam[1] + (my - cam[1]) * k_, cam[2] + (kh - cam[2]) * k_]
