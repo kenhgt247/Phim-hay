@@ -1,0 +1,37 @@
+name: Kiểm thử Xưởng Phim
+on:
+  push:
+    branches: [phim-hay-2.0]
+    paths: ["phan_mem/**", "tests/**", ".github/workflows/kiem-thu-phim.yml"]
+  pull_request:
+    paths: ["phan_mem/**", "tests/**", ".github/workflows/kiem-thu-phim.yml"]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+      - run: pip install pillow scipy numpy requests
+      - run: python -m compileall -q phan_mem cong_cu tests
+      - run: python -m unittest discover -s tests -v
+      - name: Kiểm tra toàn bộ kịch bản
+        run: |
+          for kb in phan_mem/kich_ban_tap*.txt; do
+            python phan_mem/lam_phim.py "$kb" --check
+          done
+      - name: Render mẫu 360p
+        run: |
+          python phan_mem/lam_phim.py phan_mem/demo_dien_anh.txt --preview --quality nhanh --output ket_qua/demo.mp4
+          ffprobe -v error -show_entries stream=codec_type,width,height -of json ket_qua/demo.mp4
+          python -c 'import json,subprocess; x=json.loads(subprocess.check_output(["ffprobe","-v","error","-show_streams","-of","json","ket_qua/demo.mp4"])); assert any(s["codec_type"]=="video" and s["width"]==640 and s["height"]==360 for s in x["streams"]); assert any(s["codec_type"]=="audio" for s in x["streams"])'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: demo-dien-anh
+          path: ket_qua/demo.mp4
+          if-no-files-found: error

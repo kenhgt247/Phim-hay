@@ -6,18 +6,26 @@ Cách dùng:   python lam_phim.py kich_ban_tap1.txt
 - Chưa có: ra bản XEM TRƯỚC không tiếng.
 Cần: Python 3, Pillow, numpy, scipy, ffmpeg.
 """
-import os, re, sys, math, subprocess, wave
+import os, re, sys, math, subprocess, wave, hashlib, tempfile, argparse, time
+from importlib.metadata import version, PackageNotFoundError
+from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 from scipy import ndimage
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import am_thanh
+import chuyen_dong
 
 THU_MUC = os.path.dirname(os.path.abspath(__file__))
 ANH = os.path.join(os.path.dirname(THU_MUC), "mau")
 
 # ====== CÀI ĐẶT ==============================================================
 RONG, CAO, FPS = 1280, 720, 25
+CHE_DO = {"nhanh": (640, 360, 15), "720p": (1280, 720, 25), "1080p": (1920, 1080, 25)}
+MAY_QUAY = {"xa", "toàn", "trung", "cận", "tiến", "lùi", "trái", "phải"}
+HIEU_UNG = {"mưa", "tắt mưa", "rung", "chớp"}
+NHAC = {"bí ẩn", "căng thẳng", "ấm áp", "buồn", "tắt"}
+BO_NHO_GIONG = Path(os.environ.get("PHIM_CACHE_GIONG", os.path.join(THU_MUC, "_cache_giong")))
 
 # tư thế -> (ảnh ngậm miệng, ảnh mở miệng hoặc None, [cỡ so với dáng đứng]).  "đi" -> [bước A, bước B]
 # tư thế dạng {"mat": ảnh} = cảnh cận khuôn mặt (cắt sang cận mặt, nền mờ)
@@ -138,7 +146,7 @@ def im_lang(s): return not chu_phu_de(s).strip(". …")
 # ---------------- đọc kịch bản ----------------
 def doc_kich_ban(p):
     ds, canh, cho = [], None, []
-    for dong in open(p, encoding="utf-8"):
+    for so_dong, dong in enumerate(Path(p).read_text(encoding="utf-8-sig").splitlines(), 1):
         dong = dong.strip()
         if not dong or dong.startswith("#"): continue
         m = re.match(r"\[Cảnh:\s*([^|\]]+)\|?([^\]]*)\]", dong)
@@ -152,6 +160,7 @@ def doc_kich_ban(p):
             canh = {"nen": m.group(1).strip(), "nv": nv, "loi": []}; ds.append(canh); continue
         m = re.match(r"\*\s*([^:]+):\s*(.*)", dong)
         if m:
+            if canh is None: raise ValueError(f"Dòng {so_dong}: động tác trước cảnh đầu tiên")
             for dt in [x.strip() for x in m.group(2).split(",") if x.strip()]:
                 cho.append((m.group(1).strip(), dt))
             continue
@@ -159,23 +168,53 @@ def doc_kich_ban(p):
         if m and canh is not None:
             the = [t.strip() for t in (m.group(2) or "").split(",") if t.strip()]
             canh["loi"].append({"ai": m.group(1).strip(), "the": the, "noi": m.group(3).strip(), "dong_tac": cho}); cho = []
+            continue
+        raise ValueError(f"Dòng {so_dong}: sai cú pháp: {dong}")
+    if not ds: raise ValueError("Kịch bản không có cảnh")
     if cho and canh is not None: canh["loi"].append({"ai": "Dẫn chuyện", "the": [], "noi": "", "dong_tac": cho})
     return ds
 
 # ---------------- giọng ----------------
-def tao_giong(ds, tam):
+def wav_hop_le(p):
     try:
-        from vieneu import Vieneu; tts = Vieneu()
-    except Exception:
-        print(">> Chưa có VieNeu-TTS: làm bản xem trước không tiếng."); return False
-    i = 0
+        with wave.open(str(p)) as w:
+            return w.getnframes() > 0 and w.getsampwidth() in (2, 4) and w.getframerate() > 0
+    except (OSError, EOFError, wave.Error):
+        return False
+
+def tao_giong(ds, tam, preview=False):
+    """Cache theo nội dung, giọng và phiên bản TTS; chỉ tải model khi cache miss."""
+    if preview:
+        print(">> Xem trước: không tạo giọng nói."); return False
+    try: phien_ban = version("vieneu")
+    except PackageNotFoundError: phien_ban = "unknown"
+    BO_NHO_GIONG.mkdir(parents=True, exist_ok=True)
+    tts = None
+    hit = miss = 0
     for c in ds:
         for l in c["loi"]:
-            i += 1
             if im_lang(l["noi"]): continue
-            text, ra, g = l["noi"].replace("…", "..."), os.path.join(tam, f"cau_{i:03d}.wav"), GIONG.get(l["ai"])
-            audio = tts.infer(text, voice=g) if g else tts.infer(text)
-            tts.save(audio, ra); l["wav"] = ra; print(f"   giọng {i}: {l['ai']}")
+            text = l["noi"].replace("…", "...")
+            g = GIONG.get(l["ai"])
+            key = hashlib.sha256(repr(("v1", phien_ban, os.environ.get("PHIM_TTS_PROFILE", "default"), g, text)).encode("utf-8")).hexdigest()
+            ra = BO_NHO_GIONG / (key + ".wav")
+            if not wav_hop_le(ra):
+                if tts is None:
+                    from vieneu import Vieneu
+                    tts = Vieneu()
+                fd, tmp = tempfile.mkstemp(suffix=".wav", dir=BO_NHO_GIONG)
+                os.close(fd)
+                try:
+                    audio = tts.infer(text, voice=g) if g else tts.infer(text)
+                    tts.save(audio, tmp)
+                    if not wav_hop_le(tmp): raise RuntimeError("TTS trả WAV không hợp lệ")
+                    os.replace(tmp, ra)
+                finally:
+                    if os.path.exists(tmp): os.unlink(tmp)
+                miss += 1
+            else: hit += 1
+            l["wav"] = str(ra)
+    print(f">> Giọng: dùng lại {hit}, tạo mới {miss}", flush=True)
     return True
 
 def doc_wav(p):
@@ -187,6 +226,9 @@ def doc_wav(p):
 
 # ---------------- ảnh ----------------
 def tim_file(f):
+    if chuyen_dong.la_frame(f):
+        p = chuyen_dong.ROOT / f
+        if p.is_file(): return str(p)
     for d in THU_MUC_ANH:
         p = os.path.join(d, f)
         if os.path.exists(p): return p
@@ -197,7 +239,7 @@ def tach_nen(f):
     if f in _cache: return _cache[f]
     path = tim_file(f); goc = Image.open(path)
     if goc.mode == "RGBA" and np.asarray(goc)[..., 3].min() < 10:
-        _cache[f] = goc.crop(goc.getbbox()); return _cache[f]
+        _cache[f] = goc if chuyen_dong.la_frame(f) else goc.crop(goc.getbbox()); return _cache[f]
     im = goc.convert("RGB"); a = np.asarray(im).astype(np.int16)
     trang = (a.min(2) > 232) & ((a.max(2) - a.min(2)) < 18)
     nhan, _ = ndimage.label(trang)
@@ -237,19 +279,33 @@ def kiem_tra(ds):
             except Exception: loi.append(f"Cảnh {i}: không có nhân vật '{t}'")
         for l in c["loi"]:
             for ai, dt in l["dong_tac"]:
-                if ai in ("Máy quay", "Nhạc", "Hiệu ứng"): continue
+                if ai in ("Máy quay", "Nhạc", "Hiệu ứng"):
+                    tap = {"Máy quay": MAY_QUAY, "Nhạc": NHAC, "Hiệu ứng": HIEU_UNG}[ai]
+                    if dt not in tap: loi.append(f"Cảnh {i}: lệnh {ai} không hợp lệ: '{dt}'")
+                    continue
                 if ai not in co_mat: loi.append(f"Cảnh {i}: '{ai}' có động tác nhưng chưa có trong dòng [Cảnh: ...]"); continue
-                if dt.startswith("đi tới") or dt == "rung": continue
+                if dt.startswith("đi tới"):
+                    if not re.fullmatch(r"đi tới\s*-?\d+", dt): loi.append(f"Cảnh {i}: vị trí đi không hợp lệ: '{dt}'")
+                    else:
+                        try:
+                            for f_ in lay_nv(ai)["đi"]: tim_file(f_)
+                        except Exception as e: loi.append(f"Cảnh {i}: thiếu ảnh đi của '{ai}': {e}")
+                    continue
+                if dt == "rung": continue
                 try: tu_the_cua(lay_nv(ai), dt)
                 except Exception: loi.append(f"Cảnh {i}: '{ai}' không có tư thế '{dt}'")
     if loi:
         print("\n❌ KỊCH BẢN CÓ LỖI, chưa dựng được:\n  - " + "\n  - ".join(loi)); sys.exit(1)
 
-def lam_phim(kb):
+def lam_phim(kb, preview=False, output=None):
     ds = doc_kich_ban(kb)
     kiem_tra(ds)
-    tam = os.path.join(THU_MUC, "_tam"); os.makedirs(tam, exist_ok=True)
-    co_tieng = tao_giong(ds, tam)
+    with tempfile.TemporaryDirectory(prefix="phim-") as tam:
+        return dung(ds, kb, tam, preview, output)
+
+def dung(ds, kb, tam, preview=False, output=None):
+    bat_dau = time.monotonic()
+    co_tieng = tao_giong(ds, tam, preview)
     H = int(CAO * 1.25)
 
     t = 0.0; nhac_sk, hu_sk = [], []
@@ -273,7 +329,7 @@ def lam_phim(kb):
         for ten, x in c["nv"]:
             cf = lay_nv(ten)
             nvs[ten] = {"x": x, "tu_the": [(-1, cf["mac_dinh"])], "di": [], "rung": []}
-        c["nvs"] = nvs; c["t0"] = t; c["can"] = []
+        c["nvs"] = nvs; c["t0"] = t; c["can"] = []; c["goc"] = []
         can = None
         for l in c["loi"]:
             l["t0"] = t
@@ -281,6 +337,7 @@ def lam_phim(kb):
                 if ai == "Nhạc": nhac_sk.append((t, dt)); continue
                 if ai == "Hiệu ứng": hu_sk.append((t, dt)); continue
                 if ai == "Máy quay":
+                    c["goc"].append((t, dt))
                     if dt == "xa": can = None; c["can"].append((t, None))
                     continue
                 n = nvs[ai]
@@ -296,6 +353,7 @@ def lam_phim(kb):
                 d, sr = doc_wav(l["wav"]); dai = len(d) / sr; cs = int(sr / FPS)
                 rms = np.array([np.sqrt((d[i:i + cs] ** 2).mean() + 1e-12) for i in range(0, len(d), cs)])
                 l["mieng"] = rms > max(0.05, rms.max() * 0.18)
+                l["muc_mieng"] = chuyen_dong.muc_mieng(rms)
             elif im_lang(l["noi"]): dai = 1.6
             else: dai = len(chu_phu_de(l["noi"]).split()) * GIAY_MOI_TIENG + 0.3
             l["t1"] = t + dai
@@ -342,18 +400,21 @@ def lam_phim(kb):
                 them(moi_truong, am_thanh.nen_moi_truong("mua", t0 - mua_tu) * am_thanh.bao(t0 - mua_tu, 1, 1), mua_tu); mua_tu = None
     # nhạc nhỏ đi khi có người nói
     co_noi = np.abs(giong) > 0.02
-    w = int(0.25 * sr); co_noi = np.convolve(co_noi.astype(np.float32), np.ones(w) / w, "same")
+    w = int(0.25 * sr); co_noi = ndimage.uniform_filter1d(co_noi.astype(np.float32), size=w, mode="constant")
     tron = giong + dong * 0.9 + moi_truong * 0.35 + nhac_bg * (0.22 - 0.12 * np.clip(co_noi * 3, 0, 1))
     tron = np.tanh(tron * 1.1) * 0.9
     with wave.open(wav_ra, "w") as w_:
         w_.setnchannels(1); w_.setsampwidth(2); w_.setframerate(sr); w_.writeframes((tron * 32767).astype(np.int16).tobytes())
 
-    ra = os.path.splitext(kb)[0] + ("" if co_tieng else "_xem_truoc") + ".mp4"
+    ra = str(output or (os.path.splitext(kb)[0] + ("" if co_tieng else "_xem_truoc") + ".mp4"))
+    Path(ra).parent.mkdir(parents=True, exist_ok=True)
+    tmp_ra = ra + ".part.mp4"
     lenh = ["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{RONG}x{CAO}", "-r", str(FPS), "-i", "-"]
     lenh += ["-i", wav_ra, "-c:a", "aac", "-b:a", "160k", "-shortest"]
-    lenh += ["-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-pix_fmt", "yuv420p", ra]
+    lenh += ["-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-pix_fmt", "yuv420p", "-movflags", "+faststart", tmp_ra]
     ff = subprocess.Popen(lenh, stdin=subprocess.PIPE)
-    font = tim_font(46)
+    font = tim_font(max(18, round(46 * CAO / 720)))
+    ty_le = CAO / 720
     so_khung = int(tong * FPS); print(f">> Dựng {so_khung} khung hình ({tong:.0f} giây)...")
     cam = None; canh_truoc = None
     # hiệu ứng hình: tối viền, mưa, rung khung, chớp sáng
@@ -367,104 +428,153 @@ def lam_phim(kb):
             if t_canh <= t0 <= tt and k in ("mưa", "tắt mưa"): on = (k == "mưa")
         return on
 
-    for f in range(so_khung):
-        tt = f / FPS
-        c = next((x for x in ds if x["t0"] <= tt < x["t1"]), ds[-1])
-        W, bc, cao_nv = c["W"], c["bc"], c["cao_nv"]
-        tc, dai_canh = tt - c["t0"], c["t1"] - c["t0"]
-        loi = next((l for l in c["loi"] if l["t0"] <= tt < l["t1"] + NGHI), None)
-        the_gioi = c["nen_img"].copy()
-        vi_tri = {}; mat_shot = None
-        for ten, n in c["nvs"].items():
-            cf = lay_nv(ten)
-            x, dang_di, huong = n["x"], None, None
-            for (a, b, x0, x1) in n["di"]:
-                if tt >= b: x = x1
-                elif tt >= a:
-                    p = (tt - a) / (b - a); x = x0 + (x1 - x0) * p; dang_di = tt - a
-                    huong = "phải" if x1 > x0 else "trái"
-            tu_the = [tt_ for (a, tt_) in n["tu_the"] if a <= tt][-1]
-            co_tt = 1.0
-            tte = tu_the_cua(cf, tu_the)
-            if dang_di is None and isinstance(tte, dict):
-                mat_shot = tte["mat"]; continue
-            if dang_di is not None:
-                f_ = cf["đi"][int(dang_di / NHIP_BUOC) % 2]; lat = huong != cf["huong_di"]; co_tt = 0.97
-                nhun = -abs(math.sin(dang_di * math.pi / NHIP_BUOC)) * cao_nv * 0.012
+    try:
+        for f in range(so_khung):
+            tt = f / FPS
+            c = next((x for x in ds if x["t0"] <= tt < x["t1"]), ds[-1])
+            W, bc, cao_nv = c["W"], c["bc"], c["cao_nv"]
+            tc, dai_canh = tt - c["t0"], c["t1"] - c["t0"]
+            loi = next((l for l in c["loi"] if l["t0"] <= tt < l["t1"] + NGHI), None)
+            the_gioi = c["nen_img"].copy()
+            vi_tri = {}; mat_shot = None
+            def do_sau(item):
+                _, n = item
+                x = n["x"]
+                for a, b, x0, x1 in n["di"]:
+                    if tt >= b: x = x1
+                    elif tt >= a: x = x0 + (x1 - x0) * (tt - a) / (b - a)
+                return theo_vi_tri(bc["chan"], x)[0]
+            for ten, n in sorted(c["nvs"].items(), key=do_sau):
+                cf = lay_nv(ten)
+                x, dang_di, huong = n["x"], None, None
+                for (a, b, x0, x1) in n["di"]:
+                    if tt >= b: x = x1
+                    elif tt >= a:
+                        p = (tt - a) / (b - a); x = x0 + (x1 - x0) * p; dang_di = tt - a
+                        huong = "phải" if x1 > x0 else "trái"
+                tu_the = [tt_ for (a, tt_) in n["tu_the"] if a <= tt][-1]
+                co_tt = 1.0
+                tte = tu_the_cua(cf, tu_the)
+                if dang_di is None and isinstance(tte, dict):
+                    mat_shot = tte["mat"]; continue
+                if dang_di is not None:
+                    f_, lat = chuyen_dong.frame_di(ten, cf["đi"], cf["huong_di"], huong, dang_di, NHIP_BUOC)
+                    co_tt = 0.97
+                    nhun = 0 if chuyen_dong.la_frame(f_) else -abs(math.sin(dang_di * math.pi / NHIP_BUOC)) * cao_nv * 0.006
+                else:
+                    ngam, mo = tte[0], tte[1]; f_ = ngam; lat = False; nhun = 0
+                    muc = 0
+                    dang_noi = bool(loi and loi["ai"] == ten and tt < loi["t1"] and not im_lang(loi["noi"]))
+                    if mo is None: mo = mo_cua(ngam)
+                    if len(tte) > 2: co_tt = tte[2]
+                    if dang_noi:
+                        k = tt - loi["t0"]
+                        if "muc_mieng" in loi:
+                            m = loi["muc_mieng"]; muc = int(m[min(int(k * FPS), len(m) - 1)])
+                        elif k < loi["t1"] - loi["t0"] - 0.3:
+                            muc = (0, 1, 2, 1, 0)[int(k * 15) % 5]
+                        if mo and muc: f_ = mo
+                    f_ = chuyen_dong.frame_dung(ten, ngam, f_, tt, muc, dang_noi)
+                cy_f, co = theo_vi_tri(bc["chan"], x); chan_y = cy_f * H; co = round(co * 50) / 50
+                cnv = cao_nv * co; h = hinh_nv(f_, cnv * co_tt, bc["mau"], lat)
+                cx = x * W
+                for r in n["rung"]:
+                    if 0 <= tt - r < 1.4: cx += math.sin((tt - r) * 70) * cao_nv * 0.006
+                if dang_di is None:
+                    h = chuyen_dong.tho(h, tt, ten, dang_noi)
+                s = bong(int(cnv * 0.34), int(cnv * 0.045))
+                the_gioi.paste(s, (int(cx - s.width / 2), int(chan_y - s.height / 2)), s)
+                the_gioi.paste(h, (int(cx - h.width / 2), int(chan_y - h.height + nhun)), h)
+                vi_tri[ten] = (cx, chan_y, cnv)
+            if c["tien_canh"] is not None: the_gioi.paste(c["tien_canh"], (0, 0), c["tien_canh"])
+
+            # máy quay
+            can = None
+            for (a, ai) in c["can"]:
+                if a <= tt: can = ai
+            if can in vi_tri:
+                mx, cy0, cnv = vi_tri[can]; kh = cnv * 0.62; my = cy0 - cnv * 0.80
             else:
-                ngam, mo = tte[0], tte[1]; f_ = ngam; lat = False; nhun = 0
-                if mo is None: mo = mo_cua(ngam)
-                if len(tte) > 2: co_tt = tte[2]
-                if loi and loi["ai"] == ten and tt < loi["t1"] and mo:
-                    k = tt - loi["t0"]
-                    if "mieng" in loi: m = loi["mieng"]; f_ = mo if m[min(int(k * FPS), len(m) - 1)] else ngam
-                    elif not im_lang(loi["noi"]) and (k / GIAY_MOI_TIENG) % 1 < 0.55 and k < loi["t1"] - loi["t0"] - 0.3: f_ = mo
-            cy_f, co = theo_vi_tri(bc["chan"], x); chan_y = cy_f * H; co = round(co * 50) / 50
-            cnv = cao_nv * co; h = hinh_nv(f_, cnv * co_tt, bc["mau"], lat)
-            cx = x * W
-            for r in n["rung"]:
-                if 0 <= tt - r < 1.4: cx += math.sin((tt - r) * 70) * cao_nv * 0.006
-            tho = 0 if dang_di is not None else math.sin(tt * 2.2 + len(ten)) * cao_nv * 0.002
-            s = bong(int(cnv * 0.34), int(cnv * 0.045))
-            the_gioi.paste(s, (int(cx - s.width / 2), int(chan_y - s.height / 2)), s)
-            the_gioi.paste(h, (int(cx - h.width / 2), int(chan_y - h.height + nhun + tho)), h)
-            vi_tri[ten] = (cx, chan_y, cnv)
-        if c["tien_canh"] is not None: the_gioi.paste(c["tien_canh"], (0, 0), c["tien_canh"])
+                kh = bc["khung"] * H * (1 - 0.05 * tc / dai_canh)
+                trong = [v for v in vi_tri.values() if 0 <= v[0] <= W] or [(W / 2, bc["chan"] * H if not isinstance(bc["chan"], list) else H * 0.75, cao_nv)]
+                mx = sum(v[0] for v in trong) / len(trong); my = sum(v[1] - v[2] * 0.5 for v in trong) / len(trong) + kh * 0.06
+                if len(trong) > 1:  # lùi máy cho đủ mọi nhân vật trong khung
+                    rong_can = max(v[0] for v in trong) - min(v[0] for v in trong) + max(v[2] for v in trong) * 0.9
+                    kh = max(kh, rong_can * CAO / RONG)
+                    cao_can = max(v[1] for v in trong) - min(v[1] - v[2] for v in trong)
+                    kh = max(kh, cao_can * 1.25)
+                    my = (max(v[1] for v in trong) + min(v[1] - v[2] for v in trong)) / 2 + kh * 0.06
+            goc = next(((a, g) for a, g in reversed(c["goc"]) if a <= tt), None)
+            if goc:
+                a, g = goc; p = min(1.0, max(0.0, (tt - a) / 2.0))
+                p = p * p * (3 - 2 * p)
+                if g == "toàn": kh = max(kh, H)
+                elif g == "trung": kh *= 0.83
+                elif g == "cận": kh *= 0.65
+                elif g == "tiến": kh *= 1 - 0.18 * p
+                elif g == "lùi": kh *= 1 + 0.18 * p
+                elif g == "trái": mx -= W * 0.12 * p
+                elif g == "phải": mx += W * 0.12 * p
+            if cam is None or canh_truoc is not c: cam = [mx, my, kh]
+            else:
+                k_ = 1 - (1 - 0.07) ** (25 / FPS); cam = [cam[0] + (mx - cam[0]) * k_, cam[1] + (my - cam[1]) * k_, cam[2] + (kh - cam[2]) * k_]
+            canh_truoc = c
+            ch_ = min(cam[2], H); cw_ = ch_ * RONG / CAO
+            if cw_ > W: cw_ = W; ch_ = cw_ * CAO / RONG
+            cx_ = min(max(cam[0], cw_ / 2), W - cw_ / 2); cy_ = min(max(cam[1], ch_ / 2), H - ch_ / 2)
+            khung = the_gioi.crop((int(cx_ - cw_ / 2), int(cy_ - ch_ / 2), int(cx_ + cw_ / 2), int(cy_ + ch_ / 2))).resize((RONG, CAO), Image.BILINEAR)
+            if mat_shot:   # cắt sang cận khuôn mặt
+                khung = c["nen_mo"].copy(); fm = hinh_nv(mat_shot, CAO * 0.96, bc["mau"], False)
+                khung.paste(fm, ((RONG - fm.width) // 2, CAO - fm.height), fm)
 
-        # máy quay
-        can = None
-        for (a, ai) in c["can"]:
-            if a <= tt: can = ai
-        if can in vi_tri:
-            mx, cy0, cnv = vi_tri[can]; kh = cnv * 0.62; my = cy0 - cnv * 0.80
-        else:
-            kh = bc["khung"] * H * (1 - 0.05 * tc / dai_canh)
-            trong = [v for v in vi_tri.values() if 0 <= v[0] <= W] or [(W / 2, bc["chan"] * H if not isinstance(bc["chan"], list) else H * 0.75, cao_nv)]
-            mx = sum(v[0] for v in trong) / len(trong); my = sum(v[1] - v[2] * 0.5 for v in trong) / len(trong) + kh * 0.06
-            if len(trong) > 1:  # lùi máy cho đủ mọi nhân vật trong khung
-                rong_can = max(v[0] for v in trong) - min(v[0] for v in trong) + max(v[2] for v in trong) * 0.9
-                kh = max(kh, rong_can * CAO / RONG)
-                cao_can = max(v[1] for v in trong) - min(v[1] - v[2] for v in trong)
-                kh = max(kh, cao_can * 1.25)
-                my = (max(v[1] for v in trong) + min(v[1] - v[2] for v in trong)) / 2 + kh * 0.06
-        if cam is None or canh_truoc is not c: cam = [mx, my, kh]
-        else:
-            k_ = 0.07; cam = [cam[0] + (mx - cam[0]) * k_, cam[1] + (my - cam[1]) * k_, cam[2] + (kh - cam[2]) * k_]
-        canh_truoc = c
-        ch_ = min(cam[2], H); cw_ = ch_ * RONG / CAO
-        if cw_ > W: cw_ = W; ch_ = cw_ * CAO / RONG
-        cx_ = min(max(cam[0], cw_ / 2), W - cw_ / 2); cy_ = min(max(cam[1], ch_ / 2), H - ch_ / 2)
-        khung = the_gioi.crop((int(cx_ - cw_ / 2), int(cy_ - ch_ / 2), int(cx_ + cw_ / 2), int(cy_ + ch_ / 2))).resize((RONG, CAO), Image.BILINEAR)
-        if mat_shot:   # cắt sang cận khuôn mặt
-            khung = c["nen_mo"].copy(); fm = hinh_nv(mat_shot, CAO * 0.96, bc["mau"], False)
-            khung.paste(fm, ((RONG - fm.width) // 2, CAO - fm.height), fm)
-
-        for t0, k in hu_sk:
-            if k == "rung" and 0 <= tt - t0 < 0.6:
-                bien = int(14 * (1 - (tt - t0) / 0.6)); dx_, dy_ = rnd.integers(-bien, bien + 1, 2)
-                khung = khung.transform(khung.size, Image.AFFINE, (1, 0, dx_, 0, 1, dy_), resample=Image.BILINEAR)
-        if dang_mua(tt, c["t0"]):
-            khung = Image.blend(khung, den, 0.12); dm = ImageDraw.Draw(khung, "RGBA")
-            for (gx, gy, v) in giot:
-                y_ = (gy + tt * 1400 * v) % CAO; x_ = (gx - tt * 200 * v) % RONG
-                dm.line([(x_, y_), (x_ - 6 * v, y_ + 30 * v)], fill=(200, 210, 230, int(110 * v)), width=2)
-        khung.paste(den, (0, 0), toi_vien)
-        for t0, k in hu_sk:
-            if k == "chớp" and 0 <= tt - t0 < 0.4: khung = Image.blend(khung, Image.new("RGB", khung.size, (255, 255, 255)), 0.85 * (1 - (tt - t0) / 0.4))
-        if loi and not im_lang(loi["noi"]):
-            d = ImageDraw.Draw(khung); dong, hang = [], ""
-            for tu in chu_phu_de(loi["noi"]).split():
-                thu = (hang + " " + tu).strip()
-                if d.textlength(thu, font=font) > RONG * 0.86: dong.append(hang); hang = tu
-                else: hang = thu
-            dong.append(hang); y0 = CAO - 40 - len(dong) * 56
-            for j, hh in enumerate(dong):
-                d.text(((RONG - d.textlength(hh, font=font)) / 2, y0 + j * 56), hh, font=font, fill=(255, 225, 70), stroke_width=4, stroke_fill=(0, 0, 0))
-        mo = min(1.0, tc / 0.35, (dai_canh - tc) / 0.35)
-        if mo < 1: khung = Image.blend(Image.new("RGB", khung.size), khung, max(mo, 0))
-        ff.stdin.write(khung.tobytes())
-        if f % 250 == 0: print(f"   {f}/{so_khung}")
-    ff.stdin.close(); ff.wait(); print(">> Xong:", ra); return ra
+            for t0, k in hu_sk:
+                if k == "rung" and 0 <= tt - t0 < 0.6:
+                    bien = int(14 * (1 - (tt - t0) / 0.6)); dx_, dy_ = rnd.integers(-bien, bien + 1, 2)
+                    khung = khung.transform(khung.size, Image.AFFINE, (1, 0, dx_, 0, 1, dy_), resample=Image.BILINEAR)
+            if dang_mua(tt, c["t0"]):
+                khung = Image.blend(khung, den, 0.12); dm = ImageDraw.Draw(khung, "RGBA")
+                for (gx, gy, v) in giot:
+                    y_ = (gy + tt * 1400 * v) % CAO; x_ = (gx - tt * 200 * v) % RONG
+                    dm.line([(x_, y_), (x_ - 6 * v, y_ + 30 * v)], fill=(200, 210, 230, int(110 * v)), width=2)
+            khung.paste(den, (0, 0), toi_vien)
+            for t0, k in hu_sk:
+                if k == "chớp" and 0 <= tt - t0 < 0.4: khung = Image.blend(khung, Image.new("RGB", khung.size, (255, 255, 255)), 0.85 * (1 - (tt - t0) / 0.4))
+            if loi and not im_lang(loi["noi"]):
+                d = ImageDraw.Draw(khung); dong, hang = [], ""
+                for tu in chu_phu_de(loi["noi"]).split():
+                    thu = (hang + " " + tu).strip()
+                    if d.textlength(thu, font=font) > RONG * 0.86: dong.append(hang); hang = tu
+                    else: hang = thu
+                dong.append(hang); y0 = CAO - int(40 * ty_le) - len(dong) * int(56 * ty_le)
+                for j, hh in enumerate(dong):
+                    d.text(((RONG - d.textlength(hh, font=font)) / 2, y0 + j * int(56 * ty_le)), hh, font=font, fill=(255, 255, 255), stroke_width=max(2, int(4 * ty_le)), stroke_fill=(0, 0, 0))
+            mo = min(1.0, tc / 0.35, (dai_canh - tc) / 0.35)
+            if mo < 1: khung = Image.blend(Image.new("RGB", khung.size), khung, max(mo, 0))
+            ff.stdin.write(khung.tobytes())
+            if f % 250 == 0: print(f"   {f}/{so_khung}")
+    except BaseException:
+        ff.kill()
+        ff.wait()
+        if os.path.exists(tmp_ra): os.unlink(tmp_ra)
+        raise
+    ff.stdin.close()
+    if ff.wait() != 0 or not os.path.isfile(tmp_ra) or os.path.getsize(tmp_ra) == 0:
+        raise RuntimeError("FFmpeg không xuất được phim")
+    os.replace(tmp_ra, ra)
+    print(f">> Xong: {ra} ({time.monotonic() - bat_dau:.1f}s)", flush=True)
+    return ra
 
 if __name__ == "__main__":
-    lam_phim(sys.argv[1] if len(sys.argv) > 1 else os.path.join(THU_MUC, "kich_ban_tap1.txt"))
+    cli = argparse.ArgumentParser(description="Xưởng Phim Hay – render 1.2")
+    cli.add_argument("kich_ban", nargs="?", default=os.path.join(THU_MUC, "kich_ban_tap1.txt"))
+    cli.add_argument("--quality", choices=CHE_DO, default="720p")
+    cli.add_argument("--preview", action="store_true", help="Không tạo giọng TTS; vẫn có nhạc/hiệu ứng")
+    cli.add_argument("--output")
+    cli.add_argument("--check", action="store_true", help="Chỉ kiểm tra kịch bản và tài nguyên")
+    args = cli.parse_args()
+    RONG, CAO, FPS = CHE_DO[args.quality]
+    if args.check:
+        kiem_tra(doc_kich_ban(args.kich_ban))
+        print("Kịch bản hợp lệ")
+    else:
+        lam_phim(args.kich_ban, preview=args.preview, output=args.output)

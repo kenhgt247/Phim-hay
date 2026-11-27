@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "review": "pending_visual_review",
+  "walk": {
+    "frames": [
+      "anim_hien_walk_00.png",
+      "anim_hien_walk_01.png",
+      "anim_hien_walk_02.png",
+      "anim_hien_walk_03.png",
+      "anim_hien_walk_04.png",
+      "anim_hien_walk_05.png",
+      "anim_hien_walk_06.png",
+      "anim_hien_walk_07.png"
+    ],
+    "direction": "phải"
+  },
+  "idle": {
+    "frames": [
+      "anim_hien_idle_00.png",
+      "anim_hien_idle_01.png",
+      "anim_hien_idle_02.png",
+      "anim_hien_idle_03.png"
+    ],
+    "pose": "hien_hien_ngam.png"
+  }
+}

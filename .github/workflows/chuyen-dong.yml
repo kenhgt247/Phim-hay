@@ -1,0 +1,75 @@
+name: Vẽ bộ chuyển động AI
+on:
+  push:
+    branches: [phim-hay-2.0]
+    paths: [cong_cu/ve_chuyen_dong.py]
+  workflow_dispatch:
+    inputs:
+      character:
+        description: "Nhân vật"
+        type: choice
+        options: [hien, kela, lan, tung]
+        default: hien
+      force:
+        description: "Vẽ lại (phát sinh phí API)"
+        type: boolean
+        default: false
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: motion-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  motion:
+    if: github.ref == 'refs/heads/phim-hay-2.0'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install pillow numpy scipy requests
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+      - uses: actions/download-artifact@v4
+        if: ${{ (inputs.character || 'hien') == 'hien' && !inputs.force }}
+        continue-on-error: true
+        with:
+          name: motion-diagnostics
+          run-id: 45972423816
+          github-token: ${{ github.token }}
+          path: ket_qua/motion_reuse
+      - name: Vẽ 2 sheet (tối đa 4 lượt nếu cần vẽ lại)
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          CHARACTER: ${{ inputs.character || 'hien' }}
+          FORCE: ${{ inputs.force || false }}
+          MOTION_REUSE_DIR: ket_qua/motion_reuse
+        run: |
+          args=(--character "$CHARACTER")
+          if [[ "$FORCE" == true ]]; then args+=(--force); fi
+          python cong_cu/ve_chuyen_dong.py "${args[@]}"
+      - name: Render demo bằng pack mới
+        run: |
+          python phan_mem/lam_phim.py phan_mem/demo_chuyen_dong.txt --preview --quality 720p --output ket_qua/demo_chuyen_dong.mp4
+          ffprobe -v error -show_entries stream=codec_type,width,height -of json ket_qua/demo_chuyen_dong.mp4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: demo-chuyen-dong
+          path: |
+            ket_qua/demo_chuyen_dong.mp4
+            kho/chuyen_dong/
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: motion-diagnostics
+          path: ket_qua/motion_diagnostics/
+          if-no-files-found: ignore
+      - name: Lưu pack vào nhánh thử nghiệm
+        run: |
+          git config user.name "kho-hinh-bot"
+          git config user.email "kho-hinh-bot@users.noreply.github.com"
+          git add kho/chuyen_dong
+          git diff --cached --quiet || (git commit -m "AI motion pack – chờ duyệt hình" && git pull --rebase && git push)
