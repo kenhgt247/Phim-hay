@@ -62,7 +62,7 @@ THU_MUC_ANH = [ANH, os.path.join(os.path.dirname(THU_MUC), "kho", "tach"), os.pa
                os.path.join(os.path.dirname(THU_MUC), "kho", "goc")]
 # =============================================================================
 
-GIAY_MOI_TIENG, NGHI = 0.27, 0.45
+GIAY_MOI_TIENG, NGHI = 0.27, 0.6
 TOC_DO_DI = 0.62      # chiều cao nhân vật / giây
 NHIP_BUOC = 0.27      # giây mỗi hình bước
 
@@ -81,13 +81,28 @@ def lay_nv(ten):
                      "đi": [f"{p}_bang_3.png", f"{p}_bang_4.png"]}
     return NHAN_VAT[ten]
 
+_mo_ta = None
+def mo_ta_tu_the():
+    """Mô tả tư thế lấy từ danh_sach_hinh.txt (để biết tư thế nào là ngồi)."""
+    global _mo_ta
+    if _mo_ta is None:
+        _mo_ta = {}
+        try:
+            sys.path.insert(0, os.path.join(os.path.dirname(THU_MUC), "cong_cu")); from ve_kho import doc_danh_sach
+            for h in doc_danh_sach():
+                m = re.search(r"Tư thế: (.*)$", h["lenh"])
+                if m: _mo_ta[h["ten"]] = m.group(1).strip()
+        except Exception: pass
+    return _mo_ta
+
 def tu_the_cua(cf, ten_tt):
     """Tư thế theo tên đặt sẵn, hoặc theo tên ảnh trong kho (vd. hien_bang_lanh_3)."""
     if ten_tt in cf: return cf[ten_tt]
     ten_anh = ten_tt.replace(".png", "")
     tim_file(ten_anh + ".png")
     if "_mat_" in ten_anh: return {"mat": ten_anh + ".png"}
-    ngoi = "ngoi" in ten_anh or ten_anh in ("hien_bang_lanh_5", "kela_bang_5") or (ten_anh.endswith("_bang_5") and not ten_anh.startswith(("hien", "kela")))
+    mt = mo_ta_tu_the().get(ten_anh, "").lower()
+    ngoi = "ngoi" in ten_anh or mt.startswith(("ngồi", "nằm")) or ten_anh in ("hien_bang_lanh_5", "kela_bang_5")
     return (ten_anh + ".png", None, 0.80 if ngoi else 1.0)
 
 _mo = {}

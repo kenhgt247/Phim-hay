@@ -8,6 +8,8 @@ Dẫn chuyện: Ở cái phường nhỏ ven sông này, ai cũng biết anh Hi�
 * Hiền: đi tới 45
 Dẫn chuyện: Chủ trung tâm du học Bình Minh. Hiền lành, chăm chỉ, nói năng nhỏ nhẹ, chưa từng to tiếng với ai.
 Dẫn chuyện: Người trong phường hay bảo nhau: muốn cho con đi du học, cứ tìm thầy Hiền. Thầy tận tâm, lại chẳng bao giờ lấy tiền quá tay.
+Dẫn chuyện: Có đứa học trò nhà nghèo, thầy cho nợ phí. Có đứa sang bên kia gặp chuyện, nửa đêm thầy vẫn nghe máy.
+Dẫn chuyện: Năm năm mở trung tâm, chưa ai thấy anh cau mày với ai một lần.
 * Hiền: nghe
 Hiền: Ừ, anh khóa cửa rồi. Em cứ cho con ăn trước đi, anh về ngay.
 Hiền: Bống ngủ chưa em? Bảo con đợi bố, bố mua bánh cho.
@@ -64,11 +66,37 @@ Hiền (cận): Luật của tao, mày nhớ không? Không ma túy. Không đ�
 * Máy quay: xa
 Hiền: Tùng nợ thì tao đòi Tùng. Vợ con nó không nợ tao đồng nào.
 Tuấn: Em nhớ rồi, đại ca.
+Hiền: Vợ thằng Tùng vẫn đang nằm viện phải không?
+Tuấn: Dạ. Nghe nói mổ xong rồi, còn nợ viện phí.
+Hiền: Mai cho người mang hai chục triệu sang đóng viện phí cho chị ấy. Đừng nói là của tao.
+Tuấn: Đại ca… nó đang nợ mình hai tỷ đấy anh.
+Hiền (cận): Nợ là chuyện của đàn ông. Người ốm thì phải được chữa.
+* Máy quay: xa
+Dẫn chuyện: Tuấn im lặng. Đã bảy năm theo anh, cậu vẫn chưa bao giờ hiểu hết người đàn ông này.
 * Hiền: hien_bang_lanh_6
 Dẫn chuyện: Hiền châm một điếu thuốc. Ba năm nay, anh giữ cái luật ấy như giữ một sợi dây cuối cùng nối anh với con người cũ.
 * Hiền: lạnh
 Tuấn: Còn một chuyện nữa anh ạ. Dạo này bên Tùng hay có một người lạ ra vào. Nói giọng lơ lớ, đeo đồng hồ vàng to lắm.
 Hiền: Tìm hiểu xem hắn là ai.
+
+[Cảnh: phong_ngu | Hiền 35, Lan 68]
+* Nhạc: buồn
+* Hiền: hien_them_2
+Dẫn chuyện: Một giờ sáng, Hiền mới về đến nhà. Anh rón rén mở cửa phòng ngủ.
+Dẫn chuyện: Chiếc điện thoại thứ hai, anh tắt nguồn, nhét sâu vào túi áo khoác vắt trên ghế. Như mọi đêm.
+* Lan: lan_tao
+Lan: Anh về rồi à… Mấy giờ rồi anh?
+* Hiền: hiền
+Hiền: Một giờ. Anh làm em thức à?
+Lan: Không. Em nằm mãi không ngủ được. Anh này… anh có chuyện gì giấu em không?
+* Hiền: hien_bang_mat_6
+Dẫn chuyện: Câu hỏi nhẹ như hơi thở. Nhưng với Hiền, nó nặng hơn bất cứ lời đe dọa nào anh từng nghe.
+* Hiền: hiền
+Hiền: Không. Ngủ đi em. Mai còn đưa con đi học.
+Lan: Ừ… Em chỉ sợ anh mệt mà không nói với ai.
+* Hiền: hien_bang_mat_4
+Dẫn chuyện: Lan quay vào trong. Hiền ngồi bên mép giường rất lâu, nhìn chiếc áo khoác trên ghế.
+Dẫn chuyện: Trong đó là cả một cuộc đời khác. Cuộc đời mà người phụ nữ đang ngủ cạnh anh không hề biết.
 
 [Cảnh: van_phong | Hiền 23, Ngọc 112]
 * Hiền: hien_bang_ngoi_3
@@ -85,7 +113,13 @@ Ngọc: Bố em chạy xe ôm, mẹ em bán rau. Em là con cả, em muốn sang
 Dẫn chuyện: Hiền nhìn cô gái. Anh thấy lại chính mình của mười năm trước, cũng ôm một giấc mơ, cũng mang theo cả món nợ của gia đình.
 * Hiền: hien_bang_ngoi_3
 Hiền: Thầy sẽ giảm một nửa phí dịch vụ cho em. Em chỉ cần lo học tiếng cho tốt.
+Ngọc: Thật ạ? Nhưng mà… sao thầy lại giúp em?
+Hiền: Ngày xưa thầy cũng đi Nhật. Cũng mang theo món nợ của cả nhà như em.
+Hiền: Thầy biết cái cảm giác đứng ở sân bay, không dám ngoảnh lại nhìn bố mẹ.
+Ngọc: Dạ… em sẽ cố gắng. Em hứa sẽ không làm thầy thất vọng.
 Hiền: Và nhớ lời thầy: ai đòi em đóng tiền mà không có hợp đồng, không có hóa đơn, thì đừng bao giờ tin.
+Hiền: Kể cả người đó nói là quen thầy. Nhớ chưa?
+Ngọc: Dạ, em nhớ rồi ạ.
 Ngọc: Dạ! Em cảm ơn thầy nhiều lắm ạ!
 * Ngọc: đi tới 115
 Dẫn chuyện: Ngọc cúi chào rồi đi ra, bước chân nhẹ như vừa được tiếp thêm cánh.
@@ -98,6 +132,7 @@ Dẫn chuyện: Cánh cửa kính vừa khép lại, đã có người đẩy ra
 Dẫn chuyện: Một gã đàn ông mặc áo hoa, đồng hồ vàng to bản, bước vào mà không cần ai mời.
 * Kẻ lạ: đứng
 Kẻ lạ: Văn phòng đẹp đấy. Bản đồ thế giới treo đầy tường. Làm ăn được nhỉ.
+Kẻ lạ: Mười năm rồi, không ngờ lại gặp nhau ở đây. Đúng là trái đất tròn.
 * Hiền: hien_bang_ngoi_3
 Hiền: Anh cần tư vấn du học cho ai ạ?
 Kẻ lạ: Tôi không đến hỏi du học.
@@ -111,5 +146,7 @@ Hiền: …
 Dẫn chuyện: Lần đầu tiên sau năm năm, có người gọi đúng cái tên thật của anh, ngay giữa ban ngày.
 * Kẻ lạ: mặt cười
 Dẫn chuyện: Và gã đàn ông ấy đang cười. Nụ cười mà Hiền đã thề sẽ không bao giờ quên.
+Dẫn chuyện: Mười năm trước, ở một xưởng điện tử bên Nhật, chính nụ cười ấy đã lấy đi của anh tất cả.
+Dẫn chuyện: Bây giờ, nó lại xuất hiện. Ngay trong căn phòng anh dựng lên bằng mồ hôi của mình.
 * Hiệu ứng: chớp
 Dẫn chuyện: Tập sau: Người từ Nagoya.

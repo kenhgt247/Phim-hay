@@ -21,7 +21,7 @@ Hắc: Hồ sơ đẹp nhỉ. Con bé này trông thật thà quá.
 * Hắc: mặt cười
 Dẫn chuyện: Hắn cười. Và Hiền bỗng thấy lạnh sống lưng, như mười năm trước.
 
-[Cảnh: xuong_nhat | Hiền trẻ 35, Hắc 70]
+[Cảnh: xuong_nhat | Hiền trẻ 30, Anh Tâm 52, Hắc 80]
 * Hiệu ứng: chớp
 * Nhạc: buồn
 * Hắc: thường
@@ -31,6 +31,8 @@ Dẫn chuyện: Ngày làm mười hai tiếng. Tối về ngủ chung phòng v�
 Hắc: Làm nhanh lên! Chậm một giây là trừ lương!
 Hiền trẻ: Dạ, anh Hắc. Mà anh ơi, chuyện gia hạn hợp đồng cho bọn em, anh lo được chưa ạ?
 Hắc: Lo được hết. Mỗi đứa đóng thêm năm mươi man. Cuối tháng có giấy.
+Anh Tâm: Hiền ơi, tao vừa vay thêm của nhà. Chỗ này là tiền bán con trâu đấy. Mày bảo có chắc không?
+Hiền trẻ: Chắc mà anh Tâm. Anh Hắc làm môi giới mấy năm rồi, có giấy tờ đàng hoàng.
 * Hiền trẻ: hientre_bang_1
 Dẫn chuyện: Ba mươi công nhân. Ba mươi người gom từng đồng, đóng cho Hắc. Hiền là người đóng đầu tiên.
 * Hiền trẻ: hientre_tao
@@ -40,6 +42,8 @@ Dẫn chuyện: Rồi một buổi sáng, Hắc biến mất. Điện thoại kh
 Dẫn chuyện: Mang theo toàn bộ tiền của ba mươi người.
 * Hắc: thường
 * Hiền trẻ: hientre_bang_2
+Anh Tâm: Hiền… nó đi thật rồi. Tiền của cả xưởng… mất hết rồi.
+Dẫn chuyện: Anh Tâm ngồi thụp xuống, tay vẫn nắm chặt tờ biên lai có chữ ký của Hắc. Tờ giấy ấy, anh giữ suốt mười năm sau.
 Dẫn chuyện: Hợp đồng không được gia hạn. Cả xưởng bị đuổi về nước trước hạn. Món nợ ở quê tăng gấp đôi.
 Dẫn chuyện: Đó là lần đầu tiên Hiền hiểu một điều: ở đời, người hiền thì bị bắt nạt.
 
@@ -78,6 +82,10 @@ Lan: Mà chiều nay chị bán nước đầu ngõ kể… có người lạ đ
 Hiền: Khách hỏi du học thôi em. Người ta ở xa đến, trông hơi khó tính.
 * Lan: lan_tao
 Lan: Ừ… anh cứ hiền thế, em lại sợ người ta bắt nạt anh.
+Hiền: Ai bắt nạt được anh. Anh có vợ giỏi thế này cơ mà.
+Lan: Lại nịnh. Ăn nhanh đi rồi đi tắm. Mai chủ nhật, con đòi về quê thăm ông bà đấy.
+Hiền: Ừ. Lâu rồi không về. Bố dạo này thế nào em?
+Lan: Bố vẫn khỏe. Hôm trước gọi điện, bố còn khoe với cả xóm: con trai tôi làm thầy giáo, giúp bao nhiêu đứa đi nước ngoài.
 * Nhạc: buồn
 * Hiền: hien_bang_mat_1
 Dẫn chuyện: Hiền cười. Mười năm nay, đây là lần đầu tiên anh nói dối vợ mà tim đập mạnh đến vậy.
@@ -102,6 +110,9 @@ Dẫn chuyện: Hiền châm một điếu thuốc. Lần đầu tiên sau nhi�
 * Hiền: lạnh
 Hiền: Thì tao sẽ làm cho nó không có cơ hội mở miệng. Bằng cách của tao.
 Tuấn: Em đi ngay.
+Hiền: Khoan. Còn một việc nữa. Con bé Ngọc, học viên mới của trung tâm. Cho người để mắt đến nó.
+Tuấn: Con bé học sinh ấy ạ? Liên quan gì anh?
+Hiền: Hắc nhìn hồ sơ của nó. Tao chưa bao giờ thấy hắn nhìn thứ gì mà không có lý do.
 
 [Cảnh: bo_ke | Tùng 50]
 * Hiệu ứng: mưa
@@ -111,6 +122,13 @@ Tùng: Anh Hắc à? Anh gặp nó rồi chứ?
 Tùng: Thế nào, nó có sợ không?
 Tùng (cận): Tốt. Cá đã cắn câu. Giờ chỉ cần nó bước sang bên này sông…
 * Máy quay: xa
+Hắc (điện thoại): Đừng vội. Mày cứ để nó sang. Tao không cần nó sợ. Tao cần nó bận.
+Tùng: Bận ạ? Anh tính gì thế?
+Hắc (điện thoại): Một thằng đại ca đang lo giữ vợ, giữ con, giữ cái mặt nạ… thì làm gì còn mắt mà nhìn xem trong trung tâm của nó đang có chuyện gì.
+Tùng: Thế còn món nợ của em? Anh hứa lo cho em rồi đấy.
+Hắc (điện thoại): Xong vụ này, mày trả hết nợ, còn dư mà mua nhà. Cứ làm đúng như tao dặn.
+* Tùng: tung_them_2
+Dẫn chuyện: Tùng cúp máy, nhìn sang bờ bên kia. Ánh đèn của phường nhỏ lấp lánh trong mưa.
 * Hiệu ứng: chớp
 Dẫn chuyện: Hiền không biết, cuộc gặp sáng nay chỉ là miếng mồi đầu tiên.
 Dẫn chuyện: Và người mà Hắc thật sự nhắm tới… không phải là anh.
