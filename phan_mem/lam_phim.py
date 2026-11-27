@@ -330,12 +330,13 @@ def lam_phim(kb):
         t1 = nhac_sk[i + 1][0] if i + 1 < len(nhac_sk) else tong
         if kieu.strip() == "tắt" or t1 - t0 < 1: continue
         them(nhac_bg, am_thanh.nhac(kieu.strip(), t1 - t0 + 1.5), t0)
-    # mưa
-    mua_tu = None
-    for t0, kieu in hu_sk + [(tong, "tắt mưa")]:
-        if kieu == "mưa" and mua_tu is None: mua_tu = t0
-        elif kieu == "tắt mưa" and mua_tu is not None:
-            them(moi_truong, am_thanh.nen_moi_truong("mua", t0 - mua_tu) * am_thanh.bao(t0 - mua_tu, 1, 1), mua_tu); mua_tu = None
+    # mưa: chỉ trong cảnh có lệnh mưa, hết cảnh thì tắt
+    for c in ds:
+        mua_tu = None
+        for t0, kieu in [x for x in hu_sk if c["t0"] <= x[0] < c["t1"]] + [(c["t1"], "tắt mưa")]:
+            if kieu == "mưa" and mua_tu is None: mua_tu = t0
+            elif kieu == "tắt mưa" and mua_tu is not None and t0 - mua_tu > 0.5:
+                them(moi_truong, am_thanh.nen_moi_truong("mua", t0 - mua_tu) * am_thanh.bao(t0 - mua_tu, 1, 1), mua_tu); mua_tu = None
     # nhạc nhỏ đi khi có người nói
     co_noi = np.abs(giong) > 0.02
     w = int(0.25 * sr); co_noi = np.convolve(co_noi.astype(np.float32), np.ones(w) / w, "same")
@@ -357,10 +358,10 @@ def lam_phim(kb):
     toi_vien = Image.fromarray((np.clip((r_ - 0.75) / 0.7, 0, 1) * 150).astype(np.uint8), "L")
     den = Image.new("RGB", (RONG, CAO))
     rnd = np.random.default_rng(3); giot = [(rnd.uniform(0, RONG), rnd.uniform(0, CAO), rnd.uniform(0.6, 1.0)) for _ in range(160)]
-    def dang_mua(tt):
+    def dang_mua(tt, t_canh):
         on = False
         for t0, k in hu_sk:
-            if t0 <= tt: on = (k == "mưa") if k in ("mưa", "tắt mưa") else on
+            if t_canh <= t0 <= tt and k in ("mưa", "tắt mưa"): on = (k == "mưa")
         return on
 
     for f in range(so_khung):
@@ -433,7 +434,7 @@ def lam_phim(kb):
             if k == "rung" and 0 <= tt - t0 < 0.6:
                 bien = int(14 * (1 - (tt - t0) / 0.6)); dx_, dy_ = rnd.integers(-bien, bien + 1, 2)
                 khung = khung.transform(khung.size, Image.AFFINE, (1, 0, dx_, 0, 1, dy_), resample=Image.BILINEAR)
-        if dang_mua(tt):
+        if dang_mua(tt, c["t0"]):
             khung = Image.blend(khung, den, 0.12); dm = ImageDraw.Draw(khung, "RGBA")
             for (gx, gy, v) in giot:
                 y_ = (gy + tt * 1400 * v) % CAO; x_ = (gx - tt * 200 * v) % RONG

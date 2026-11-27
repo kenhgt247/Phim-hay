@@ -79,14 +79,14 @@ def nhac(kieu, dai):
         y += nen_dem(hz("A2"), dai, 0.45) + nen_dem(hz("E3"), dai, 0.25) + nen_dem(hz("C4"), dai, 0.10)
         y = loc_thap(y, 1500)
         for k, nt in zip(np.arange(1.0, dai - 1, 1.6), ["E5", "C5", "A4", "B4", "E5", "G4", "A4", "C5"] * 20):
-            i = int(k * SR); p = phim_dan(hz(nt), min(2.5, (n - i) / SR), 0.22); y[i:i + len(p)] += p
+            i = int(k * SR); p = phim_dan(hz(nt), min(2.5, (n - i) / SR), 0.22); m2 = min(len(p), n - i); y[i:i + m2] += p[:m2]
     elif kieu == "buồn":
         hop = [("A2", "C4", "E4"), ("F2", "A3", "C4"), ("C3", "E4", "G4"), ("G2", "B3", "D4")]
         for k, (a, b, c) in enumerate(hop * 20):
             s = k * 4.0
             if s >= dai: break
             i = int(s * SR); m = min(int(4.5 * SR), n - i); seg = (nen_dem(hz(a), m / SR, 0.4) + nen_dem(hz(b), m / SR, 0.2) + nen_dem(hz(c), m / SR, 0.15)) * bao(m / SR, 1.2, 1.2)
-            y[i:i + m] += seg
+            k = min(len(seg), n - i); y[i:i + k] += seg[:k]
         y = loc_thap(y, 1800)
     else:  # ấm áp
         hop = [("C3", "E4", "G4", "B4"), ("A2", "C4", "E4", "G4"), ("F2", "A3", "C4", "E4"), ("G2", "B3", "D4", "F4")]
@@ -94,10 +94,11 @@ def nhac(kieu, dai):
             s = k * 3.2
             if s >= dai: break
             i = int(s * SR); m = min(int(3.6 * SR), n - i)
-            y[i:i + m] += (nen_dem(hz(nhom[0]), m / SR, 0.35) + nen_dem(hz(nhom[1]), m / SR, 0.12)) * bao(m / SR, 0.8, 0.8)
+            seg = (nen_dem(hz(nhom[0]), m / SR, 0.35) + nen_dem(hz(nhom[1]), m / SR, 0.12)) * bao(m / SR, 0.8, 0.8)
+            k = min(len(seg), n - i); y[i:i + k] += seg[:k]
             for q, nt in enumerate(nhom[1:] + nhom[1:2]):
                 j = i + int(q * 0.8 * SR)
-                if j < n: p = phim_dan(hz(nt), min(2.0, (n - j) / SR), 0.25); y[j:j + len(p)] += p
+                if j < n: p = phim_dan(hz(nt), min(2.0, (n - j) / SR), 0.25); k = min(len(p), n - j); y[j:j + k] += p[:k]
         y = loc_thap(y, 3000)
     y = vang(y, 2.5, 0.4)
     return (y / (np.abs(y).max() + 1e-9) * bao(dai, 1.5, 2.0)).astype(np.float32)
