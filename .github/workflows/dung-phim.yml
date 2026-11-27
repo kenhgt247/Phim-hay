@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       kich_ban:
-        description: "Tên file kịch bản trong thư mục phan_mem"
+        description: "Tên file kịch bản trong thư mục phan_mem (nhiều tập thì cách nhau dấu phẩy)"
         default: "kich_ban_tap1.txt"
 
 permissions:
@@ -16,7 +16,7 @@ concurrency:
 jobs:
   dung:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 300
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -24,17 +24,24 @@ jobs:
           python-version: "3.11"
       - run: for i in 1 2 3; do sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core && break; echo 'thử lại...'; sleep 20; done; which ffmpeg
       - run: for i in 1 2 3; do pip install vieneu pillow numpy scipy && break; sleep 20; done
-      - name: Dựng phim (giọng VieNeu + hình)
-        run: python phan_mem/lam_phim.py "phan_mem/${{ inputs.kich_ban }}"
-      - name: Lưu phim vào thư mục phim/
+      - name: Dựng phim (giọng VieNeu + hình) và lưu vào thư mục phim/
         run: |
-          ten=$(basename "${{ inputs.kich_ban }}" .txt)
-          mv "phan_mem/${ten}.mp4" "phim/${ten}.mp4"
           git config user.name "kho-hinh-bot"
           git config user.email "kho-hinh-bot@users.noreply.github.com"
-          git add phim
-          git diff --cached --quiet || (git commit -m "Dựng phim ${ten}" && git pull --rebase -q && git push)
+          loi=0
+          for kb in $(echo "${{ inputs.kich_ban }}" | tr ',' ' '); do
+            ten=$(basename "$kb" .txt)
+            echo "===== $ten ====="
+            if python phan_mem/lam_phim.py "phan_mem/$kb"; then
+              mv "phan_mem/${ten}.mp4" "phim/${ten}.mp4"
+              git add phim && git commit -q -m "Dựng phim ${ten}" && git pull --rebase -q && git push -q
+            else
+              echo "❌ $ten bị lỗi"; loi=1
+            fi
+          done
+          exit $loi
       - uses: actions/upload-artifact@v4
         with:
           name: phim
           path: phim/*.mp4
+          if-no-files-found: ignore
