@@ -18,8 +18,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
-      - run: pip install vieneu
+      - run: for i in 1 2 3; do sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg && break; echo 'thử lại...'; sleep 20; done; which ffmpeg
+      - run: for i in 1 2 3; do pip install vieneu && break; sleep 20; done
       - name: Đọc thử tất cả giọng mẫu
         run: python cong_cu/thu_giong.py
       - name: Lưu vào kho
