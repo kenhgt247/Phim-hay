@@ -7,7 +7,8 @@ sys.path.insert(0, os.path.join(GOC, "cong_cu")); sys.path.insert(0, os.path.joi
 from ve_kho import doc_danh_sach
 
 TACH = os.path.join(GOC, "kho", "tach")
-TEN_NV = {"hien": "Hiền", "kela": "Kẻ lạ", "lan": "Lan", "bo": "Bố", "me": "Mẹ", "danem": "Đàn em", "tung": "Tùng"}
+TEN_NV = {"hien": "Hiền", "kela": "Kẻ lạ (Hắc)", "lan": "Lan", "bo": "Bố", "me": "Mẹ", "danem": "Đàn em (Tuấn)", "tung": "Tùng",
+          "tam": "Anh Tâm", "minh": "Thiếu tá Minh", "ngoc": "Ngọc", "hientre": "Hiền trẻ"}
 CO_SAN = {  # tư thế đặt tên sẵn trong phần mềm: (mô tả, nói được?)
     "Hiền": [("hiền", "đứng chính diện, tay cầm điện thoại, mặt hiền", True), ("lạnh", "đứng chính diện, cầm điện thoại, mặt lạnh", True),
              ("nghe", "áp điện thoại lên tai, mặt hiền", True), ("nghe lạnh", "áp điện thoại lên tai, mặt lạnh", True),
@@ -75,12 +76,12 @@ Quy tắc:
         nhom.setdefault(ten.split("_")[0], []).append(ten)
     for ma, ten_nv in TEN_NV.items():
         out.append(f"\n### {ten_nv}")
-        for (k, mt, noi) in CO_SAN.get(ten_nv, []):
+        for (k, mt, noi) in CO_SAN.get(ten_nv.split(" (")[0], []):
             out.append(f"- {'🗣 ' if noi else ''}`{k}`: {mt}")
         for t in nhom.get(ma, []):
             noi = (t + "_mo") in co_hinh
             out.append(f"- {'🗣 ' if noi else ''}`{t}`: {mo_ta.get(t, '')}")
-        if ten_nv not in CO_SAN: out.append(f"- (dáng mặc định khi vào cảnh: `{ma}_tao`)")
+        if ten_nv.split(" (")[0] not in CO_SAN: out.append(f"- (dáng mặc định khi vào cảnh: `{ma}_tao`)")
     out.append("\n## VÍ DỤ: KỊCH BẢN TẬP 2\n```\n" + open(os.path.join(GOC, "phan_mem", "kich_ban_tap2.txt"), encoding="utf-8").read().strip() + "\n```\n")
     open(os.path.join(GOC, "SO_TAY_BIEN_KICH.md"), "w", encoding="utf-8").write("\n".join(out) + "\n")
     print("Đã tạo SO_TAY_BIEN_KICH.md")

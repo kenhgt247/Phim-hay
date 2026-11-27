@@ -111,3 +111,137 @@ Giữ nguyên hoàn toàn nhân vật trong ảnh mẫu: cùng tư thế, khuôn
 
 ## lan_bang_2_mo | mẫu: lan_bang_2 | loại: đơn
 Giữ nguyên hoàn toàn nhân vật trong ảnh mẫu: cùng tư thế, khuôn mặt, quần áo, màu sắc, nét vẽ, kích thước và vị trí trong khung, nền trắng trơn. Chỉ thay đổi duy nhất cái miệng: miệng hé mở như đang nói chuyện. Không thay đổi gì khác.
+
+# ======================= HÌNH CHO 10 TẬP (cốt truyện HAI MẶT) =======================
+
+## nen_kho_hang | mẫu: | loại: nền
+{NEN} Kho hàng ven sông ban đêm, ghế bành da kiểu đại ca ở giữa, thùng hàng chất cao, đèn vàng treo, cửa cuốn mở ra phía sông.
+
+## nen_benh_vien | mẫu: | loại: nền
+{NEN} Hành lang và phòng bệnh viện Việt Nam, một giường bệnh bên trái, ánh đèn trắng lạnh, cửa sổ ban đêm.
+
+## nen_xom_tro | mẫu: | loại: nền
+{NEN} Xóm trọ công nhân Việt Nam buổi chiều, dãy phòng trọ cũ, dây phơi quần áo, xe máy cũ, lối đi hẹp.
+
+## nen_phong_ngu | mẫu: | loại: nền
+{NEN} Phòng ngủ vợ chồng lúc nửa đêm, ánh trăng xanh qua cửa sổ, giường đôi, chiếc áo khoác vắt trên ghế, đèn ngủ nhỏ.
+
+## nen_xuong_dai_loan | mẫu: | loại: nền
+{NEN} Xưởng sản xuất ở Đài Loan, máy móc công nghiệp, biển chữ Hán trên tường, ánh đèn huỳnh quang, không khí ngột ngạt.
+
+## nen_ky_tuc_xa | mẫu: | loại: nền
+{NEN} Ký túc xá công nhân ở Đài Loan ban đêm, giường tầng sắt, đèn vàng, quần áo treo, chật chội nhưng ấm cúng.
+
+## nen_nha_que | mẫu: | loại: nền
+{NEN} Sân nhà cấp bốn ở quê Bắc Bộ buổi sáng, giếng nước, bộ bàn ghế uống trà bằng gỗ ngoài hiên, cổng tre, cây cau.
+
+## nen_cong_an | mẫu: | loại: nền
+{NEN} Phòng làm việc của công an phường Việt Nam, bàn làm việc, ghế, tủ hồ sơ, lá cờ đỏ trên tường, cửa kính.
+
+## nen_nha_que_tet | mẫu: nen_nha_que | loại: nền
+Giữ nguyên bố cục, góc nhìn và nét vẽ của sân nhà quê trong ảnh mẫu, nhưng là ngày Tết: thêm cây đào hồng nở hoa, câu đối đỏ, mâm cơm Tết trên bàn ngoài hiên, nắng xuân ấm. Không có người.
+
+## tam_tao | mẫu: | loại: đơn
+{TAO} người đàn ông Việt Nam khoảng 38 tuổi, gầy, da rám nắng, mặc áo bảo hộ thợ điện màu cam đã cũ, gương mặt hiền và khắc khổ.
+
+## tam_bang | mẫu: tam_tao | loại: bảng
+{BANG} {BANG_CHUNG}
+
+## minh_tao | mẫu: | loại: đơn
+{TAO} Thiếu tá công an Việt Nam khoảng 45 tuổi, mặc quân phục công an màu xanh lá có quân hàm, gương mặt điềm đạm, nghiêm nghị.
+
+## minh_bang | mẫu: minh_tao | loại: bảng
+{BANG} {BANG_CHUNG}
+
+## ngoc_tao | mẫu: | loại: đơn
+{TAO} nữ sinh Việt Nam 19 tuổi, tóc buộc đuôi ngựa, áo sơ mi trắng, quần tây đen, tay ôm một tập hồ sơ, gương mặt ngây thơ, sáng sủa.
+
+## ngoc_bang | mẫu: ngoc_tao | loại: bảng
+{BANG} {BANG_CHUNG}
+
+## hientre_tao | mẫu: hien_hien_ngam | loại: đơn
+Vẽ đúng nhân vật trong ảnh mẫu nhưng trẻ hơn khoảng 10 tuổi (25 tuổi), tóc ngắn hơn, mặc áo bảo hộ lao động màu xám của công nhân nhà máy. Giữ nguyên nét mặt và nét vẽ hoạt hình 2D. Toàn thân, đứng chính diện, miệng ngậm, nền trắng trơn hoàn toàn, không chữ.
+
+## hientre_bang | mẫu: hientre_tao | loại: bảng
+{BANG} {BANG_CHUNG}
+
+## hien_them | mẫu: hien_hien_ngam | loại: bảng
+{BANG} 1. Ngồi bệt dưới đất, hai tay ôm đầu, buồn bã  2. Đứng cầm một tờ giấy đọc, mặt nghiêm  3. Đứng giơ cao chiếc điện thoại như sắp ném xuống đất, mặt giận  4. Đứng cúi đầu, hai tay buông thõng, mặt hối lỗi  5. Đứng mỉm cười hiền, hai tay đút túi quần  6. Ngồi xếp bằng trên chiếu cầm bát đũa ăn cơm
+
+## lan_them | mẫu: lan_tao | loại: bảng
+{BANG} 1. Đứng cầm chiếc điện thoại, mặt sững sờ  2. Đứng khóc, một tay lau nước mắt  3. Đứng khoanh tay, mặt giận, nhìn nghiêng 3/4 sang phải
+
+## bo_them | mẫu: bo_tao | loại: bảng
+{BANG} 1. Ngồi ghế gỗ cầm chén trà, nhìn nghiêng 3/4 sang phải  2. Đứng giận dữ, một tay chỉ thẳng về phía trước  3. Ngồi ghế gỗ rót trà, mỉm cười hiền
+
+## me_them | mẫu: me_tao | loại: bảng
+{BANG} 1. Đứng khóc, hai tay ôm ngực  2. Đứng nói chuyện điện thoại, mặt lo lắng  3. Ngồi ghế gỗ, hai tay đặt trên đùi, mặt lo lắng
+
+## danem_them | mẫu: danem_tao | loại: bảng
+{BANG} 1. Nằm trên giường bệnh, đầu quấn băng trắng  2. Đứng chính diện, đầu quấn băng trắng, mặt nghiêm  3. Ngồi trên ghế, đầu quấn băng trắng, nói chuyện
+
+## tung_them | mẫu: tung_tao | loại: bảng
+{BANG} 1. Ngồi ghế bành, vắt chân, hống hách, nhìn nghiêng 3/4 sang phải  2. Đứng cầm tờ giấy, mặt sững sờ  3. Đứng khoanh tay, nhìn nghiêng 3/4 sang trái
+
+## kela_them | mẫu: kela_ngam | loại: bảng
+{BANG} 1. Đi bộ nhìn nghiêng sang trái, tay xách va li  2. Đứng hai tay bị còng phía trước, cúi đầu  3. Ngồi ghế uống trà, cười cợt nhả, nhìn nghiêng 3/4 sang phải
+
+## tam_tao_mo | mẫu: tam_tao | loại: đơn
+Giữ nguyên hoàn toàn nhân vật trong ảnh mẫu: cùng tư thế, khuôn mặt, quần áo, màu sắc, nét vẽ, kích thước và vị trí trong khung, nền trắng trơn. Chỉ thay đổi duy nhất cái miệng: miệng hé mở như đang nói chuyện. Không thay đổi gì khác.
+
+## minh_tao_mo | mẫu: minh_tao | loại: đơn
+Giữ nguyên hoàn toàn nhân vật trong ảnh mẫu: cùng tư thế, khuôn mặt, quần áo, màu sắc, nét vẽ, kích thước và vị trí trong khung, nền trắng trơn. Chỉ thay đổi duy nhất cái miệng: miệng hé mở như đang nói chuyện. Không thay đổi gì khác.
+
+## ngoc_tao_mo | mẫu: ngoc_tao | loại: đơn
+Giữ nguyên hoàn toàn nhân vật trong ảnh mẫu: cùng tư thế, khuôn mặt, quần áo, màu sắc, nét vẽ, kích thước và vị trí trong khung, nền trắng trơn. Chỉ thay đổi duy nhất cái miệng: miệng hé mở như đang nói chuyện. Không thay đổi gì khác.
+
+## hientre_tao_mo | mẫu: hientre_tao | loại: đơn
+Giữ nguyên hoàn toàn nhân vật trong ảnh mẫu: cùng tư thế, khuôn mặt, quần áo, màu sắc, nét vẽ, kích thước và vị trí trong khung, nền trắng trơn. Chỉ thay đổi duy nhất cái miệng: miệng hé mở như đang nói chuyện. Không thay đổi gì khác.
+
+## bo_tao_mo | mẫu: bo_tao | loại: đơn
+Giữ nguyên hoàn toàn nhân vật trong ảnh mẫu: cùng tư thế, khuôn mặt, quần áo, màu sắc, nét vẽ, kích thước và vị trí trong khung, nền trắng trơn. Chỉ thay đổi duy nhất cái miệng: miệng hé mở như đang nói chuyện. Không thay đổi gì khác.
+
+## me_tao_mo | mẫu: me_tao | loại: đơn
+Giữ nguyên hoàn toàn nhân vật trong ảnh mẫu: cùng tư thế, khuôn mặt, quần áo, màu sắc, nét vẽ, kích thước và vị trí trong khung, nền trắng trơn. Chỉ thay đổi duy nhất cái miệng: miệng hé mở như đang nói chuyện. Không thay đổi gì khác.
+
+## bo_them_1_mo | mẫu: bo_them_1 | loại: đơn
+Giữ nguyên hoàn toàn nhân vật trong ảnh mẫu: cùng tư thế, khuôn mặt, quần áo, màu sắc, nét vẽ, kích thước và vị trí trong khung, nền trắng trơn. Chỉ thay đổi duy nhất cái miệng: miệng hé mở như đang nói chuyện. Không thay đổi gì khác.
+
+## bo_them_2_mo | mẫu: bo_them_2 | loại: đơn
+Giữ nguyên hoàn toàn nhân vật trong ảnh mẫu: cùng tư thế, khuôn mặt, quần áo, màu sắc, nét vẽ, kích thước và vị trí trong khung, nền trắng trơn. Chỉ thay đổi duy nhất cái miệng: miệng hé mở như đang nói chuyện. Không thay đổi gì khác.
+
+## me_them_2_mo | mẫu: me_them_2 | loại: đơn
+Giữ nguyên hoàn toàn nhân vật trong ảnh mẫu: cùng tư thế, khuôn mặt, quần áo, màu sắc, nét vẽ, kích thước và vị trí trong khung, nền trắng trơn. Chỉ thay đổi duy nhất cái miệng: miệng hé mở như đang nói chuyện. Không thay đổi gì khác.
+
+## tung_them_1_mo | mẫu: tung_them_1 | loại: đơn
+Giữ nguyên hoàn toàn nhân vật trong ảnh mẫu: cùng tư thế, khuôn mặt, quần áo, màu sắc, nét vẽ, kích thước và vị trí trong khung, nền trắng trơn. Chỉ thay đổi duy nhất cái miệng: miệng hé mở như đang nói chuyện. Không thay đổi gì khác.
+
+## tung_tao_mo | mẫu: tung_tao | loại: đơn
+Giữ nguyên hoàn toàn nhân vật trong ảnh mẫu: cùng tư thế, khuôn mặt, quần áo, màu sắc, nét vẽ, kích thước và vị trí trong khung, nền trắng trơn. Chỉ thay đổi duy nhất cái miệng: miệng hé mở như đang nói chuyện. Không thay đổi gì khác.
+
+## danem_them_2_mo | mẫu: danem_them_2 | loại: đơn
+Giữ nguyên hoàn toàn nhân vật trong ảnh mẫu: cùng tư thế, khuôn mặt, quần áo, màu sắc, nét vẽ, kích thước và vị trí trong khung, nền trắng trơn. Chỉ thay đổi duy nhất cái miệng: miệng hé mở như đang nói chuyện. Không thay đổi gì khác.
+
+## danem_them_3_mo | mẫu: danem_them_3 | loại: đơn
+Giữ nguyên hoàn toàn nhân vật trong ảnh mẫu: cùng tư thế, khuôn mặt, quần áo, màu sắc, nét vẽ, kích thước và vị trí trong khung, nền trắng trơn. Chỉ thay đổi duy nhất cái miệng: miệng hé mở như đang nói chuyện. Không thay đổi gì khác.
+
+## lan_them_3_mo | mẫu: lan_them_3 | loại: đơn
+Giữ nguyên hoàn toàn nhân vật trong ảnh mẫu: cùng tư thế, khuôn mặt, quần áo, màu sắc, nét vẽ, kích thước và vị trí trong khung, nền trắng trơn. Chỉ thay đổi duy nhất cái miệng: miệng hé mở như đang nói chuyện. Không thay đổi gì khác.
+
+## lan_them_2_mo | mẫu: lan_them_2 | loại: đơn
+Giữ nguyên hoàn toàn nhân vật trong ảnh mẫu: cùng tư thế, khuôn mặt, quần áo, màu sắc, nét vẽ, kích thước và vị trí trong khung, nền trắng trơn. Chỉ thay đổi duy nhất cái miệng: miệng hé mở như đang nói chuyện. Không thay đổi gì khác.
+
+## hien_them_5_mo | mẫu: hien_them_5 | loại: đơn
+Giữ nguyên hoàn toàn nhân vật trong ảnh mẫu: cùng tư thế, khuôn mặt, quần áo, màu sắc, nét vẽ, kích thước và vị trí trong khung, nền trắng trơn. Chỉ thay đổi duy nhất cái miệng: miệng hé mở như đang nói chuyện. Không thay đổi gì khác.
+
+## kela_them_3_mo | mẫu: kela_them_3 | loại: đơn
+Giữ nguyên hoàn toàn nhân vật trong ảnh mẫu: cùng tư thế, khuôn mặt, quần áo, màu sắc, nét vẽ, kích thước và vị trí trong khung, nền trắng trơn. Chỉ thay đổi duy nhất cái miệng: miệng hé mở như đang nói chuyện. Không thay đổi gì khác.
+
+## minh_bang_1_mo | mẫu: minh_bang_1 | loại: đơn
+Giữ nguyên hoàn toàn nhân vật trong ảnh mẫu: cùng tư thế, khuôn mặt, quần áo, màu sắc, nét vẽ, kích thước và vị trí trong khung, nền trắng trơn. Chỉ thay đổi duy nhất cái miệng: miệng hé mở như đang nói chuyện. Không thay đổi gì khác.
+
+## ngoc_bang_1_mo | mẫu: ngoc_bang_1 | loại: đơn
+Giữ nguyên hoàn toàn nhân vật trong ảnh mẫu: cùng tư thế, khuôn mặt, quần áo, màu sắc, nét vẽ, kích thước và vị trí trong khung, nền trắng trơn. Chỉ thay đổi duy nhất cái miệng: miệng hé mở như đang nói chuyện. Không thay đổi gì khác.
+
+## tam_bang_1_mo | mẫu: tam_bang_1 | loại: đơn
+Giữ nguyên hoàn toàn nhân vật trong ảnh mẫu: cùng tư thế, khuôn mặt, quần áo, màu sắc, nét vẽ, kích thước và vị trí trong khung, nền trắng trơn. Chỉ thay đổi duy nhất cái miệng: miệng hé mở như đang nói chuyện. Không thay đổi gì khác.

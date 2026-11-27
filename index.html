@@ -189,7 +189,8 @@
 
 <script>
 const REPO = "kenhgt247/Phim-hay", API = "https://api.github.com/repos/" + REPO, RAW = "https://raw.githubusercontent.com/" + REPO + "/main/";
-const TEN_NV = { hien: "Hiền", kela: "Kẻ lạ", lan: "Lan", bo: "Bố", me: "Mẹ", danem: "Đàn em", tung: "Tùng" };
+const TEN_NV = { hien: "Hiền", kela: "Kẻ lạ", lan: "Lan", bo: "Bố", me: "Mẹ", danem: "Đàn em", tung: "Tùng", tam: "Anh Tâm", minh: "Thiếu tá Minh", ngoc: "Ngọc", hientre: "Hiền trẻ" };
+const TEN_KHAC = { "Hắc": "kela", "Tuấn": "danem", "Tâm": "tam", "Minh": "minh" };
 const TU_THE_SAN = { "Hiền": ["hiền", "lạnh", "nghe", "nghe lạnh", "túi", "ngồi", "ngồi lạnh", "mặt lạnh", "mặt giận", "mặt hiền"], "Kẻ lạ": ["đứng", "thường", "mặt cười"] };
 let danhMuc = { tu_the: {}, nen: [] }, tepHienTai = null, shaHienTai = null;
 const $ = id => document.getElementById(id), v = id => $(id).value.trim();
@@ -217,10 +218,10 @@ async function taiDanhMuc() {
   try { danhMuc = await (await fetch(RAW + "kho/danh_muc.json?t=" + Date.now())).json(); } catch (e) {}
   dienChon("cNen", danhMuc.nen.map(n => n.replace(/^nen_/, "")));
   dienChon("cNv1", tatCaNV(), ["(không)"]); dienChon("cNv2", tatCaNV(), ["(không)"]); $("cNv1").value = "Hiền";
-  dienChon("lAi", tatCaNV(), ["Dẫn chuyện"]); dienChon("dAi", tatCaNV()); dienChon("vMau", Object.keys(TEN_NV).map(k => TEN_NV[k]));
+  dienChon("lAi", [...tatCaNV(), "Hắc", "Tuấn"], ["Dẫn chuyện"]); dienChon("dAi", tatCaNV()); dienChon("vMau", Object.keys(TEN_NV).map(k => TEN_NV[k]));
   capNhatTuThe(); veKho();
 }
-function maNV(ten) { return Object.keys(TEN_NV).find(k => TEN_NV[k] === ten); }
+function maNV(ten) { return TEN_KHAC[ten] || Object.keys(TEN_NV).find(k => TEN_NV[k] === ten); }
 function capNhatTuThe() {
   const ai = v("dAi"), ds = [...(TU_THE_SAN[ai] || []), ...((danhMuc.tu_the[maNV(ai)] || []))];
   dienChon("dTuThe", ds);
@@ -404,7 +405,7 @@ function kiemTra(text) {
       if (!coMat.has(ai)) { loi.push(`Dòng ${i + 1}: "${ai}" chưa có trong dòng [Cảnh: ...]`); return; }
       m[2].split(",").map(x => x.trim()).filter(Boolean).forEach(dt => {
         if (/^đi tới\s*-?\d+$/.test(dt) || dt === "rung") return;
-        const ok = (TU_THE_SAN[ai] || []).includes(dt) || (danhMuc.tu_the[maNV(ai)] || []).includes(dt) || dt === maNV(ai) + "_tao";
+        const ok = (TU_THE_SAN[ai] || TU_THE_SAN[TEN_NV[maNV(ai)]] || []).includes(dt) || (danhMuc.tu_the[maNV(ai)] || []).includes(dt) || dt === maNV(ai) + "_tao";
         if (!ok) loi.push(`Dòng ${i + 1}: "${ai}" không có tư thế "${dt}"`);
       });
       return;

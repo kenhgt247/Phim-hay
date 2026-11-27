@@ -54,8 +54,10 @@ BOI_CANH = {
                    "tien_canh": [(0.115, 0.775), (0.20, 0.725), (0.40, 0.705), (0.625, 0.69), (0.625, 1.0), (0.115, 1.0)]},
 }
 # Giọng VieNeu cho từng vai (tên giọng có sẵn)
-GIONG = {"Dẫn chuyện": "Thiện Minh", "Hiền": "Hải Đăng", "Kẻ lạ": "Adam bựa", "Đàn em": "Quốc Tuấn",
-         "Tùng": "Phạm Tuyên", "Lan": "Ngọc Huyền", "Bố": "Xuân Vĩnh", "Mẹ": "Đoan Trang"}
+GIONG = {"Dẫn chuyện": "Thiện Minh", "Hiền": "Hải Đăng", "Hiền trẻ": "Hải Đăng", "Kẻ lạ": "Adam bựa", "Hắc": "Adam bựa",
+         "Đàn em": "Quốc Tuấn", "Tuấn": "Quốc Tuấn", "Tùng": "Phạm Tuyên", "Lan": "Ngọc Huyền", "Bố": "Xuân Vĩnh",
+         "Mẹ": "Đoan Trang", "Anh Tâm": "Thanh Bình", "Tâm": "Thanh Bình", "Thiếu tá Minh": "Minh Đức", "Minh": "Minh Đức",
+         "Ngọc": "Trúc Ly", "Bống": "Quỳnh Anh", "Chủ xưởng": "Quang Sơn"}
 THU_MUC_ANH = [ANH, os.path.join(os.path.dirname(THU_MUC), "kho", "tach"), os.path.join(THU_MUC, "anh_them"),
                os.path.join(os.path.dirname(THU_MUC), "kho", "goc")]
 # =============================================================================
@@ -65,10 +67,13 @@ TOC_DO_DI = 0.62      # chiều cao nhân vật / giây
 NHIP_BUOC = 0.27      # giây mỗi hình bước
 
 # Nhân vật khác trong kho: tên trong kịch bản -> tiền tố tên ảnh
-MA_NV = {"Lan": "lan", "Bố": "bo", "Mẹ": "me", "Đàn em": "danem", "Tùng": "tung"}
+MA_NV = {"Lan": "lan", "Bố": "bo", "Mẹ": "me", "Đàn em": "danem", "Tuấn": "danem", "Tùng": "tung",
+         "Anh Tâm": "tam", "Tâm": "tam", "Thiếu tá Minh": "minh", "Minh": "minh", "Ngọc": "ngoc", "Hiền trẻ": "hientre"}
+TEN_KHAC = {"Hắc": "Kẻ lạ"}   # tên gọi khác của nhân vật đã khai báo
 CANH_DEM = {"bo_ke": (0.80, 0.78, 0.82), "quan_nhau": (0.92, 0.82, 0.70), "phong_kin": (0.85, 0.75, 0.62)}
 
 def lay_nv(ten):
+    if ten in TEN_KHAC: return lay_nv(TEN_KHAC[ten])
     if ten in NHAN_VAT: return NHAN_VAT[ten]
     p = MA_NV.get(ten)
     if not p: raise KeyError(f"Chưa có nhân vật '{ten}'. Có: {', '.join(list(NHAN_VAT) + list(MA_NV))}")
