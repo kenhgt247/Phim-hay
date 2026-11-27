@@ -42,11 +42,11 @@ jobs:
         run: python cong_cu/ve_kho.py
       - name: Tách bảng tư thế, xóa nền
         if: always()
-        run: python cong_cu/tach_bang.py
+        run: python cong_cu/tach_bang.py && python cong_cu/so_tay.py
       - name: Lưu vào kho
         if: always()
         run: |
           git config user.name "kho-hinh-bot"
           git config user.email "kho-hinh-bot@users.noreply.github.com"
-          git add kho
+          git add kho SO_TAY_BIEN_KICH.md
           git diff --cached --quiet || (git commit -m "Vẽ thêm hình vào kho" && git pull --rebase -q && git push)

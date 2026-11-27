@@ -49,6 +49,7 @@
   <h1>🎬 Xưởng Phim Hay</h1>
   <nav>
     <button data-tab="kichban" class="on">Kịch bản</button>
+    <button data-tab="ai">Viết với AI</button>
     <button data-tab="kho">Kho hình</button>
     <button data-tab="phim">Phim</button>
     <button data-tab="ve">Vẽ hình mới</button>
@@ -112,6 +113,32 @@
         <button class="nut" style="margin-top:6px" onclick="chen('* Máy quay: xa')">Máy quay kéo ra xa</button>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ================= VIẾT VỚI AI ================= -->
+<section id="ai" class="tab">
+  <div class="the">
+    <h2>Nhờ ChatGPT viết kịch bản đúng kiểu, đúng hình</h2>
+    <p class="nho">Sổ tay biên kịch gồm cốt truyện, tính cách nhân vật, cách viết và <b>danh sách chính xác mọi hình trong kho</b>. Sổ tay tự cập nhật mỗi khi kho có thêm hình.</p>
+    <h3>Cài một lần trong ChatGPT</h3>
+    <ol>
+      <li>Bấm <b>Tải sổ tay về</b> bên dưới.</li>
+      <li>Trong ChatGPT: <b>Projects → New project</b>, đặt tên <i>Phim Hai Mặt</i>.</li>
+      <li>Vào project, mục <b>Files</b> → tải file <code>SO_TAY_BIEN_KICH.md</code> lên.</li>
+      <li>Mục <b>Instructions</b> dán câu: <i>Luôn viết kịch bản đúng theo file SO_TAY_BIEN_KICH.md. Chỉ dùng bối cảnh và tư thế có trong danh sách. Trả về một khối code.</i></li>
+    </ol>
+    <p class="nho">Khi kho có hình mới, tải sổ tay về lần nữa và thay file cũ trong project.</p>
+    <div class="hang"><button class="nut chinh" id="nutTaiSoTay">Tải sổ tay về</button><button class="nut" id="nutChepSoTay">Sao chép sổ tay</button></div>
+    <h3>Mỗi tập mới</h3>
+    <label>Ý tưởng tập (vài câu là đủ)</label>
+    <textarea id="yTuong" style="min-height:90px" placeholder="Tập 3: Hiền một mình sang bên kia sông gặp Tùng. Đàn em lo lắng đi theo. Cuối tập Lan phát hiện chiếc điện thoại thứ hai."></textarea>
+    <div class="hang" style="margin-top:8px"><button class="nut chinh" id="nutChepLenh">Sao chép câu lệnh cho ChatGPT</button></div>
+    <ol class="nho" style="margin-top:12px">
+      <li>Dán câu lệnh vào project <i>Phim Hai Mặt</i> trong ChatGPT.</li>
+      <li>Sao chép khối kịch bản ChatGPT trả về.</li>
+      <li>Sang tab <b>Kịch bản</b> → <b>+ Tập mới</b> → dán vào ô kịch bản → <b>▶ Dựng phim</b>. Trang sẽ tự kiểm tra, sai tên hình ở đâu sẽ báo ngay.</li>
+    </ol>
   </div>
 </section>
 
@@ -286,6 +313,8 @@ $("nutDung").onclick = async () => {
   if (!canToken() || !tepHienTai) return;
   const nut = $("nutDung"), o = $("ttDung"); nut.disabled = true; o.style.display = "block";
   try {
+    const loi = kiemTra($("soan").value);
+    if (loi.length) { o.textContent = "❌ Kịch bản có lỗi, sửa rồi bấm lại:\n• " + loi.slice(0, 12).join("\n• "); nut.disabled = false; return; }
     o.textContent = "Đang lưu kịch bản…"; await luu();
     const sau = new Date(Date.now() - 5000);
     await gh("/actions/workflows/dung-phim.yml/dispatches", { method: "POST", body: JSON.stringify({ ref: "main", inputs: { kich_ban: tepHienTai } }) });
@@ -336,6 +365,54 @@ $("nutVe").onclick = async () => {
   } catch (e) { o.textContent = "Lỗi: " + e.message; }
   nut.disabled = false;
 };
+
+// ---------- viết với AI ----------
+async function laySoTay() { return await (await fetch(RAW + "SO_TAY_BIEN_KICH.md?t=" + Date.now())).text(); }
+async function chep(text) {
+  try { await navigator.clipboard.writeText(text); bao("Đã sao chép"); }
+  catch (e) { const t = document.createElement("textarea"); t.value = text; document.body.appendChild(t); t.select(); document.execCommand("copy"); t.remove(); bao("Đã sao chép"); }
+}
+$("nutTaiSoTay").onclick = async () => {
+  const url = URL.createObjectURL(new Blob([await laySoTay()], { type: "text/markdown" }));
+  const a = document.createElement("a"); a.href = url; a.download = "SO_TAY_BIEN_KICH.md"; document.body.appendChild(a); a.click(); a.remove();
+};
+$("nutChepSoTay").onclick = async () => chep(await laySoTay());
+$("nutChepLenh").onclick = () => {
+  const y = v("yTuong") || "(tự nghĩ tiếp nối tập trước)";
+  chep(`Viết tập tiếp theo của phim, dài khoảng 3 phút, đúng theo sổ tay biên kịch (SO_TAY_BIEN_KICH.md): đúng cách viết, chỉ dùng bối cảnh và tư thế có trong danh sách, nhân vật chỉ nói khi đang ở tư thế có 🗣. Ý tưởng tập này: ${y}\nTrả về một khối code duy nhất chứa toàn bộ kịch bản.`);
+};
+
+// ---------- kiểm tra kịch bản trước khi dựng ----------
+function kiemTra(text) {
+  const loi = [], nenCo = new Set([...danhMuc.nen.map(n => n.replace(/^nen_/, "")), "pho_dem", "van_phong"]);
+  let coMat = new Set(), canh = 0;
+  text.split("\n").forEach((d, i) => {
+    d = d.trim(); if (!d || d.startsWith("#")) return;
+    let m = d.match(/^\[Cảnh:\s*([^|\]]+)\|?([^\]]*)\]/);
+    if (m) {
+      canh++; coMat = new Set();
+      if (!nenCo.has(m[1].trim())) loi.push(`Dòng ${i + 1}: không có bối cảnh "${m[1].trim()}"`);
+      m[2].split(",").map(x => x.trim()).filter(Boolean).forEach(p => {
+        const ten = p.replace(/\s+-?\d+$/, "").trim(); coMat.add(ten);
+        if (!maNV(ten)) loi.push(`Dòng ${i + 1}: không có nhân vật "${ten}"`);
+      });
+      return;
+    }
+    m = d.match(/^\*\s*([^:]+):\s*(.*)$/);
+    if (m) {
+      const ai = m[1].trim(); if (["Máy quay", "Nhạc", "Hiệu ứng"].includes(ai)) return;
+      if (!coMat.has(ai)) { loi.push(`Dòng ${i + 1}: "${ai}" chưa có trong dòng [Cảnh: ...]`); return; }
+      m[2].split(",").map(x => x.trim()).filter(Boolean).forEach(dt => {
+        if (/^đi tới\s*-?\d+$/.test(dt) || dt === "rung") return;
+        const ok = (TU_THE_SAN[ai] || []).includes(dt) || (danhMuc.tu_the[maNV(ai)] || []).includes(dt) || dt === maNV(ai) + "_tao";
+        if (!ok) loi.push(`Dòng ${i + 1}: "${ai}" không có tư thế "${dt}"`);
+      });
+      return;
+    }
+    if (!canh && /^[^:]+:/.test(d)) loi.push(`Dòng ${i + 1}: lời thoại nằm trước dòng [Cảnh: ...] đầu tiên`);
+  });
+  return loi;
+}
 
 // ---------- cài đặt ----------
 $("nutLuuToken").onclick = async () => {

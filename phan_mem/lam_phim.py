@@ -202,8 +202,29 @@ def bong(rong, cao):
     return im.filter(ImageFilter.GaussianBlur(cao * 0.45))
 
 # ---------------- dựng ----------------
+def kiem_tra(ds):
+    """Kiểm tra kịch bản trước khi dựng: bối cảnh, nhân vật, tư thế phải có trong kho."""
+    loi = []
+    for i, c in enumerate(ds, 1):
+        try: lay_canh(c["nen"])
+        except Exception as e: loi.append(f"Cảnh {i}: không có bối cảnh '{c['nen']}'")
+        co_mat = {t for t, _ in c["nv"]}
+        for t, _ in c["nv"]:
+            try: lay_nv(t)
+            except Exception: loi.append(f"Cảnh {i}: không có nhân vật '{t}'")
+        for l in c["loi"]:
+            for ai, dt in l["dong_tac"]:
+                if ai in ("Máy quay", "Nhạc", "Hiệu ứng"): continue
+                if ai not in co_mat: loi.append(f"Cảnh {i}: '{ai}' có động tác nhưng chưa có trong dòng [Cảnh: ...]"); continue
+                if dt.startswith("đi tới") or dt == "rung": continue
+                try: tu_the_cua(lay_nv(ai), dt)
+                except Exception: loi.append(f"Cảnh {i}: '{ai}' không có tư thế '{dt}'")
+    if loi:
+        print("\n❌ KỊCH BẢN CÓ LỖI, chưa dựng được:\n  - " + "\n  - ".join(loi)); sys.exit(1)
+
 def lam_phim(kb):
     ds = doc_kich_ban(kb)
+    kiem_tra(ds)
     tam = os.path.join(THU_MUC, "_tam"); os.makedirs(tam, exist_ok=True)
     co_tieng = tao_giong(ds, tam)
     H = int(CAO * 1.25)
