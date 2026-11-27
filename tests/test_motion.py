@@ -19,6 +19,16 @@ class MotionTests(unittest.TestCase):
         self.assertEqual(len(fs),8)
         self.assertEqual(len({f.size for f in fs}),1)
         self.assertEqual(fs[0].getpixel((0,0))[3],0)
+    def test_shifted_gutter(self):
+        im=Image.new("RGB",(800,400),"white")
+        d=ImageDraw.Draw(im)
+        for r in range(2):
+            for c in range(4):
+                # A pose straddles the ideal cut but remains separated by a white gutter.
+                x=c*200+112 if c<3 else c*200+75
+                d.rectangle((x-34,r*200+20,x+92 if c<3 else x+34,r*200+175),fill="blue")
+        fs=split_sheet(im,2,4)
+        self.assertEqual(len(fs),8)
     def test_reject_empty(self):
         with self.assertRaises(ValueError): split_sheet(Image.new("RGB",(800,400),"white"),2,4)
     def test_fallback(self):

@@ -29,16 +29,33 @@ IDLE = """Vẽ sprite sheet CHÍNH XÁC 2 cột x 2 hàng, 4 ô bằng nhau; m�
 dưới phải: mắt mở miệng mở lớn khi nói, không đổi biểu cảm. Nền trắng #FFFFFF, không chữ, số, bóng hay đường phân ô,
 chừa ít nhất 7% biên từng ô, người cao khoảng 82% ô."""
 
+def find_cuts(projection, count):
+    """Find low-ink gutters close to the intended grid, never move a cut far enough to swap cells."""
+    n = len(projection)
+    cuts = [0]
+    for i in range(1, count):
+        target = round(i*n/count)
+        radius = max(2, round(.22*n/count))
+        lo, hi = max(cuts[-1]+3, target-radius), min(n-3, target+radius)
+        score = ndimage.uniform_filter1d(np.asarray(projection, dtype=float), size=5, mode="nearest")
+        cut = min(range(lo,hi+1), key=lambda x: (score[x]+.002*abs(x-target)/max(radius,1),abs(x-target)))
+        cuts.append(cut)
+    return cuts+[n]
+
 def split_sheet(im, rows, cols):
     """Fail on clipped/empty cells and major size discrepancy; align feet on common canvas."""
     im = im.convert("RGB")
     w,h = im.size
+    a = np.asarray(im).astype(np.int16)
+    ink = (a.min(2) < 222) | ((a.max(2)-a.min(2)) > 24)
+    xs_cut = find_cuts(ink.mean(axis=0), cols)
+    ys_cut = find_cuts(ink.mean(axis=1), rows)
     cells = []
     for r in range(rows):
         for c in range(cols):
-            cell = im.crop((c*w//cols, r*h//rows, (c+1)*w//cols, (r+1)*h//rows))
+            cell = im.crop((xs_cut[c], ys_cut[r], xs_cut[c+1], ys_cut[r+1]))
             a = np.asarray(cell).astype(np.int16)
-            white = (a.min(2) > 230) & (a.max(2)-a.min(2) < 22)
+            white = (a.min(2) > 222) & (a.max(2)-a.min(2) < 24)
             labels,_ = ndimage.label(white)
             edge = np.unique(np.concatenate((labels[0],labels[-1],labels[:,0],labels[:,-1])))
             bg = np.isin(labels, edge[edge != 0])
@@ -82,11 +99,24 @@ def make(ma, force=False):
             ("walk",walk,WALK,2,4,"16:9"),("idle",idle,IDLE,2,2,"3:4")):
             sample=tim_mau(ref)
             if not sample: raise FileNotFoundError(ref)
-            print("Vẽ sheet",ma,kind,flush=True)
-            raw=goi_api(GIU_MAT+prompt,sample,ratio,"2K")
-            sheet=Image.open(io.BytesIO(raw)).convert("RGB")
+            diagnostics=ROOT/"ket_qua"/"motion_diagnostics"
+            diagnostics.mkdir(parents=True, exist_ok=True)
+            for attempt in range(2):
+                print("Vẽ sheet",ma,kind,"lần",attempt+1,flush=True)
+                extra = "" if attempt == 0 else (
+                    " IMPORTANT: strictly regular grid, huge white gutters between poses, "
+                    "reduce each character to 65-70% cell height, no touching any grid boundary. "
+                    "All figures fully visible; no overlapping figures, no crop, exactly the requested count.")
+                raw=goi_api(GIU_MAT+prompt+extra,sample,ratio,"2K")
+                sheet=Image.open(io.BytesIO(raw)).convert("RGB")
+                sheet.save(diagnostics/f"{ma}_{kind}_attempt{attempt+1}.jpg",quality=95)
+                try:
+                    frames=split_sheet(sheet,rows,cols)
+                    break
+                except ValueError as exc:
+                    print("Kiểm tra sheet:",exc,flush=True)
+                    if attempt == 1: raise
             sheet.save(tmp/f"{ma}_{kind}_sheet.jpg",quality=95)
-            frames=split_sheet(sheet,rows,cols)
             names=[]
             for i,im in enumerate(frames):
                 name=f"anim_{ma}_{kind}_{i:02d}.png"

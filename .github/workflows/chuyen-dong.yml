@@ -31,7 +31,7 @@ jobs:
           python-version: "3.11"
       - run: pip install pillow numpy scipy requests
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
-      - name: Vẽ tối đa 2 sheet bằng API hiện có
+      - name: Vẽ 2 sheet (tối đa 4 lượt nếu cần vẽ lại)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           CHARACTER: ${{ inputs.character || 'hien' }}
@@ -51,6 +51,12 @@ jobs:
             ket_qua/demo_chuyen_dong.mp4
             kho/chuyen_dong/
           if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: motion-diagnostics
+          path: ket_qua/motion_diagnostics/
+          if-no-files-found: ignore
       - name: Lưu pack vào nhánh thử nghiệm
         run: |
           git config user.name "kho-hinh-bot"
