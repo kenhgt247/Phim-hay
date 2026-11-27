@@ -1,51 +1,67 @@
 # TẬP 2 – NGƯỜI TỪ NAGOYA
-# Dài khoảng 3 phút. Nối tiếp tập 1: Kẻ lạ (tên thật là Hắc) tìm đến trung tâm.
+# Phim "Hai Mặt" – tập 2/10, khoảng 6 phút.
 
-[Cảnh: van_phong | Hiền 23, Kẻ lạ 74]
+[Cảnh: van_phong | Hiền 23, Hắc 74]
 * Hiền: ngồi lạnh
 * Nhạc: căng thẳng
 Dẫn chuyện: Căn phòng im lặng đến mức nghe rõ tiếng đồng hồ trên tường.
-Kẻ lạ: Văn phòng đẹp nhỉ. Biển hiệu to, bản đồ thế giới treo đầy tường.
-Kẻ lạ: Sao thế? Không nhận ra tôi à? Mười năm rồi, cậu béo ra một chút.
+Hắc: Sao thế? Không nhận ra tôi à? Mười năm rồi, cậu trông chững chạc ra nhiều.
 * Hiền: lạnh
 Hiền: Anh nhầm người rồi. Ở đây chỉ tư vấn du học.
 * Hiền: ngồi lạnh
-* Kẻ lạ: kela_bang_6
-Kẻ lạ (cận): Nagoya, năm 2016. Xưởng điện tử số bốn. Cậu thanh niên ngày nào cũng làm thêm đến nửa đêm… là cậu đấy.
+* Hắc: kela_bang_6
+Hắc (cận): Nagoya, năm 2016. Xưởng điện tử số bốn. Cậu thanh niên ngày nào cũng làm thêm đến nửa đêm… là cậu đấy.
 * Máy quay: xa
 * Hiền: mặt lạnh
 Dẫn chuyện: Hiền không trả lời. Nhưng bàn tay dưới gầm bàn đã nắm chặt lại.
+* Hiền: ngồi lạnh
+* Hắc: đứng
+Dẫn chuyện: Ánh mắt Hắc lướt qua mặt bàn. Dừng lại ở tập hồ sơ cô gái vừa để lại. Ngọc. Mười chín tuổi. Du học Nhật Bản.
+Hắc: Hồ sơ đẹp nhỉ. Con bé này trông thật thà quá.
+* Hắc: mặt cười
+Dẫn chuyện: Hắn cười. Và Hiền bỗng thấy lạnh sống lưng, như mười năm trước.
 
-[Cảnh: xuong_nhat | Hiền 35, Kẻ lạ 70]
+[Cảnh: xuong_nhat | Hiền trẻ 35, Hắc 70]
 * Hiệu ứng: chớp
 * Nhạc: buồn
-* Hiền: hien_bang_dung_1
-* Kẻ lạ: thường
-Dẫn chuyện: Mười năm trước, Hiền sang Nhật với khoản nợ mấy trăm triệu của cả nhà.
-Dẫn chuyện: Ngày làm mười hai tiếng, tối về ngủ chung phòng với năm người. Mỗi đồng lương đều gửi về quê trả nợ.
-Dẫn chuyện: Người đứng ra lo giấy tờ, thu tiền phí cho cả xưởng, là một gã môi giới tên Hắc.
-Kẻ lạ: Làm nhanh lên! Chậm một giây là trừ lương!
-* Hiền: hien_bang_mat_4
-Dẫn chuyện: Hắn hứa sẽ lo cho cả nhóm được gia hạn hợp đồng, chỉ cần mỗi người đóng thêm một khoản phí.
-Dẫn chuyện: Rồi một buổi sáng, Hắc biến mất. Mang theo toàn bộ tiền đóng phí của ba mươi người.
-Dẫn chuyện: Hiền mất hết. Món nợ ở quê tăng gấp đôi. Đó là lần đầu tiên anh hiểu, người hiền thì bị bắt nạt.
+* Hắc: thường
+Dẫn chuyện: Mười năm trước. Nagoya, Nhật Bản.
+Dẫn chuyện: Hiền hai mươi lăm tuổi, sang Nhật với khoản nợ mấy trăm triệu mà cả nhà phải vay khắp họ hàng.
+Dẫn chuyện: Ngày làm mười hai tiếng. Tối về ngủ chung phòng với năm người. Mỗi đồng lương đều gửi về quê trả nợ.
+Hắc: Làm nhanh lên! Chậm một giây là trừ lương!
+Hiền trẻ: Dạ, anh Hắc. Mà anh ơi, chuyện gia hạn hợp đồng cho bọn em, anh lo được chưa ạ?
+Hắc: Lo được hết. Mỗi đứa đóng thêm năm mươi man. Cuối tháng có giấy.
+* Hiền trẻ: hientre_bang_1
+Dẫn chuyện: Ba mươi công nhân. Ba mươi người gom từng đồng, đóng cho Hắc. Hiền là người đóng đầu tiên.
+* Hiền trẻ: hientre_tao
+Hiền trẻ: Bọn em tin anh. Anh là người Việt mình mà.
+* Hắc: mặt cười
+Dẫn chuyện: Rồi một buổi sáng, Hắc biến mất. Điện thoại không liên lạc được. Phòng trọ trống trơn.
+Dẫn chuyện: Mang theo toàn bộ tiền của ba mươi người.
+* Hắc: thường
+* Hiền trẻ: hientre_bang_2
+Dẫn chuyện: Hợp đồng không được gia hạn. Cả xưởng bị đuổi về nước trước hạn. Món nợ ở quê tăng gấp đôi.
+Dẫn chuyện: Đó là lần đầu tiên Hiền hiểu một điều: ở đời, người hiền thì bị bắt nạt.
 
-[Cảnh: van_phong | Hiền 23, Kẻ lạ 74]
+[Cảnh: van_phong | Hiền 23, Hắc 74]
 * Hiệu ứng: chớp
 * Nhạc: căng thẳng
 * Hiền: ngồi lạnh
-* Kẻ lạ: đứng
-Kẻ lạ: Giờ tôi làm ăn với Tùng. Món nợ của nó, tôi đứng ra lo.
-* Kẻ lạ: kela_bang_4
-Kẻ lạ: Cậu mà đụng vào Tùng… cả cái phường này sẽ biết ông chủ trung tâm du học thật ra là ai.
-* Kẻ lạ: đứng
+* Hắc: đứng
+Hắc: Chuyện cũ thôi mà. Tôi về đây là để làm ăn. Giờ tôi làm với Tùng. Món nợ của nó, tôi đứng ra lo.
+* Hắc: kela_bang_4
+Hắc: Cậu mà đụng vào Tùng… cả cái phường này sẽ biết ông thầy du học hiền lành thật ra là ai.
+* Hắc: đứng
 * Hiền: lạnh
+Hiền: Anh nói xong chưa?
+Hắc: Xong rồi. À, cho tôi gửi lời hỏi thăm chị nhà và cháu Bống nhé.
+* Hiệu ứng: rung
 Hiền (cận): Cửa ở sau lưng anh.
 * Máy quay: xa
-* Kẻ lạ: mặt cười
+* Hắc: mặt cười
 Dẫn chuyện: Hắc cười. Cái cười của kẻ biết mình đang nắm điểm yếu của người khác.
-* Kẻ lạ: đi tới 118
-Dẫn chuyện: Hắn quay lưng bước ra. Cánh cửa kính khép lại sau lưng.
+* Hắc: đi tới 118
+Dẫn chuyện: Hắn quay lưng bước ra. Cánh cửa kính khép lại. Hiền ngồi im rất lâu.
 
 [Cảnh: phong_khach | Lan 30, Hiền 112]
 * Nhạc: ấm áp
@@ -54,44 +70,48 @@ Dẫn chuyện: Tối hôm đó, Hiền về nhà muộn hơn mọi ngày.
 * Hiền: hiền
 Lan: Anh về rồi à? Cơm canh nguội hết rồi, để em hâm lại.
 Hiền: Không cần đâu em. Anh ăn luôn cũng được. Con ngủ rồi à?
-* Lan: lan_tao
-Lan: Ngủ rồi. Con cứ đòi đợi bố về để khoe bài kiểm tra được mười điểm.
-* Hiền: hien_bang_mat_1
-Dẫn chuyện: Hiền mỉm cười. Đó là nụ cười thật nhất của anh trong cả ngày hôm nay.
-* Hiền: hiền
+Lan: Ngủ rồi. Hôm nay con hỏi em, bố làm nghề gì mà nhiều người quý thế.
+Hiền: Thế em bảo sao?
+Lan: Em bảo bố giúp các anh chị đi học nước ngoài. Con khoe với cả lớp đấy.
 * Lan: lan_bang_2
-Lan: Chiều nay chị bán nước đầu ngõ kể… có người lạ đến trung tâm, mặt mũi dữ lắm.
+Lan: Mà chiều nay chị bán nước đầu ngõ kể… có người lạ đến trung tâm, mặt mũi dữ lắm.
 Hiền: Khách hỏi du học thôi em. Người ta ở xa đến, trông hơi khó tính.
 * Lan: lan_tao
 Lan: Ừ… anh cứ hiền thế, em lại sợ người ta bắt nạt anh.
 * Nhạc: buồn
 * Hiền: hien_bang_mat_1
 Dẫn chuyện: Hiền cười. Mười năm nay, đây là lần đầu tiên anh nói dối vợ mà tim đập mạnh đến vậy.
+Dẫn chuyện: Vì lần đầu tiên, lời nói dối ấy có thể kéo cả nhà anh xuống cùng.
 
-[Cảnh: quan_nhau | Hiền 35, Đàn em 65]
+[Cảnh: quan_nhau | Hiền 35, Tuấn 65]
 * Nhạc: căng thẳng
 * Hiền: lạnh
 Dẫn chuyện: Mười một giờ đêm. Quán nhậu cuối phố.
-Đàn em: Đại ca, em hỏi rồi. Thằng Tùng vừa đón một lão từ Nhật về, gọi là anh Hắc.
+Tuấn: Đại ca, em hỏi rồi. Người lạ bên Tùng tên là Hắc. Vừa từ Nhật về được hai tháng.
 Hiền: Tao biết hắn.
-Đàn em: Hay để anh em qua bên kia sông dạy cho chúng nó một bài?
+Tuấn: Anh biết ạ?
+Hiền: Hắn là lý do tao từng mất tất cả.
+Tuấn: Thế thì để anh em qua bên kia sông dạy cho chúng nó một bài!
 Hiền (cận): Không. Lần này không đánh nhau.
-Hiền (cận): Tao muốn biết thằng Hắc đang nợ ai. Kẻ trốn nợ mười năm, không thể chỉ trốn mỗi mình tao.
 * Máy quay: xa
-Đàn em: Em hiểu rồi, đại ca. Nhưng mà… nếu nó làm lộ chuyện thật thì sao? Chị nhà với hai bác ở quê…
+Hiền: Hắc không về đây chỉ để đòi nợ giùm Tùng. Hắn đang tính chuyện gì đó lớn hơn.
+Hiền: Tao muốn biết hắn đang nợ ai, đang làm ăn với ai. Kẻ trốn nợ mười năm, không thể chỉ trốn mỗi mình tao.
+Tuấn: Em hiểu rồi, đại ca. Nhưng mà… nếu hắn làm lộ chuyện thật thì sao? Chị nhà với hai bác ở quê…
 * Hiền: hien_bang_lanh_6
 Dẫn chuyện: Hiền châm một điếu thuốc. Lần đầu tiên sau nhiều năm, tay anh run.
 * Hiền: lạnh
-Hiền (cận): Thì tao sẽ làm cho nó không bao giờ có cơ hội mở miệng.
-* Máy quay: xa
+Hiền: Thì tao sẽ làm cho nó không có cơ hội mở miệng. Bằng cách của tao.
+Tuấn: Em đi ngay.
 
 [Cảnh: bo_ke | Tùng 50]
 * Hiệu ứng: mưa
 * Tùng: tung_bang_6
 Dẫn chuyện: Cùng lúc đó, ở bờ kè bên kia sông.
 Tùng: Anh Hắc à? Anh gặp nó rồi chứ?
+Tùng: Thế nào, nó có sợ không?
 Tùng (cận): Tốt. Cá đã cắn câu. Giờ chỉ cần nó bước sang bên này sông…
 * Máy quay: xa
 * Hiệu ứng: chớp
 Dẫn chuyện: Hiền không biết, cuộc gặp sáng nay chỉ là miếng mồi đầu tiên.
+Dẫn chuyện: Và người mà Hắc thật sự nhắm tới… không phải là anh.
 Dẫn chuyện: Tập sau: Đêm bên kia sông.
