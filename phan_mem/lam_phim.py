@@ -14,6 +14,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter
 from scipy import ndimage
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import am_thanh
+import chuyen_dong
 
 THU_MUC = os.path.dirname(os.path.abspath(__file__))
 ANH = os.path.join(os.path.dirname(THU_MUC), "mau")
@@ -225,6 +226,9 @@ def doc_wav(p):
 
 # ---------------- ảnh ----------------
 def tim_file(f):
+    if chuyen_dong.la_frame(f):
+        p = chuyen_dong.ROOT / f
+        if p.is_file(): return str(p)
     for d in THU_MUC_ANH:
         p = os.path.join(d, f)
         if os.path.exists(p): return p
@@ -235,7 +239,7 @@ def tach_nen(f):
     if f in _cache: return _cache[f]
     path = tim_file(f); goc = Image.open(path)
     if goc.mode == "RGBA" and np.asarray(goc)[..., 3].min() < 10:
-        _cache[f] = goc.crop(goc.getbbox()); return _cache[f]
+        _cache[f] = goc if chuyen_dong.la_frame(f) else goc.crop(goc.getbbox()); return _cache[f]
     im = goc.convert("RGB"); a = np.asarray(im).astype(np.int16)
     trang = (a.min(2) > 232) & ((a.max(2) - a.min(2)) < 18)
     nhan, _ = ndimage.label(trang)
@@ -349,6 +353,7 @@ def dung(ds, kb, tam, preview=False, output=None):
                 d, sr = doc_wav(l["wav"]); dai = len(d) / sr; cs = int(sr / FPS)
                 rms = np.array([np.sqrt((d[i:i + cs] ** 2).mean() + 1e-12) for i in range(0, len(d), cs)])
                 l["mieng"] = rms > max(0.05, rms.max() * 0.18)
+                l["muc_mieng"] = chuyen_dong.muc_mieng(rms)
             elif im_lang(l["noi"]): dai = 1.6
             else: dai = len(chu_phu_de(l["noi"]).split()) * GIAY_MOI_TIENG + 0.3
             l["t1"] = t + dai
@@ -453,25 +458,33 @@ def dung(ds, kb, tam, preview=False, output=None):
                 if dang_di is None and isinstance(tte, dict):
                     mat_shot = tte["mat"]; continue
                 if dang_di is not None:
-                    f_ = cf["đi"][int(dang_di / NHIP_BUOC) % 2]; lat = huong != cf["huong_di"]; co_tt = 0.97
-                    nhun = -abs(math.sin(dang_di * math.pi / NHIP_BUOC)) * cao_nv * 0.012
+                    f_, lat = chuyen_dong.frame_di(ten, cf["đi"], cf["huong_di"], huong, dang_di, NHIP_BUOC)
+                    co_tt = 0.97
+                    nhun = 0 if chuyen_dong.la_frame(f_) else -abs(math.sin(dang_di * math.pi / NHIP_BUOC)) * cao_nv * 0.006
                 else:
                     ngam, mo = tte[0], tte[1]; f_ = ngam; lat = False; nhun = 0
+                    muc = 0
+                    dang_noi = bool(loi and loi["ai"] == ten and tt < loi["t1"] and not im_lang(loi["noi"]))
                     if mo is None: mo = mo_cua(ngam)
                     if len(tte) > 2: co_tt = tte[2]
-                    if loi and loi["ai"] == ten and tt < loi["t1"] and mo:
+                    if dang_noi:
                         k = tt - loi["t0"]
-                        if "mieng" in loi: m = loi["mieng"]; f_ = mo if m[min(int(k * FPS), len(m) - 1)] else ngam
-                        elif not im_lang(loi["noi"]) and (k / GIAY_MOI_TIENG) % 1 < 0.55 and k < loi["t1"] - loi["t0"] - 0.3: f_ = mo
+                        if "muc_mieng" in loi:
+                            m = loi["muc_mieng"]; muc = int(m[min(int(k * FPS), len(m) - 1)])
+                        elif k < loi["t1"] - loi["t0"] - 0.3:
+                            muc = (0, 1, 2, 1, 0)[int(k * 15) % 5]
+                        if mo and muc: f_ = mo
+                    f_ = chuyen_dong.frame_dung(ten, ngam, f_, tt, muc, dang_noi)
                 cy_f, co = theo_vi_tri(bc["chan"], x); chan_y = cy_f * H; co = round(co * 50) / 50
                 cnv = cao_nv * co; h = hinh_nv(f_, cnv * co_tt, bc["mau"], lat)
                 cx = x * W
                 for r in n["rung"]:
                     if 0 <= tt - r < 1.4: cx += math.sin((tt - r) * 70) * cao_nv * 0.006
-                tho = 0 if dang_di is not None else math.sin(tt * 2.2 + len(ten)) * cao_nv * 0.002
+                if dang_di is None:
+                    h = chuyen_dong.tho(h, tt, ten, dang_noi)
                 s = bong(int(cnv * 0.34), int(cnv * 0.045))
                 the_gioi.paste(s, (int(cx - s.width / 2), int(chan_y - s.height / 2)), s)
-                the_gioi.paste(h, (int(cx - h.width / 2), int(chan_y - h.height + nhun + tho)), h)
+                the_gioi.paste(h, (int(cx - h.width / 2), int(chan_y - h.height + nhun)), h)
                 vi_tri[ten] = (cx, chan_y, cnv)
             if c["tien_canh"] is not None: the_gioi.paste(c["tien_canh"], (0, 0), c["tien_canh"])
 
