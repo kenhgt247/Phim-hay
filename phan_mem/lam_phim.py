@@ -143,6 +143,8 @@ def doc_kich_ban(p):
         if not dong or dong.startswith("#"): continue
         m = re.match(r"\[Cảnh:\s*([^|\]]+)\|?([^\]]*)\]", dong)
         if m:
+            if cho and canh is not None:  # động tác cuối cảnh: giữ trong cảnh đó (một nhịp im lặng)
+                canh["loi"].append({"ai": "Dẫn chuyện", "the": [], "noi": "", "dong_tac": cho}); cho = []
             nv = []
             for ph in [x.strip() for x in m.group(2).split(",") if x.strip()]:
                 mm = re.match(r"(.+?)\s+(-?\d+)$", ph)
@@ -157,6 +159,7 @@ def doc_kich_ban(p):
         if m and canh is not None:
             the = [t.strip() for t in (m.group(2) or "").split(",") if t.strip()]
             canh["loi"].append({"ai": m.group(1).strip(), "the": the, "noi": m.group(3).strip(), "dong_tac": cho}); cho = []
+    if cho and canh is not None: canh["loi"].append({"ai": "Dẫn chuyện", "the": [], "noi": "", "dong_tac": cho})
     return ds
 
 # ---------------- giọng ----------------
