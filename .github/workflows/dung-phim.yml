@@ -1,17 +1,30 @@
 name: Dựng phim
+run-name: Dựng phim – ${{ inputs.kich_ban }} – ${{ inputs.ma_viec }}
 
 on:
   workflow_dispatch:
     inputs:
       kich_ban:
-        description: "Tên file kịch bản trong thư mục phan_mem (nhiều tập thì cách nhau dấu phẩy)"
+        description: "Tên kịch bản (nhiều tập cách nhau dấu phẩy)"
         default: "kich_ban_tap1.txt"
+      quality:
+        description: "Độ phân giải"
+        type: choice
+        options: [720p, 1080p, nhanh]
+        default: 720p
+      preview:
+        description: "Xem trước không tạo giọng"
+        type: boolean
+        default: false
+      ma_viec:
+        description: "Mã công việc (tùy chọn)"
+        default: ""
 
 permissions:
   contents: write
-
 concurrency:
-  group: ghi-vao-kho
+  group: dung-phim-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   dung:
@@ -22,26 +35,46 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: for i in 1 2 3; do sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core && break; echo 'thử lại...'; sleep 20; done; which ffmpeg
-      - run: for i in 1 2 3; do pip install vieneu pillow numpy scipy && break; sleep 20; done
-      - name: Dựng phim (giọng VieNeu + hình) và lưu vào thư mục phim/
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+      - run: pip install pillow numpy scipy
+      - if: ${{ !inputs.preview }}
+        run: pip install vieneu
+      - uses: actions/cache@v4
+        if: ${{ !inputs.preview }}
+        with:
+          path: phan_mem/_cache_giong
+          key: speech-v1-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: speech-v1-${{ runner.os }}-
+      - name: Kiểm tra và dựng phim
+        env:
+          KICH_BAN: ${{ inputs.kich_ban }}
+          QUALITY: ${{ inputs.quality }}
+          PREVIEW: ${{ inputs.preview }}
+        shell: bash
         run: |
-          git config user.name "kho-hinh-bot"
-          git config user.email "kho-hinh-bot@users.noreply.github.com"
-          loi=0
-          for kb in $(echo "${{ inputs.kich_ban }}" | tr ',' ' '); do
-            ten=$(basename "$kb" .txt)
-            echo "===== $ten ====="
-            if python phan_mem/lam_phim.py "phan_mem/$kb"; then
-              mv "phan_mem/${ten}.mp4" "phim/${ten}.mp4"
-              git add phim && git commit -q -m "Dựng phim ${ten}" && git pull --rebase -q && git push -q
-            else
-              echo "❌ $ten bị lỗi"; loi=1
-            fi
+          set -euo pipefail
+          mkdir -p ket_qua
+          IFS=',' read -ra files <<< "$KICH_BAN"
+          for kb in "${files[@]}"; do
+            kb="$(echo "$kb" | xargs)"
+            [[ "$kb" =~ ^[a-zA-Z0-9_-]+\.txt$ ]] || { echo "Tên file không hợp lệ"; exit 1; }
+            test -f "phan_mem/$kb"
+            python phan_mem/lam_phim.py "phan_mem/$kb" --check
+            args=(--quality "$QUALITY")
+            if [[ "$PREVIEW" == "true" ]]; then args+=(--preview); fi
+            python phan_mem/lam_phim.py "phan_mem/$kb" "${args[@]}" --output "ket_qua/${kb%.txt}.mp4"
+            ffprobe -v error -show_entries stream=codec_type,width,height -of json "ket_qua/${kb%.txt}.mp4"
           done
-          exit $loi
       - uses: actions/upload-artifact@v4
         with:
           name: phim
-          path: phim/*.mp4
-          if-no-files-found: ignore
+          path: ket_qua/*.mp4
+          if-no-files-found: error
+      - name: Tương thích trang web cũ (chỉ main, phim có giọng)
+        if: ${{ github.ref == 'refs/heads/main' && !inputs.preview }}
+        run: |
+          cp ket_qua/*.mp4 phim/
+          git config user.name "kho-hinh-bot"
+          git config user.email "kho-hinh-bot@users.noreply.github.com"
+          git add phim
+          git diff --cached --quiet || (git commit -m "Dựng phim" && git pull --rebase && git push)
