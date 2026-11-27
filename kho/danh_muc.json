@@ -7,7 +7,10 @@
    "bo_bang_4",
    "bo_bang_5",
    "bo_bang_6",
-   "bo_tao"
+   "bo_tao",
+   "bo_them_1",
+   "bo_them_2",
+   "bo_them_3"
   ],
   "danem": [
    "danem_bang_1",
@@ -16,7 +19,10 @@
    "danem_bang_4",
    "danem_bang_5",
    "danem_bang_6",
-   "danem_tao"
+   "danem_tao",
+   "danem_them_1",
+   "danem_them_2",
+   "danem_them_3"
   ],
   "hien": [
    "hien_bang_dung_1",
@@ -42,7 +48,22 @@
    "hien_bang_ngoi_3",
    "hien_bang_ngoi_4",
    "hien_bang_ngoi_5",
-   "hien_bang_ngoi_6"
+   "hien_bang_ngoi_6",
+   "hien_them_1",
+   "hien_them_2",
+   "hien_them_3",
+   "hien_them_4",
+   "hien_them_5",
+   "hien_them_6"
+  ],
+  "hientre": [
+   "hientre_bang_1",
+   "hientre_bang_2",
+   "hientre_bang_3",
+   "hientre_bang_4",
+   "hientre_bang_5",
+   "hientre_bang_6",
+   "hientre_tao"
   ],
   "kela": [
    "kela_bang_1",
@@ -56,7 +77,10 @@
    "kela_bang_mat_3",
    "kela_bang_mat_4",
    "kela_bang_mat_5",
-   "kela_bang_mat_6"
+   "kela_bang_mat_6",
+   "kela_them_1",
+   "kela_them_2",
+   "kela_them_3"
   ],
   "lan": [
    "lan_bang_1",
@@ -65,7 +89,10 @@
    "lan_bang_4",
    "lan_bang_5",
    "lan_bang_6",
-   "lan_tao"
+   "lan_tao",
+   "lan_them_1",
+   "lan_them_2",
+   "lan_them_3"
   ],
   "me": [
    "me_bang_1",
@@ -74,7 +101,37 @@
    "me_bang_4",
    "me_bang_5",
    "me_bang_6",
-   "me_tao"
+   "me_tao",
+   "me_them_1",
+   "me_them_2",
+   "me_them_3"
+  ],
+  "minh": [
+   "minh_bang_1",
+   "minh_bang_2",
+   "minh_bang_3",
+   "minh_bang_4",
+   "minh_bang_5",
+   "minh_bang_6",
+   "minh_tao"
+  ],
+  "ngoc": [
+   "ngoc_bang_1",
+   "ngoc_bang_2",
+   "ngoc_bang_3",
+   "ngoc_bang_4",
+   "ngoc_bang_5",
+   "ngoc_bang_6",
+   "ngoc_tao"
+  ],
+  "tam": [
+   "tam_bang_1",
+   "tam_bang_2",
+   "tam_bang_3",
+   "tam_bang_4",
+   "tam_bang_5",
+   "tam_bang_6",
+   "tam_tao"
   ],
   "tung": [
    "tung_bang_1",
@@ -83,17 +140,29 @@
    "tung_bang_4",
    "tung_bang_5",
    "tung_bang_6",
-   "tung_tao"
+   "tung_tao",
+   "tung_them_1",
+   "tung_them_2",
+   "tung_them_3"
   ]
  },
  "nen": [
+  "nen_benh_vien",
   "nen_bo_ke",
+  "nen_cong_an",
+  "nen_kho_hang",
+  "nen_ky_tuc_xa",
   "nen_lang_que",
+  "nen_nha_que",
+  "nen_nha_que_tet",
   "nen_phong_khach",
   "nen_phong_kin",
+  "nen_phong_ngu",
   "nen_quan_nhau",
   "nen_van_phong",
   "nen_van_phong_trong",
+  "nen_xom_tro",
+  "nen_xuong_dai_loan",
   "nen_xuong_nhat",
   "pho_dem"
  ]

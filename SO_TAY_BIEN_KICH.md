@@ -57,11 +57,20 @@ Quy tắc:
 
 - `pho_dem`: phố đêm dài có trung tâm Du Học Bình Minh, vỉa hè, đèn đường (nhân vật đi dọc phố được, vị trí 20-70)
 - `van_phong`: văn phòng trung tâm du học buổi sáng: bàn làm việc bên trái (Hiền ngồi ở vị trí 23), cửa kính bên phải (người lạ đi vào từ 112 tới 74)
+- `benh_vien`: Hành lang và phòng bệnh viện Việt Nam, một giường bệnh bên trái, ánh đèn trắng lạnh, cửa sổ ban đêm.
 - `bo_ke`: Bờ kè sông ban đêm, cây cầu xa xa, ánh đèn phản chiếu mặt nước, không khí căng thẳng.
+- `cong_an`: Phòng làm việc của công an phường Việt Nam, bàn làm việc, ghế, tủ hồ sơ, lá cờ đỏ trên tường, cửa kính.
+- `kho_hang`: Kho hàng ven sông ban đêm, ghế bành da kiểu đại ca ở giữa, thùng hàng chất cao, đèn vàng treo, cửa cuốn mở ra phía sông.
+- `ky_tuc_xa`: Ký túc xá công nhân ở Đài Loan ban đêm, giường tầng sắt, đèn vàng, quần áo treo, chật chội nhưng ấm cúng.
 - `lang_que`: Làng quê Bắc Bộ ngày xưa, lũy tre, mái ngói, đường đất, cánh đồng lúa, buổi chiều nắng vàng.
+- `nha_que`: Sân nhà cấp bốn ở quê Bắc Bộ buổi sáng, giếng nước, bộ bàn ghế uống trà bằng gỗ ngoài hiên, cổng tre, cây cau.
+- `nha_que_tet`: Giữ nguyên bố cục, góc nhìn và nét vẽ của sân nhà quê trong ảnh mẫu, nhưng là ngày Tết: thêm cây đào hồng nở hoa, câu đố
 - `phong_khach`: Phòng khách nhà phố Việt Nam buổi tối, mâm cơm trên chiếu, đèn vàng ấm, ti vi, bàn thờ trên tường.
 - `phong_kin`: Căn phòng kín đáo tầng trên một quán cà phê, ánh đèn mờ, bàn tròn, khói thuốc, cảm giác bí mật.
+- `phong_ngu`: Phòng ngủ vợ chồng lúc nửa đêm, ánh trăng xanh qua cửa sổ, giường đôi, chiếc áo khoác vắt trên ghế, đèn ngủ nhỏ.
 - `quan_nhau`: Quán nhậu vỉa hè Việt Nam ban đêm, bàn nhựa đỏ, ghế nhựa thấp, đèn dây, xe máy dựng bên đường.
+- `xom_tro`: Xóm trọ công nhân Việt Nam buổi chiều, dãy phòng trọ cũ, dây phơi quần áo, xe máy cũ, lối đi hẹp.
+- `xuong_dai_loan`: Xưởng sản xuất ở Đài Loan, máy móc công nghiệp, biển chữ Hán trên tường, ánh đèn huỳnh quang, không khí ngột ngạt.
 - `xuong_nhat`: Xưởng nhà máy ở Nhật Bản, dây chuyền sản xuất, ánh đèn trắng, không khí mệt mỏi.
 
 ## NHÂN VẬT VÀ TƯ THẾ CÓ SẴN
@@ -103,8 +112,14 @@ Quy tắc:
 - `hien_bang_ngoi_4`: Ngồi tay chống cằm suy nghĩ
 - `hien_bang_ngoi_5`: Ngồi cầm chén trà
 - `hien_bang_ngoi_6`: Ngồi xổm trên vỉa hè
+- `hien_them_1`: Ngồi bệt dưới đất, hai tay ôm đầu, buồn bã
+- `hien_them_2`: Đứng cầm một tờ giấy đọc, mặt nghiêm
+- `hien_them_3`: Đứng giơ cao chiếc điện thoại như sắp ném xuống đất, mặt giận
+- `hien_them_4`: Đứng cúi đầu, hai tay buông thõng, mặt hối lỗi
+- 🗣 `hien_them_5`: Đứng mỉm cười hiền, hai tay đút túi quần
+- `hien_them_6`: Ngồi xếp bằng trên chiếu cầm bát đũa ăn cơm
 
-### Kẻ lạ
+### Kẻ lạ (Hắc)
 - 🗣 `đứng`: đứng nghiêng 3/4 sang trái, tay đút túi, cười nhếch mép
 - 🗣 `thường`: đứng chính diện tay đút túi
 - `mặt cười`: CẬN khuôn mặt cười nhếch mép
@@ -120,6 +135,9 @@ Quy tắc:
 - `kela_bang_mat_4`: CẬN khuôn mặt: Đe dọa, mắt nheo
 - `kela_bang_mat_5`: CẬN khuôn mặt: Ngạc nhiên
 - `kela_bang_mat_6`: CẬN khuôn mặt: Nhắm mắt
+- `kela_them_1`: Đi bộ nhìn nghiêng sang trái, tay xách va li
+- `kela_them_2`: Đứng hai tay bị còng phía trước, cúi đầu
+- 🗣 `kela_them_3`: Ngồi ghế uống trà, cười cợt nhả, nhìn nghiêng 3/4 sang phải
 
 ### Lan
 - `lan_bang_1`: Đứng nghiêng 3/4 sang phải
@@ -129,6 +147,9 @@ Quy tắc:
 - `lan_bang_5`: Ngồi ghế nghiêng 3/4 sang phải
 - `lan_bang_6`: Đứng nói chuyện điện thoại
 - 🗣 `lan_tao`: đứng chính diện (dáng mặc định)
+- `lan_them_1`: Đứng cầm chiếc điện thoại, mặt sững sờ
+- 🗣 `lan_them_2`: Đứng khóc, một tay lau nước mắt
+- 🗣 `lan_them_3`: Đứng khoanh tay, mặt giận, nhìn nghiêng 3/4 sang phải
 - (dáng mặc định khi vào cảnh: `lan_tao`)
 
 ### Bố
@@ -138,7 +159,10 @@ Quy tắc:
 - `bo_bang_4`: Đi bộ nhìn nghiêng sang phải, hai chân gần khép
 - `bo_bang_5`: Ngồi ghế nghiêng 3/4 sang phải
 - `bo_bang_6`: Đứng nói chuyện điện thoại
-- `bo_tao`: đứng chính diện (dáng mặc định)
+- 🗣 `bo_tao`: đứng chính diện (dáng mặc định)
+- 🗣 `bo_them_1`: Ngồi ghế gỗ cầm chén trà, nhìn nghiêng 3/4 sang phải
+- 🗣 `bo_them_2`: Đứng giận dữ, một tay chỉ thẳng về phía trước
+- `bo_them_3`: Ngồi ghế gỗ rót trà, mỉm cười hiền
 - (dáng mặc định khi vào cảnh: `bo_tao`)
 
 ### Mẹ
@@ -148,10 +172,13 @@ Quy tắc:
 - `me_bang_4`: Đi bộ nhìn nghiêng sang phải, hai chân gần khép
 - `me_bang_5`: Ngồi ghế nghiêng 3/4 sang phải
 - `me_bang_6`: Đứng nói chuyện điện thoại
-- `me_tao`: đứng chính diện (dáng mặc định)
+- 🗣 `me_tao`: đứng chính diện (dáng mặc định)
+- `me_them_1`: Đứng khóc, hai tay ôm ngực
+- 🗣 `me_them_2`: Đứng nói chuyện điện thoại, mặt lo lắng
+- `me_them_3`: Ngồi ghế gỗ, hai tay đặt trên đùi, mặt lo lắng
 - (dáng mặc định khi vào cảnh: `me_tao`)
 
-### Đàn em
+### Đàn em (Tuấn)
 - `danem_bang_1`: Đứng nghiêng 3/4 sang phải
 - `danem_bang_2`: Đứng nghiêng 3/4 sang trái
 - `danem_bang_3`: Đi bộ nhìn nghiêng sang phải, chân trái bước trước
@@ -159,6 +186,9 @@ Quy tắc:
 - `danem_bang_5`: Ngồi ghế nghiêng 3/4 sang phải
 - `danem_bang_6`: Đứng nói chuyện điện thoại
 - 🗣 `danem_tao`: đứng chính diện (dáng mặc định)
+- `danem_them_1`: Nằm trên giường bệnh, đầu quấn băng trắng
+- 🗣 `danem_them_2`: Đứng chính diện, đầu quấn băng trắng, mặt nghiêm
+- 🗣 `danem_them_3`: Ngồi trên ghế, đầu quấn băng trắng, nói chuyện
 - (dáng mặc định khi vào cảnh: `danem_tao`)
 
 ### Tùng
@@ -168,8 +198,51 @@ Quy tắc:
 - `tung_bang_4`: Đi bộ nhìn nghiêng sang phải, hai chân gần khép
 - `tung_bang_5`: Ngồi ghế nghiêng 3/4 sang phải
 - 🗣 `tung_bang_6`: Đứng nói chuyện điện thoại
-- `tung_tao`: đứng chính diện (dáng mặc định)
+- 🗣 `tung_tao`: đứng chính diện (dáng mặc định)
+- 🗣 `tung_them_1`: Ngồi ghế bành, vắt chân, hống hách, nhìn nghiêng 3/4 sang phải
+- `tung_them_2`: Đứng cầm tờ giấy, mặt sững sờ
+- `tung_them_3`: Đứng khoanh tay, nhìn nghiêng 3/4 sang trái
 - (dáng mặc định khi vào cảnh: `tung_tao`)
+
+### Anh Tâm
+- 🗣 `tam_bang_1`: Đứng nghiêng 3/4 sang phải
+- `tam_bang_2`: Đứng nghiêng 3/4 sang trái
+- `tam_bang_3`: Đi bộ nhìn nghiêng sang phải, chân trái bước trước
+- `tam_bang_4`: Đi bộ nhìn nghiêng sang phải, hai chân gần khép
+- `tam_bang_5`: Ngồi ghế nghiêng 3/4 sang phải
+- `tam_bang_6`: Đứng nói chuyện điện thoại
+- 🗣 `tam_tao`: đứng chính diện (dáng mặc định)
+- (dáng mặc định khi vào cảnh: `tam_tao`)
+
+### Thiếu tá Minh
+- 🗣 `minh_bang_1`: Đứng nghiêng 3/4 sang phải
+- `minh_bang_2`: Đứng nghiêng 3/4 sang trái
+- `minh_bang_3`: Đi bộ nhìn nghiêng sang phải, chân trái bước trước
+- `minh_bang_4`: Đi bộ nhìn nghiêng sang phải, hai chân gần khép
+- `minh_bang_5`: Ngồi ghế nghiêng 3/4 sang phải
+- `minh_bang_6`: Đứng nói chuyện điện thoại
+- 🗣 `minh_tao`: đứng chính diện (dáng mặc định)
+- (dáng mặc định khi vào cảnh: `minh_tao`)
+
+### Ngọc
+- 🗣 `ngoc_bang_1`: Đứng nghiêng 3/4 sang phải
+- `ngoc_bang_2`: Đứng nghiêng 3/4 sang trái
+- `ngoc_bang_3`: Đi bộ nhìn nghiêng sang phải, chân trái bước trước
+- `ngoc_bang_4`: Đi bộ nhìn nghiêng sang phải, hai chân gần khép
+- `ngoc_bang_5`: Ngồi ghế nghiêng 3/4 sang phải
+- `ngoc_bang_6`: Đứng nói chuyện điện thoại
+- 🗣 `ngoc_tao`: đứng chính diện (dáng mặc định)
+- (dáng mặc định khi vào cảnh: `ngoc_tao`)
+
+### Hiền trẻ
+- `hientre_bang_1`: Đứng nghiêng 3/4 sang phải
+- `hientre_bang_2`: Đứng nghiêng 3/4 sang trái
+- `hientre_bang_3`: Đi bộ nhìn nghiêng sang phải, chân trái bước trước
+- `hientre_bang_4`: Đi bộ nhìn nghiêng sang phải, hai chân gần khép
+- `hientre_bang_5`: Ngồi ghế nghiêng 3/4 sang phải
+- `hientre_bang_6`: Đứng nói chuyện điện thoại
+- 🗣 `hientre_tao`: đứng chính diện (dáng mặc định)
+- (dáng mặc định khi vào cảnh: `hientre_tao`)
 
 ## VÍ DỤ: KỊCH BẢN TẬP 2
 ```
